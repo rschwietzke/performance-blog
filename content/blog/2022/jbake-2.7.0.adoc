@@ -1,0 +1,22 @@
+= JBake 2.7.0 Solves UTF-8 Issue
+:jbake-last_updated: 2022-12-30
+:jbake-author: René Schwietzke
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: jbake, 2.7, UTF-8
+:description: UTF-8 handling improved
+:jbake-excerpt: JBake 2.7 addresses issues with UTF-8 in its property file where you could not get that content into the site without an encoding problem.
+:idprefix:
+:section
+
+[.hide]
+## NoShow
+
+My new blog is using https://jbake.org[JBake] as the static site generator and I also
+opted for AsciiDoc as the markup because a future book of mine will be written with it,
+so I need a testing ground.
+
+== Test
+My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in `jbake.properties`, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.
+
+Looking forward to the release of 2.7.0.

@@ -1,0 +1,306 @@
+/* because of the lack of SASS or LESS, we use CSS variables */
+:root {
+    --border-color: rgba(160, 160, 160, 0.3);
+    --headline-color: #ba3925;
+    --link-color: #ba3925;
+    --background-color: #e3f2fd;
+    --header-background-color: #0d47a1;
+    --description-color: #666;
+    --tag-color: var(--description-color);
+}
+
+body, input, select, textarea, b, strong {
+    color: #000000;
+    background-color: var(--background-color);
+}
+
+pre {
+    display: table;
+    table-layout: fixed;
+    width: 100%
+}
+
+a:hover {
+    color: var(--link-color);
+}
+
+#wrapper {
+    padding: 2em;
+}
+
+#intro {
+}
+    #intro header {
+        text-transform: uppercase;
+    }
+    #intro header h2 {
+        letter-spacing: 0.2rem;
+    }
+    #intro header p {
+        letter-spacing: 0.2rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #555;
+    }
+
+    #sidebar #recent-posts ul.posts time,
+    #sidebar #categories ul.posts li header,
+    #sidebar .blurb p {
+    }
+
+#header {
+    background-color: var(--header-background-color);
+    color: White;
+}
+    #header h2 {
+        font-size: inherit;
+        height: inherit;
+        line-height: inherit;
+        padding: 0 0 0 1.5em;
+        white-space: nowrap;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: White;
+    }
+        @media screen and (max-width: 736px) {
+            #header h2 {
+                padding: 0 0 0 1em;
+            }
+        }
+    #header .main ul li {
+		border-left: 1px solid rgba(255, 255, 255, 0.3);
+	}
+
+
+#intro .intro-circle {
+    border-radius: 50%;
+}
+
+blockquote p {
+    margin-bottom: 0;
+}
+
+.image.center-image {
+    max-width: 50%;
+}
+    .image.center-image img {
+        width: 100%;
+    }
+        .image.center-image {
+            display: block;
+            margin: auto;
+            clear: both;
+        }
+
+.pagination .button {
+    background: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+    .pagination .button:hover {
+        color: var(--link-color);
+        box-shadow: inset 0 0 0 1px var(--link-color);
+    }
+
+article {
+    font-family: "Noto Serif", serif;
+    text-rendering: optimizeLegibility;
+    font-size: 1rem;
+}
+    article .listingblock {
+    }
+        article .listingblock code {
+            margin: 0;
+            background-color: #f7f7f8;
+            line-height: 1.25;
+            font-size: 1rem;
+            border: none;
+        }
+
+ul.tags {
+	cursor: default;
+	list-style: none;
+	padding-left: 0;
+    color: var(--tag-color);
+}
+	ul.tags li {
+		display: inline-block;
+        padding: 0;
+	}
+    ul.tags li:not(:first-child) {
+        border: 1px solid var(--border-color);
+        background-color: #eee;
+        border-radius: 0.5em;
+        padding: 0.1ex 0.5em;
+        margin-right: 0.5rem;
+    }
+		ul.tags li > * {
+			text-decoration: none;
+			border: 0;
+		}
+			ul.tags li > *:before {
+				-moz-osx-font-smoothing: grayscale;
+				-webkit-font-smoothing: antialiased;
+				font-style: normal;
+				font-weight: normal;
+			}
+			ul.tags li > * .label {
+				display: none;
+			}
+
+
+
+.post {
+    margin: 0 0 1rem 0;
+    padding: 2em 3em;
+
+    background: #ffffff;
+    border: solid 1px rgba(160, 160, 160, 0.3);
+}
+    .post header {
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 2ex;
+        border-bottom: 1px solid var(--border-color);
+        font-family: "Open Sans", sans-serif;
+    }
+        .post .title {
+            padding: 0;
+            margin: 0;
+        }
+            .post .title h1 {
+                font-weight: 700;
+                font-size: 2rem;
+                padding: 0;
+                margin: 0;
+                letter-spacing: normal;
+                line-height: 1.2;
+            }
+            .post .title .description {
+                padding: 0;
+                margin: 0;
+                font-size: 1.1rem;
+                letter-spacing: normal;
+                color: var(--description-color);
+            }
+        .post .meta {
+            color: var(--description-color);
+            text-align: right;
+            flex-basis: auto;
+            font-size: 0.9em;
+            padding-left: 1em;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+        }
+        @media screen and (max-width: 992px) {
+            .post .title h1 {
+                font-size: 1.6em;
+            }
+        }
+        @media screen and (max-width: 736px) {
+            .post .title h1 {
+                font-size: 1.2em;
+            }
+        }
+
+
+/* general content */
+.content {
+
+}
+    .content h2, .content h3, .content h4, .content h5, .content h6{
+        color: #ba3925;
+        letter-spacing: -.01em;
+        word-spacing: -0.05em;
+        font-weight: 400;
+    }
+    .content h2 {
+        font-size: 1.7rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    .content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+    }
+    .content h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+    .content h5 {
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+    .content #preamble {
+        color: rgba(0,0,0, 0.7);
+        font-size: 1.1rem;
+        font-style: italic;
+        text-align: center;
+    }
+    /* in case we want to avoid a preamble and a headline h2 */
+    .content .hide h2 {
+        display: none;
+    }
+
+    .content .featured {
+        width: 100%;
+    }
+        .content .featured img {
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
+            width: 100%;
+        }
+
+    .content img {
+        max-width: 100%;
+    }
+
+    .content p a, .content ul li a {
+        border-bottom: dotted 2px rgba(160,160,160,.65);
+    }
+
+        .content p a:hover {
+            border-bottom-color: transparent;
+        }
+
+    .content blockquote, .content p, .content ul{
+        margin: 0 0 1em;
+    }
+
+    /* footer of post */
+    .post > footer {
+        display: flex;
+        align-items: center;
+    }
+
+
+ul.pagination li {
+    padding-top: 1em;
+}
+
+    ul.pagination .button {
+        line-height: 2.5em;
+        height: auto;
+        white-space: normal;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+#back-to-top {
+    bottom: 5px;
+    color: #999;
+    display: none;
+    position: fixed;
+    right: 5px;
+    font-size: 3rem;
+}
+
+    #back-to-top.btt-fade-out {
+        /* if the user keeps scrolling down, the button is out of focus and becomes less visible */
+        transition: opacity .3s 0s, visibility 0s 0s;
+        opacity: .5;
+    }

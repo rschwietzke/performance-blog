@@ -1,0 +1,14 @@
+= About
+:jbake-type: page
+:jbake-status: published
+:jbake-tags: links, readings
+:description: More interesting sites, links, documents, and more in regards to the topics Java, performance, and testing.
+:idprefix:
+
+== Java
+* https://mostlynerdless.de/blog/2022/12/27/a-short-primer-on-java-debugging-internals/
+* https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html
+*
+
+== Web Performance
+https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-data/
