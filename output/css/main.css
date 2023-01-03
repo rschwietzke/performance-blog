@@ -1556,9 +1556,9 @@
 		padding: 0.25em 0.25em;
 	}
 
-	pre {
+	pre.highlight code {
 		-webkit-overflow-scrolling: touch;
-		font-family: "Source Code Pro", monospace;
+		font-family: "Ubuntu Mono", monospace;
 		font-size: 1rem;
 		margin: 0 0 2em 0;
 	}

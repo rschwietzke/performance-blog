@@ -1,35 +1,82 @@
 = Demo Post
-Jonathan Bullock
 :jbake-author: René Schwietzke
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: blog, asciidoc
-:description: This is a description of fourth post
+:description: This is just a demo of all possible things AsciiDoc.
 :idprefix:
 
-This the preamble of the post and is rendered differently.
+TL;DR: The following article will demonstrate all possible types of content that can be created by using AsciiDoc and JBake.
 
-== Start
-This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.
+== Headlines - Level 1
+This was not meant to be the *first bold entry* in my new blog, but accidentally
+interesting in**for**mation to share. Let me just write a little test here to fill
+the lines nicely. We just _want_ to see how that looks.
 
-This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share. This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.
+This was not meant to be the first entry in my new blog, but accidentally
+interesting in_for_mation to share. +
+This was hard break by using a `+`.
 
-=== Headline3
-My new blog is using https://jbake.org[JBake] as the static site generator and I also
-opted for AsciiDoc as the markup because a future book of mine will be written with it,
-so I need a testing ground.
+=== Headlines - Level 2
+This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share. Let's #highlight things#.
 
-==== Headline 4
-My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in `jbake.properties`, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.
+This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.
 
-===== Headline 5
-Looking forward to the release of 2.7.0.
+==== Headlines - Level 3
+This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.
 
-== Headline 2
-This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.
+This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.
+
+===== Headlines - Level 5
+If we ever need that, we can even do that headline.
+
+== Code
+Ok, we can show nice code.
+
+[source,java]
+----
+@Test
+public void test()
+{
+    /**
+     * Just another max function.
+     *
+     * @param a first parameter
+     * @param b second parameter
+     * @return returns the max value of a and b, b if equal
+     */
+    public int max(final int a, final int b)
+    {
+        // inline comment
+        return a > b ? a : b;
+    }
+}
+----
+Just some more text after our code, because we might want to see if the margins
+are right.
+
+[source,x86asm]
+----
+↗  0x00007f455cc708c1: lea    0x20(%rsp),%rbx
+│          < blah-blah-blah, monitor enter >     ; <--- coarsened!
+│  0x00007f455cc70918: mov    (%rsp),%r10        ; load $this
+│  0x00007f455cc7091c: mov    0xc(%r10),%r11d    ; load $this.x
+│  0x00007f455cc70920: mov    %r11d,%r10d        ; ...hm...
+│  0x00007f455cc70923: add    $0x42,%r10d        ; ...hmmm...
+│  0x00007f455cc70927: mov    (%rsp),%r8         ; ...hmmmmm!...
+│  0x00007f455cc7092b: mov    %r10d,0xc(%r8)     ; LOL Hotspot, redundant store, killed two lines below
+│  0x00007f455cc7092f: add    $0x108,%r11d       ; add 0x108 = 0x42 * 4 <-- unrolled by 4
+│  0x00007f455cc70936: mov    %r11d,0xc(%r8)     ; store $this.x back
+│          < blah-blah-blah, monitor exit >      ; <--- coarsened!
+│  0x00007f455cc709c6: add    $0x4,%ebp          ; c += 4   <--- unrolled by 4
+│  0x00007f455cc709c9: cmp    $0x3e5,%ebp        ; c < 1000?
+╰  0x00007f455cc709cf: jl     0x00007f455cc708c1
+----
+
+=== Inline Code
+Just some `inline code` for your pleasure. More code comes here `a`, `b`, and
+`c`.

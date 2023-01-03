@@ -158,7 +158,7 @@
     <header>
         <div class="title">
             <h1><a href="blog/2022/demo.html">Demo Post</a></h1>
-                <p class="description">This is a description of fourth post</p>
+                <p class="description">This is just a demo of all possible things AsciiDoc.</p>
         </div>
         <div class="meta">
             <time class="published" datetime='2023-01-03'>2023-01-03</time>
@@ -170,40 +170,47 @@
            <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This the preamble of the post and is rendered differently.</p>
+<p>TL;DR: The following article will demonstrate all possible types of content that can be created by using AsciiDoc and JBake.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="start">Start</h2>
+<h2 id="headlines_level_1">Headlines - Level 1</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.</p>
+<p>This was not meant to be the <strong>first bold entry</strong> in my new blog, but accidentally
+interesting in<strong>for</strong>mation to share. Let me just write a little test here to fill
+the lines nicely. We just <em>want</em> to see how that looks.</p>
 </div>
 <div class="paragraph">
-<p>This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share. This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.</p>
+<p>This was not meant to be the first entry in my new blog, but accidentally
+interesting in_for_mation to share.<br>
+This was hard break by using a <code>+</code>.</p>
 </div>
 <div class="sect2">
-<h3 id="headline3">Headline3</h3>
+<h3 id="headlines_level_2">Headlines - Level 2</h3>
 <div class="paragraph">
-<p>My new blog is using <a href="https://jbake.org">JBake</a> as the static site generator and I also
-opted for AsciiDoc as the markup because a future book of mine will be written with it,
-so I need a testing ground.</p>
+<p>This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share. Let&#8217;s <mark>highlight things</mark>.</p>
+</div>
+<div class="paragraph">
+<p>This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.</p>
 </div>
 <div class="sect3">
-<h4 id="headline_4">Headline 4</h4>
+<h4 id="headlines_level_3">Headlines - Level 3</h4>
 <div class="paragraph">
-<p>My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in <code>jbake.properties</code>, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.</p>
+<p>This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.</p>
+</div>
+<div class="paragraph">
+<p>This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.</p>
 </div>
 <div class="sect4">
-<h5 id="headline_5">Headline 5</h5>
+<h5 id="headlines_level_5">Headlines - Level 5</h5>
 <div class="paragraph">
-<p>Looking forward to the release of 2.7.0.</p>
+<p>If we ever need that, we can even do that headline.</p>
 </div>
 </div>
 </div>
@@ -211,11 +218,59 @@ so I need a testing ground.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="headline_2">Headline 2</h2>
+<h2 id="code">Code</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.</p>
+<p>Ok, we can show nice code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="java">@Test
+public void test()
+{
+    /**
+     * Just another max function.
+     *
+     * @param a first parameter
+     * @param b second parameter
+     * @return returns the max value of a and b, b if equal
+     */
+    public int max(final int a, final int b)
+    {
+        // inline comment
+        return a &gt; b ? a : b;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Just some more text after our code, because we might want to see if the margins
+are right.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code data-lang="x86asm">↗  0x00007f455cc708c1: lea    0x20(%rsp),%rbx
+│          &lt; blah-blah-blah, monitor enter &gt;     ; &lt;--- coarsened!
+│  0x00007f455cc70918: mov    (%rsp),%r10        ; load $this
+│  0x00007f455cc7091c: mov    0xc(%r10),%r11d    ; load $this.x
+│  0x00007f455cc70920: mov    %r11d,%r10d        ; ...hm...
+│  0x00007f455cc70923: add    $0x42,%r10d        ; ...hmmm...
+│  0x00007f455cc70927: mov    (%rsp),%r8         ; ...hmmmmm!...
+│  0x00007f455cc7092b: mov    %r10d,0xc(%r8)     ; LOL Hotspot, redundant store, killed two lines below
+│  0x00007f455cc7092f: add    $0x108,%r11d       ; add 0x108 = 0x42 * 4 &lt;-- unrolled by 4
+│  0x00007f455cc70936: mov    %r11d,0xc(%r8)     ; store $this.x back
+│          &lt; blah-blah-blah, monitor exit &gt;      ; &lt;--- coarsened!
+│  0x00007f455cc709c6: add    $0x4,%ebp          ; c += 4   &lt;--- unrolled by 4
+│  0x00007f455cc709c9: cmp    $0x3e5,%ebp        ; c &lt; 1000?
+╰  0x00007f455cc709cf: jl     0x00007f455cc708c1</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="inline_code">Inline Code</h3>
+<div class="paragraph">
+<p>Just some <code>inline code</code> for your pleasure. More code comes here <code>a</code>, <code>b</code>, and
+<code>c</code>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -435,7 +490,7 @@ libero, ut vehicula lectus nunc ut lorem. Aliquam erat volutpat.file:///home/rsc
                                    datetime='2023-01-03'>
                                    2023-01-03</time>
                                 <p class="description">
-                                    This is a description of fourth post
+                                    This is just a demo of all possible things AsciiDoc.
                                 </p>
                         </header>
                      </article>

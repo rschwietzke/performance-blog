@@ -6,52 +6,59 @@
     <atom:link href="http://localhost:8820//feed.xml" rel="self" type="application/rss+xml" />
     <description>JBake Bootstrap Template</description>
     <language>en-gb</language>
-    <pubDate>Tue, 3 Jan 2023 21:38:48 +0100</pubDate>
-    <lastBuildDate>Tue, 3 Jan 2023 21:38:48 +0100</lastBuildDate>
+    <pubDate>Tue, 3 Jan 2023 23:14:05 +0100</pubDate>
+    <lastBuildDate>Tue, 3 Jan 2023 23:14:05 +0100</lastBuildDate>
 
     <item>
       <title>Demo Post</title>
       <link>http://localhost:8820//blog/2022/demo.html</link>
-      <pubDate>Tue, 3 Jan 2023 21:38:47 +0100</pubDate>
+      <pubDate>Tue, 3 Jan 2023 23:07:55 +0100</pubDate>
       <guid isPermaLink="false">blog/2022/demo.html</guid>
       	<description>
 	&lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;This the preamble of the post and is rendered differently.&lt;/p&gt;
+&lt;p&gt;TL;DR: The following article will demonstrate all possible types of content that can be created by using AsciiDoc and JBake.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;start&quot;&gt;Start&lt;/h2&gt;
+&lt;h2 id=&quot;headlines_level_1&quot;&gt;Headlines - Level 1&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.&lt;/p&gt;
+&lt;p&gt;This was not meant to be the &lt;strong&gt;first bold entry&lt;/strong&gt; in my new blog, but accidentally
+interesting in&lt;strong&gt;for&lt;/strong&gt;mation to share. Let me just write a little test here to fill
+the lines nicely. We just &lt;em&gt;want&lt;/em&gt; to see how that looks.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share. This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.&lt;/p&gt;
+&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally
+interesting in_for_mation to share.&lt;br&gt;
+This was hard break by using a &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;headline3&quot;&gt;Headline3&lt;/h3&gt;
+&lt;h3 id=&quot;headlines_level_2&quot;&gt;Headlines - Level 2&lt;/h3&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;My new blog is using &lt;a href=&quot;https://jbake.org&quot;&gt;JBake&lt;/a&gt; as the static site generator and I also
-opted for AsciiDoc as the markup because a future book of mine will be written with it,
-so I need a testing ground.&lt;/p&gt;
+&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share. Let&amp;#8217;s &lt;mark&gt;highlight things&lt;/mark&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect3&quot;&gt;
-&lt;h4 id=&quot;headline_4&quot;&gt;Headline 4&lt;/h4&gt;
+&lt;h4 id=&quot;headlines_level_3&quot;&gt;Headlines - Level 3&lt;/h4&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in &lt;code&gt;jbake.properties&lt;/code&gt;, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.&lt;/p&gt;
+&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally
+interesting information to share.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect4&quot;&gt;
-&lt;h5 id=&quot;headline_5&quot;&gt;Headline 5&lt;/h5&gt;
+&lt;h5 id=&quot;headlines_level_5&quot;&gt;Headlines - Level 5&lt;/h5&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;Looking forward to the release of 2.7.0.&lt;/p&gt;
+&lt;p&gt;If we ever need that, we can even do that headline.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -59,11 +66,59 @@ so I need a testing ground.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;headline_2&quot;&gt;Headline 2&lt;/h2&gt;
+&lt;h2 id=&quot;code&quot;&gt;Code&lt;/h2&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;This was not meant to be the first entry in my new blog, but accidentally this
-is interesting information to share.&lt;/p&gt;
+&lt;p&gt;Ok, we can show nice code.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;prettyprint highlight&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;@Test
+public void test()
+{
+    /**
+     * Just another max function.
+     *
+     * @param a first parameter
+     * @param b second parameter
+     * @return returns the max value of a and b, b if equal
+     */
+    public int max(final int a, final int b)
+    {
+        // inline comment
+        return a &amp;gt; b ? a : b;
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Just some more text after our code, because we might want to see if the margins
+are right.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;prettyprint highlight&quot;&gt;&lt;code data-lang=&quot;x86asm&quot;&gt;↗  0x00007f455cc708c1: lea    0x20(%rsp),%rbx
+│          &amp;lt; blah-blah-blah, monitor enter &amp;gt;     ; &amp;lt;--- coarsened!
+│  0x00007f455cc70918: mov    (%rsp),%r10        ; load $this
+│  0x00007f455cc7091c: mov    0xc(%r10),%r11d    ; load $this.x
+│  0x00007f455cc70920: mov    %r11d,%r10d        ; ...hm...
+│  0x00007f455cc70923: add    $0x42,%r10d        ; ...hmmm...
+│  0x00007f455cc70927: mov    (%rsp),%r8         ; ...hmmmmm!...
+│  0x00007f455cc7092b: mov    %r10d,0xc(%r8)     ; LOL Hotspot, redundant store, killed two lines below
+│  0x00007f455cc7092f: add    $0x108,%r11d       ; add 0x108 = 0x42 * 4 &amp;lt;-- unrolled by 4
+│  0x00007f455cc70936: mov    %r11d,0xc(%r8)     ; store $this.x back
+│          &amp;lt; blah-blah-blah, monitor exit &amp;gt;      ; &amp;lt;--- coarsened!
+│  0x00007f455cc709c6: add    $0x4,%ebp          ; c += 4   &amp;lt;--- unrolled by 4
+│  0x00007f455cc709c9: cmp    $0x3e5,%ebp        ; c &amp;lt; 1000?
+╰  0x00007f455cc709cf: jl     0x00007f455cc708c1&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;inline_code&quot;&gt;Inline Code&lt;/h3&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Just some &lt;code&gt;inline code&lt;/code&gt; for your pleasure. More code comes here &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;, and
+&lt;code&gt;c&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
