@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<!--
+    Based upon Future Imperfect by HTML5 UP
+    html5up.net | @n33co
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+
+    Modified heavily by René Schwietzke
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Performance, Java, Testing, and Things - JBake 2.7.0 Solves UTF-8 Issue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="This is René Schwietzke's tech blog. Here, I write about interesting Java topics, performance in the context of Java as well as web and service performance, testing and quality assurance, and, last but not least, about IT things in general. Things I want to share because they helped me and might help others.">
+    <meta name="author" content=":section">
+    <meta name="keywords" content="performance,java,testing,IT,programming,code,quality assurance,">
+    <meta name="generator" content="JBake">
+
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/add-on.css" />
+    <link rel="stylesheet" href="/css/highlight-default.min.css">
+
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/img/favicon.png">
+
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+</head>
+<body>
+	<!-- Wrapper -->
+	<div id="wrapper">
+<!-- Header -->
+<header id="header">
+            <h2><a href="http://localhost:8820/">Performance, Java, Testing, and Things</i></a></h2>
+
+    <nav class="links">
+        <ul>
+        			<li>
+	                    <a href=" http://localhost:8820/">
+
+	                            <i class="bi bi-house-door">&nbsp;</i>Home
+
+	                    </a>
+                	</li>
+
+
+        			<li>
+	                    <a href=" ..//pages/about.html">
+
+	                            <i class="bi bi-person-circle">&nbsp;</i>About
+
+	                    </a>
+                	</li>
+
+
+        </ul>
+    </nav>
+    <nav class="main">
+        <ul><!--
+            <li class="search">
+                <a class="bi bi-search" href="#search">Search</a>
+                <form id="search" method="get" action="https://google.com/search">
+                    <input type="text" name="q" placeholder="Search" />
+                    <input type="hidden" name="q" value="site:http://localhost:8820/">
+                </form>
+            </li>-->
+            <li class="menu">
+                <a class="bi bi-list" href="#menu">Menu</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Menu -->
+<section id="menu">
+
+    <!-- Search -->
+        <!--<section>
+            <form class="search" method="get" action="//google.com/search">
+                <input type="text" name="q" placeholder="Search" />
+                <input type="hidden" name="q" value="site:http://localhost:8820/">
+            </form>
+        </section> -->
+
+    <!-- Links -->
+        <section>
+            <ul class="links">
+        		 <li>
+                    <a href=" http://localhost:8820/">
+
+                            <i class="bi bi-house-door">&nbsp;</i>Home
+
+                    </a>
+                </li>
+        		 <li>
+                    <a href=" ..//pages/about.html">
+
+                            <i class="bi bi-person-circle">&nbsp;</i>About
+
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+    <!-- Recent Posts -->
+        <section>
+            <ul class="links">
+                <header>
+                    <h3>Recent Posts</h3>
+                </header>
+                    <li>
+                        <a href="../../java/post-6.html"><p>Post Number 6</p></a>
+                    </li>
+                    <li>
+                        <a href="../../performance/jbake-2.7.0.html"><p>JBake 2.7.0 Solves UTF-8 Issue</p></a>
+                    </li>
+                    <li>
+                        <a href="../../java/post-5.html"><p>Post Number 5</p></a>
+                    </li>
+                    <li>
+                        <a href="../../demo.html"><p>Demo Post</p></a>
+                    </li>
+                    <li>
+                        <a href="../../performance/fourth-post.html"><p>Fourth Post</p></a>
+                    </li>
+            </ul>
+        </section>
+
+    <!-- Actions -->
+        <!--
+        <section>
+            <ul class="actions vertical">
+                <li><a href="#" class="button big fit">Log In</a></li>
+            </ul>
+        </section>
+        -->
+</section>
+
+		<main id="main">
+
+<article class="post ">
+    <header>
+        <div class="title">
+            <h1><a href="../performance/jbake-2.7.0.html">JBake 2.7.0 Solves UTF-8 Issue</a></h1>
+                <p class="description">Subheadline</p>
+        </div>
+        <div class="meta">
+            <time class="published" datetime='2023-01-23'>2023-01-23</time>
+        </div>
+    </header>
+
+    <div class="content">
+       <div class="asciidoc">
+                <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>JBake 2.7 addresses issues with UTF-8 in its property file where you could not get that content into the site without an encoding problem. This is test text that goes up to the first headline even though that headline is not visible later on. We decided to mark it with <code>[.hide]</code>.</p>
+</div>
+<div class="paragraph">
+<p>This text is right before the hide attribute.</p>
+</div>
+</div>
+</div>
+<div class="sect1 hide">
+<h2 id="noshow">NoShow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>My new blog is using <a href="https://jbake.org">JBake</a> as the static site generator and I also
+opted for AsciiDoc as the markup because a future book of mine will be written with it,
+so I need a testing ground.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="test">Test</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in <code>jbake.properties</code>, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.</p>
+</div>
+<div class="paragraph">
+<p>Looking forward to the release of 2.7.0.</p>
+</div>
+</div>
+</div>
+       </div>
+    </div>
+
+    <footer>
+	<ul class="tags">
+        	<li><i class="bi bi-tag"></i> <a href="../tags/jbake.html">jbake</a></li>
+        	<li><i class="bi bi-tag"></i> <a href="../tags/v2.7.html">v2.7</a></li>
+        	<li><i class="bi bi-tag"></i> <a href="../tags/UTF-8.html">UTF-8</a></li>
+	</ul>
+    </footer>
+</article>
+
+            <div class="pagination">
+                    <div class="prev">
+                        <a href="../java/post-5.html"
+                            class="button big previous"><i class="bi bi-caret-left"></i>Post Number 5</a>
+                    </div>
+                    <div class="next">
+                        <a href="../java/post-6.html"
+                            class="button big next">Post Number 6<i class="bi bi-caret-right"></i></a>
+                    </div>
+            </div>
+		</main>
+	</div>
+	<div class="utility-nav">
+		<a id="back-to-top" href="#" class="bi bi-arrow-up-circle"></a>
+	</div>
+	<!--<div id="push"></div>-->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/skel.min.js"></script>
+<script src="../js/util.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/backToTop.js"></script>
+<script src="../js/highlight.min.js"></script>
+<script src="../js/readingTime.js"></script>
+
+<!-- This is called by default since this theme uses highlight.js -->
+<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

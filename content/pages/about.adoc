@@ -1,0 +1,79 @@
+= About
+:jbake-last_updated: 2022-12-29
+:jbake-author: Jonathan Bullock
+:jbake-type: page
+:jbake-status: published
+:jbake-tags: about, contact, privacy
+:description: This is just the normal regulatory void we have to fill.
+:idprefix:
+
+[.hide]
+== About
+My name is René Schwietzke and you are reading my private blog. Even though the content looks like work, it is all nerd stuff, and I do that also privately for fun.
+
+== Contact Information
+
+----
+ René Schwietzke
+ Jahnstr. 16
+ 07743 Jena
+ Email: blog@reneschwietzke.de
+----
+
+== Privacy
+This website is as lean as possible. No tracking, no cookies, no data capture, no comment forms. Nothing. Bare as a website should be :) Just content. If you need to contact me, use my email or snail-mail me. There is also no third-party content included via YouTube and friends, font-loading or an JS from external sources. As clean as it gets. And yes, I don't share data with anyone. Why should I?
+
+There is only my hoster, who is, of course, running log files of all incoming requests and therefore records IP addresses. With the current data settings, only the first three blocks of an IP address such as `192.168.10.0` are recorded and the last block is set to 0. For IPv6, the first two blocks are recorded and the rest is replaced by `::`.
+
+== Copyright
+Despite the liberal license to reuse and share, there is still a copyright on that content and that means, I am the author, creator, designer, and programmer unless otherwise stated.
+
+(C) René Schwietzke, 2023
+
+== Licenses
+
+=== Content
+Except where otherwise noted, content on this site is licensed under a http://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License] - CC BY 4.0. Third party content such as references to other people's work and code might have other licenses.
+
+All source code listed is licensed under MIT License unless otherwise noted, of course.
+
+=== Design
+The website and theme is based on work by https://github.com/manikmagar/jbake-future-imperfect-template[Manik Magar] - MIT License - which in turn is based on https://github.com/jpescador/hugo-future-imperfect[Julio Pescador's work] - MIT License - which is based on FUTURE IMPERFECT by https://html5up.net/future-imperfect[HTML5 UP]. The work of HTML5 UP is licensed under https://html5up.net/license[CC-BY-3.0]. Thank you all!
+
+My modified theme is released under the MIT license to share back what I was given before!
+
+```
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+=== Fonts
+All fonts are free for private and commercial use, and used under these licenses:
+
+* Noto - http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL[SIL Open Font License]
+* Source Code Pro - http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL[SIL Open Font License]
+* Open Sans - http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL[SIL Open Font License]
+* Ubuntu Mono - http://font.ubuntu.com/ufl/[Ubuntu Font License, 1.0]
+* Bootstrap Icon Font - https://opensource.org/licenses/MIT[MIT License]
+
+Thanks to the designers and the sponsors of these fonts. Excellent work and you made the world richer!
+
+=== Software & Source Code
+You can find the source code of the blog including all content at https://github.com/rschwietzke/performance-blog[GitHub].

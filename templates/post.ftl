@@ -17,10 +17,25 @@
 			<#assign post = content />
 
 			<#if (post??) >
-				<#include "post/content-single.ftl">
+				<#assign firstParagraphOnly=false>
+				<#include "post/content.ftl">
 			</#if>
 
-			<#include "post/prev-next-post.ftl">
+            <#-- No reuse, hence this is directly embedded-->
+            <div class="pagination">
+                <#if (post.previousContent)??>
+                    <div class="prev">
+                        <a href="${content.rootpath}${post.previousContent.noExtensionUri!post.previousContent.uri}"
+                            class="button big previous"><i class="bi bi-caret-left"></i>${content.previousContent.title}</a>
+                    </div>
+                </#if>
+                <#if (post.nextContent)??>
+                    <div class="next">
+                        <a href="${content.rootpath}${post.nextContent.noExtensionUri!post.nextContent.uri}"
+                            class="button big next">${content.nextContent.title}<i class="bi bi-caret-right"></i></a>
+                    </div>
+                </#if>
+            </div>
 		</main>
 	</div>
 	<div class="utility-nav">

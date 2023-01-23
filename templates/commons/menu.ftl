@@ -40,14 +40,14 @@
         </ul>
     </nav>
     <nav class="main">
-        <ul>
+        <ul><!--
             <li class="search">
                 <a class="bi bi-search" href="#search">Search</a>
                 <form id="search" method="get" action="https://google.com/search">
                     <input type="text" name="q" placeholder="Search" />
                     <input type="hidden" name="q" value="site:${config.site_host}">
                 </form>
-            </li>
+            </li>-->
             <li class="menu">
                 <a class="bi bi-list" href="#menu">Menu</a>
             </li>
@@ -59,12 +59,12 @@
 <section id="menu">
 
     <!-- Search -->
-        <section>
+        <!--<section>
             <form class="search" method="get" action="//google.com/search">
                 <input type="text" name="q" placeholder="Search" />
                 <input type="hidden" name="q" value="site:${config.site_host}">
             </form>
-        </section>
+        </section> -->
 
     <!-- Links -->
         <section>
@@ -88,7 +88,7 @@
                     <h3>Recent Posts</h3>
                 </header>
                 <#list posts as menuPost1>
-                	<#if (menuPost1?counter > config.sidebar_postAmount?number) ><#break/></#if>
+                	<#if (menuPost1?counter > config.sidebar_post_amount?number) ><#break/></#if>
                     <li>
                         <a href="${content.rootpath}${content.rootpath}${menuPost1.noExtensionUri!menuPost1.uri}"><p>${menuPost1.title}</p></a>
                     </li>

@@ -1,17 +1,34 @@
 /* because of the lack of SASS or LESS, we use CSS variables */
 :root {
-    --border-color: rgba(160, 160, 160, 0.3);
+    --border-color: rgba(160, 160, 160, 0.5);
+    --section-border-color: rgba(230, 230, 230);
     --headline-color: #ba3925;
-    --link-color: #ba3925;
+    --link-color: #2156a5;
     --background-color: #e3f2fd;
     --header-background-color: #0d47a1;
     --description-color: #666;
     --tag-color: var(--description-color);
+    --listingblock-pre-bg-color: #f7f7f8;
+    --preamble-background-color: #f7f7f8;
+    --caption-color: #555;
+
+    --quote-color: #e0e0e0;
+
+    --tip-icon-color: #0d47a1;
+    --warning-icon-color: #bf0000;
+    --caution-icon-color: #ffb117;
+    --note-icon-color: #0d47a1;
+    --important-icon-color: #dc3545;
+
+    --sidebar-footer-color: rgb(90, 90, 90, 0.9);
+    --sidebar-about-color: #555;
+    --sidebar-article-color: #555;
 }
 
 body {
     color: #000000;
     background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
 }
 
 pre {
@@ -43,9 +60,68 @@ a:hover {
         color: #555;
     }
 
-    #sidebar #recent-posts ul.posts time,
-    #sidebar #categories ul.posts li header,
-    #sidebar .blurb p {
+/* Sidebar */
+
+#sidebar {
+	margin-right: 3em;
+	min-width: 22em;
+	width: 22em;
+}
+
+	#sidebar > section {
+		border-top: solid 1px rgba(160, 160, 160, 0.3);
+		margin: 2em 0 0 0;
+		padding: 2em 0 0 0;
+	}
+
+	#sidebar > section:first-child {
+		border-top: 0;
+		margin-top: 0;
+		padding-top: 0;
+	}
+
+	@media screen and (max-width: 1280px) {
+		#sidebar {
+			border-top: solid 1px rgba(160, 160, 160, 0.3);
+			margin: 3em 0 0 0;
+			min-width: 0;
+			padding: 3em 0 0 0;
+			width: 100%;
+		}
+	}
+    #sidebar section:not(#intro) h2 {
+        font-size: 1.5rem;
+        letter-spacing: normal;
+        font-weight: 500;
+        margin-bottom: 0.5ex;
+    }
+
+    #sidebar section article {
+    }
+        #sidebar section article h3 {
+            font-size: 1rem;
+            letter-spacing: normal;
+            margin-bottom: 0;
+        }
+        #sidebar section article:not(:first-child) h3 {
+            margin-top: 2ex;
+        }
+        #sidebar section article time {
+            font-size: 0.8rem;
+        }
+        #sidebar section article .excerpt {
+            color: var(--sidebar-article-color);
+            padding: 0;
+            margin: 0;
+        }
+
+    #sidebar .about p {
+        color: var(--sidebar-about-color);
+    }
+
+    #sidebar .footer {
+        font-size: 0.8rem;
+        color: var(--sidebar-footer-color);
     }
 
 #header {
@@ -80,6 +156,31 @@ blockquote p {
     margin-bottom: 0;
 }
 
+/* The pagination section below posts */
+.pagination {
+    padding-top: 1ex;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+    .pagination .button {
+        line-height: 2.5em;
+        height: auto;
+        white-space: normal;
+        padding: 1ex  3em;
+        background: white;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    .pagination .button:hover {
+        color: var(--link-color);
+        box-shadow: inset 0 0 0 1px var(--link-color);
+    }
+    .pagination .pageinfo {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
 .image.center-image {
     max-width: 50%;
 }
@@ -92,31 +193,11 @@ blockquote p {
             clear: both;
         }
 
-.pagination .button {
-    background: white;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-    .pagination .button:hover {
-        color: var(--link-color);
-        box-shadow: inset 0 0 0 1px var(--link-color);
-    }
-
 article {
     font-family: "Noto Serif", serif;
     text-rendering: optimizeLegibility;
     font-size: 1rem;
 }
-    article .listingblock {
-        margin: 1ex 0 2ex 0;
-    }
-        article .listingblock code {
-            margin: 0;
-            background-color: #f7f7f8;
-            line-height: 1.25;
-            font-size: 1rem;
-            border: none;
-        }
 
 ul.tags {
 	cursor: default;
@@ -124,12 +205,13 @@ ul.tags {
 	padding-left: 0;
     color: var(--tag-color);
     margin: 0;
+    font-size: 0.9rem;
 }
 	ul.tags li {
 		display: inline-block;
         padding: 0;
 	}
-    ul.tags li:not(:first-child) {
+    ul.tags li {
         border: 1px solid var(--border-color);
         background-color: #eee;
         border-radius: 0.5em;
@@ -141,8 +223,6 @@ ul.tags {
 			border: 0;
 		}
 			ul.tags li > *:before {
-				-moz-osx-font-smoothing: grayscale;
-				-webkit-font-smoothing: antialiased;
 				font-style: normal;
 				font-weight: normal;
 			}
@@ -150,7 +230,9 @@ ul.tags {
 				display: none;
 			}
 
+.pagination {
 
+}
 
 .post {
     margin: 0 0 1rem 0;
@@ -169,7 +251,19 @@ ul.tags {
         margin-bottom: 2ex;
         border-bottom: 1px solid var(--border-color);
         font-family: "Open Sans", sans-serif;
+        align-items: flex-end;
+        padding-bottom: 0.5rem;
+
     }
+
+    .post header p {
+		font-family: "Open Sans", sans-serif;
+		font-size: 0.7em;
+		font-weight: 400;
+		letter-spacing: 0.25em;
+		line-height: 1.25;
+	}
+
         .post .title {
             padding: 0;
             margin: 0;
@@ -183,7 +277,7 @@ ul.tags {
                 line-height: 1.2;
             }
             .post .title .description {
-                padding: 0;
+                padding: 0.25rem 0 0 0;
                 margin: 0;
                 font-size: 1.1rem;
                 letter-spacing: normal;
@@ -194,7 +288,7 @@ ul.tags {
             text-align: right;
             flex-basis: auto;
             font-size: 0.9em;
-            padding-left: 1em;
+            padding-left: 3em;
             letter-spacing: 0.01em;
             white-space: nowrap;
         }
@@ -239,10 +333,16 @@ ul.tags {
     }
     .content #preamble {
         color: rgba(0,0,0, 0.7);
-        font-size: 1.1rem;
-        font-style: italic;
-        text-align: center;
+        font-size: 1rem;
+        text-align: justify;
+        padding: 0 3em;
+        margin-bottom: 2em;
     }
+        .content #preamble .sectionbody >.paragraph:first-child p:before {
+            content: 'tl;dr ';
+            font-weight: 700;
+        }
+
     /* in case we want to avoid a preamble and a headline h2 */
     .content .hide h2 {
         display: none;
@@ -250,10 +350,10 @@ ul.tags {
 
     .content .featured {
         width: 100%;
+        margin-bottom: 2ex;
     }
         .content .featured img {
             overflow: hidden;
-            transition: transform 0.2s ease-out;
             width: 100%;
         }
 
@@ -269,28 +369,13 @@ ul.tags {
             border-bottom-color: transparent;
         }
 
-    .content blockquote, .content p, .content ul{
-        margin: 0 0 1em;
-    }
-
     /* footer of post */
     .post > footer {
         display: flex;
-        justify-content: center;
-        margin-top: 5ex;
-    }
-
-
-ul.pagination li {
-    padding-top: 1em;
-}
-
-    ul.pagination .button {
-        line-height: 2.5em;
-        height: auto;
-        white-space: normal;
-        padding-top: 1em;
-        padding-bottom: 1em;
+        justify-content: flex-start;
+        margin-top: 1ex;
+        border-top: 1px solid var(--border-color);
+        padding-top: 1rem;
     }
 
 #back-to-top {
@@ -306,4 +391,217 @@ ul.pagination li {
         /* if the user keeps scrolling down, the button is out of focus and becomes less visible */
         transition: opacity .3s 0s, visibility 0s 0s;
         opacity: .5;
+    }
+
+p.continue-reading {
+    text-align: right;
+    margin-top: 2ex;
+}
+    .continue-reading i {
+        margin-left: 0.5em;
+    }
+
+/*
+ * This is all the formatting for the asciidoc stuff. This is partially taken from the AsciiDoctor-default.css but
+ * not entirely.
+ */
+.asciidoc {
+
+}
+    .asciidoc p {
+        margin: 0 0 2ex 0;
+    }
+    .asciidoc .sectionbody a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: none;
+    }
+        .asciidoc .sectionbody a:hover {
+            text-decoration: underline;
+        }
+
+    .asciidoc #preamble {
+        background-color: var(--preamble-background-color);
+        padding: 2ex 2em;
+        border: 0px solid #e0e0dc;
+    }
+        .asciidoc #preamble p {
+            margin-bottom: 0;
+        }
+        .asciidoc #preamble .paragraph + .paragraph {
+            margin-top: 1ex;
+        }
+
+    .asciidoc h2 {
+        font-size: 1.7rem;
+        line-height: 1.2;
+        color: var(--headline-color);
+        letter-spacing: -.01em;
+        word-spacing: -0.05em;
+        font-weight: 400;
+        text-rendering: optimizeLegibility;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+    }
+
+    .asciidoc .sect1 {
+        padding-bottom: 1.25em;
+    }
+        .asciidoc .sect1 + .sect1 {
+            border-top: 1px solid var(--section-border-color);
+        }
+        .asciidoc .sect2 {
+            margin-top: 2ex;
+        }
+        .asciidoc .sect3 {
+            margin-top: 1ex;
+        }
+        .asciidoc .sect4 {
+            margin-top: 1ex;
+        }
+
+    .asciidoc .listingblock {
+        margin: 1ex 0 2ex 0;
+    }
+        .asciidoc .listingblock code {
+            margin: 0;
+            background-color: var(--listingblock-pre-bg-color);
+            line-height: 1.25;
+            font-size: 1rem;
+            border: none;
+        }
+        .asciidoc .listingblock pre {
+            background-color: var(--listingblock-pre-bg-color);
+            margin: 0;
+            background-color: #f7f7f8;
+            line-height: 1.25;
+            font-size: 1rem;
+            border: none;
+            font-family: "Ubuntu Mono", monospace;
+            padding: 0em;
+        }
+        .asciidoc .listingblock pre:not(.highlight) {
+            padding: 1em;
+        }
+
+        /* lists */
+        .asciidoc ul, .asciidoc ol, .asciidoc dl {
+          margin-bottom: 1.25em;
+          list-style-position: outside;
+          font-family: inherit;
+        }
+        /** asciidoc puts p into all lists */
+        .asciidoc ul p, .asciidoc outputl p, .asciidoc dl p {
+            padding: 0 0 0.5ex;
+            margin: 0;
+        }
+        .asciidoc ul, .asciidoc ol {
+          margin-left: 1em;
+        }
+        .asciidoc ul li {
+            padding-left: 0;
+        }
+        .asciidoc ul li ul,
+        .asciidoc ul li ol {
+          margin-left: 1em;
+          margin-bottom: 0;
+        }
+        .asciidoc ol li ul,
+        .asciidoc ol li ol {
+          margin-left: 1em;
+          margin-bottom: 0;
+        }
+
+        .asciidoc dl dt {
+          margin-bottom: 0.3125em;
+          font-weight: bold;
+        }
+
+        .asciidoc dl dd {
+          margin-bottom: 1.25em;
+          margin-left: 1.125em;
+        }
+
+        .asciidoc ul li::marker {
+            color: var(--headline-color);
+        }
+
+    .asciidoc .imageblock {
+        margin: 2ex 0;
+    }
+        .asciidoc .imageblock .title {
+            margin-top: 0;
+            padding-bottom: 0;
+            font-size: 1rem;
+            color: var(--caption-color);
+        }
+
+    .asciidoc .quoteblock {
+        margin: 2ex 0 3ex 0;
+        padding-left: 0em;
+    }
+        .asciidoc .quoteblock blockquote {
+            border-left: solid 10px var(--quote-color);
+            margin: 0;
+            padding-left: 1em;
+            text-align: justify;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: 300;
+            color: rgb(0,0,0, 0.8);
+        }
+            .asciidoc .quoteblock blockquote p {
+                margin: 0;
+            }
+                .asciidoc .quoteblock blockquote .paragraph + .paragraph p {
+                    margin-top: 2ex;
+                }
+        .asciidoc .quoteblock .attribution {
+            text-align: right;
+            font-weight: 600;
+        }
+            .asciidoc .quoteblock .attribution cite {
+                font-weight: 400;
+            }
+
+    /* reset things first */
+    .asciidoc .admonitionblock tr {
+        background-color: inherit;
+        border: none;
+    }
+    .asciidoc .admonitionblock .icon {
+        border-right: 1px solid var(--border-color);
+        width: 2em;
+        font-family: bootstrap-icons;
+        font-size: 2.5rem;
+        padding: 0 0.25em;
+        text-align: center;
+        vertical-align: middle;
+    }
+        .asciidoc .admonitionblock .icon .title {
+            display: none;
+        }
+        .asciidoc .admonitionblock.note .icon:after {
+            content: '\F4C8';
+            color: var(--note-icon-color);
+        }
+        .asciidoc .admonitionblock.important .icon:after {
+            content: '\F333';
+            color: var(--important-icon-color);
+        }
+        .asciidoc .admonitionblock.tip .icon:after {
+            content: '\F46B';
+            color: var(--tip-icon-color);
+        }
+        .asciidoc .admonitionblock.caution .icon:after {
+            content: '\F33B';
+            color: var(--caution-icon-color);
+        }
+        .asciidoc .admonitionblock.warning .icon:after {
+            content: '\F33A';
+            color: var(--warning-icon-color);
+        }
+    .asciidoc .admonitionblock .content {
+        vertical-align: middle;
+        padding-left: 1em;
     }

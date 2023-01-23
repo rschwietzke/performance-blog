@@ -28,80 +28,60 @@
     </section>
 
     <!-- Posts List -->
-    <section id="recent-posts">
-        <ul class="posts">
-            <header>
-                <h1>Recent Posts</h1>
-            </header>
+    <section class="pinned-posts">
+        <header>
+            <h2>Pinned Posts</h2>
+        </header>
+        <div class="posts">
 			<#list posts as sideBarPost1>
+                <#assign pinned = sideBarPost1.pinned?? && sideBarPost1.pinned?boolean>
 
-            	<#if (sideBarPost1?counter > config.sidebar_postAmount?number) ><#break/></#if>
-                <li>
+                <#if pinned>
                     <article>
                         <header>
-                            <h2><a href="${content.rootpath}${sideBarPost1.noExtensionUri!sideBarPost1.uri}">${sideBarPost1.title}</a></h2>
+                            <h3><a href="${content.rootpath}${sideBarPost1.noExtensionUri!sideBarPost1.uri}">${sideBarPost1.title}</a></h3>
                             <time class="published"
                                    datetime='${sideBarPost1.date?string("yyyy-MM-dd")}'>
                                    ${sideBarPost1.date?string("yyyy-MM-dd")}</time>
-                            <#if (sideBarPost1.description??)>
-                                <p class="description">
-                                    ${sideBarPost1.description}
-                                </p>
-                            </#if>
                         </header>
-                     </article>
-                </li>
+                        <#if (sideBarPost1.excerpt??)>
+                            <p class="excerpt">
+                                ${sideBarPost1.excerpt}
+                            </p>
+                        </#if>
+                    </article>
+                </#if>
             </#list>
-
-			<#if (published_posts?size > config.sidebar_postAmount?number) >
-                <li>
-                    <ul class="actions">
-                        <li><a href="${content.rootpath}${config.sidebar_viewMorePostLink?has_content?then(config.sidebar_viewMorePostLink,config.archive_path)}"
-                        class="button">View more posts</a></li>
-                    </ul>
-                </li>
-            </#if>
-        </ul>
+        </div>
     </section>
 
-    <!-- Tags List can be show/hide from config-->
-    <#if (config.sidebar_tags_show?boolean?? )>
-        <section id="tags">
-            <ul class="posts">
-                <header>
-                    <h3>Tags</h3>
-                </header>
-
-                <#list alltags as sideBarTag1>
-                    <li>
-                        <article>
-                            <header>
-                                <a href="${content.rootpath}${config.tag_path}/${sideBarTag1}${config.output_extension}">${sideBarTag1}</a>
-                                <!-- JBake 2.5.1 Issue#357 prevents accessing db, If you are using 2.5.1 or earlier comment below SPAN element. -->
-                                <span style="float:right;"> ${db.getPublishedPostsByTag(sideBarTag1).size()} </span>
-                            </header>
-                        </article>
-                    </li>
-                </#list>
-            </ul>
-        </section>
-    </#if>
-
-
     <!-- About -->
-        <section class="blurb">
-            <h2>About</h2>
-            <p>${config.sidebar_intro_about}</p>
+    <section class="about">
+        <h2>About</h2>
+        <p>${config.sidebar_intro_about}</p>
 
-            <ul class="actions">
-                <li><a href="${content.rootpath}${config.sidebar_intro_about_learnMore}" class="button">Learn More</a></li>
-            </ul>
-        </section>
+        <#-- <ul class="actions">
+            <li><a href="${content.rootpath}${config.sidebar_intro_about_learnMore}" class="button">Learn More</a></li>
+        </ul> -->
+    </section>
 
 
-        <section id="footer">
-            <p class="copyright">&copy; ${config.site_title}. Design: <a href="http://html5up.net" target="_blank">HTML5 UP</a>. Ported For SSG by <a href="https://github.com/jpescador/hugo-future-imperfect">Julio Pescador</a>. Adapted to JBake by <a href="//github.com/manikmagar" target="_blank">Manik Magar</a>. Baked with <a href="http://jbake.org">JBake ${version}</a>.
-            <#if (config.render_sitemap?boolean)><a href="/${config.sitemap_file}" target="_blank">Sitemap</a>.</#if></p>
-        </section>
+    <section class="footer">
+        <p class="copyright">
+            &copy; ${config.site_author}
+        </p>
+        <p>
+            Based on work from HTML5 UP and others. Modified, changed, improved, slimmed down by René Schwietzke.
+            Original work <a href="http://html5up.net" target="_blank">HTML5 UP</a>.
+            Ported For SSG by <a href="https://github.com/jpescador/hugo-future-imperfect">Julio Pescador</a>.
+            Adapted to JBake by <a href="//github.com/manikmagar" target="_blank">Manik Magar</a>.
+            Baked with <a href="http://jbake.org">JBake ${version}</a>.
+        </p>
+        <#if (config.render_sitemap?boolean)>
+            <p>
+                <a href="/${config.sitemap_file}" target="_blank">Sitemap</a>
+            </p>
+        </#if>
+    </section>
 
 </section>

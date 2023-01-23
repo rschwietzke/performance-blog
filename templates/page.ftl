@@ -16,8 +16,9 @@
 		<main id="main">
 			<#assign post = content />
 
-			<#if (post??) >
-				<#include "post/content-single.ftl">
+			<#if (post??)>
+				<#assign firstParagraphOnly=false>
+				<#include "post/content.ftl">
 			</#if>
 		</main>
 
