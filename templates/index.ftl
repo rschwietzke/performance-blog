@@ -15,7 +15,7 @@
 	<div id="wrapper">
 		<#include "commons/menu.ftl">
 
-		<main id="main">
+		<main id="main" class="index">
 		    <#list published_posts as post>
 				<#if (post??) >
 					<#assign firstParagraphOnly = true>

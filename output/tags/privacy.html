@@ -1,10 +1,12 @@
 <!DOCTYPE HTML>
 <!--
-    Based upon Future Imperfect by HTML5 UP
-    html5up.net | @n33co
+    Based upon Future Imperfect by HTML5 UP html5up.net | @n33co
     Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 
-    Modified heavily by René Schwietzke
+    Initial adjusted version for Jbake by Manik Magar under MIT License
+    https://github.com/manikmagar/jbake-future-imperfect-template
+
+    Modified by René Schwietzke, MIT license (code) and CC-BY-4.0 license (content)
 -->
 <html lang="en">
 <head>
@@ -34,12 +36,12 @@
 	<div id="wrapper">
 <!-- Header -->
 <header id="header">
-            <h2><a href="http://localhost:8820/">Performance, Java, Testing, and Things</i></a></h2>
+            <h2><a href="/">Performance, Java, Testing, and Things</i></a></h2>
 
     <nav class="links">
         <ul>
         			<li>
-	                    <a href=" http://localhost:8820/">
+	                    <a href="/">
 
 	                            <i class="bi bi-house-door">&nbsp;</i>Home
 
@@ -89,7 +91,7 @@
         <section>
             <ul class="links">
         		 <li>
-                    <a href=" http://localhost:8820/">
+                    <a href="/">
 
                             <i class="bi bi-house-door">&nbsp;</i>Home
 
@@ -139,8 +141,8 @@
         -->
 </section>
 
-		<main id="main">
-			<h1>Tag: privacy</h1>
+		<main id="main" class="main-tags">
+            <h1 class="tag"><i class="bi bi-tag"></i> privacy</h1>
 
 		</main>
 
@@ -242,7 +244,6 @@
 	<div class="utility-nav">
 		<a id="back-to-top" href="#" class="bi bi-arrow-up-circle"></a>
 	</div>
-	<!--<div id="push"></div>-->
 
 <!-- Le javascript
 ================================================== -->
@@ -257,6 +258,7 @@
 <script src="../js/readingTime.js"></script>
 
 <!-- This is called by default since this theme uses highlight.js -->
-<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.highlightAll();</script>
+
 </body>
 </html>

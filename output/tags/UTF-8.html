@@ -1,10 +1,12 @@
 <!DOCTYPE HTML>
 <!--
-    Based upon Future Imperfect by HTML5 UP
-    html5up.net | @n33co
+    Based upon Future Imperfect by HTML5 UP html5up.net | @n33co
     Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 
-    Modified heavily by René Schwietzke
+    Initial adjusted version for Jbake by Manik Magar under MIT License
+    https://github.com/manikmagar/jbake-future-imperfect-template
+
+    Modified by René Schwietzke, MIT license (code) and CC-BY-4.0 license (content)
 -->
 <html lang="en">
 <head>
@@ -34,12 +36,12 @@
 	<div id="wrapper">
 <!-- Header -->
 <header id="header">
-            <h2><a href="http://localhost:8820/">Performance, Java, Testing, and Things</i></a></h2>
+            <h2><a href="/">Performance, Java, Testing, and Things</i></a></h2>
 
     <nav class="links">
         <ul>
         			<li>
-	                    <a href=" http://localhost:8820/">
+	                    <a href="/">
 
 	                            <i class="bi bi-house-door">&nbsp;</i>Home
 
@@ -89,7 +91,7 @@
         <section>
             <ul class="links">
         		 <li>
-                    <a href=" http://localhost:8820/">
+                    <a href="/">
 
                             <i class="bi bi-house-door">&nbsp;</i>Home
 
@@ -139,13 +141,14 @@
         -->
 </section>
 
-		<main id="main">
-			<h1>Tag: UTF-8</h1>
+		<main id="main" class="main-tags">
+            <h1 class="tag"><i class="bi bi-tag"></i> UTF-8</h1>
 
-<article class="mini-post" data-file="../performance/jbake-2.7.0.html" data-target="article">
+<article class="post post-list post-tag-list">
     <header>
         <div class="title">
             <h1><a href="../performance/jbake-2.7.0.html">JBake 2.7.0 Solves UTF-8 Issue</a></h1>
+                <p class="description">Subheadline</p>
         </div>
         <div class="meta">
             <time class="published" datetime='2023-01-23'>2023-01-23</time>
@@ -153,8 +156,8 @@
     </header>
 
     <div class="content">
-           <div class="asciidoc">
-               <div id="preamble">
+       <div class="asciidoc">
+                
 <div class="sectionbody">
 <div class="paragraph">
 <p>JBake 2.7 addresses issues with UTF-8 in its property file where you could not get that content into the site without an encoding problem. This is test text that goes up to the first headline even though that headline is not visible later on. We decided to mark it with <code>[.hide]</code>.</p>
@@ -163,35 +166,12 @@
 <p>This text is right before the hide attribute.</p>
 </div>
 </div>
-</div>
-<div class="sect1 hide">
-<h2 id="noshow">NoShow</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>My new blog is using <a href="https://jbake.org">JBake</a> as the static site generator and I also
-opted for AsciiDoc as the markup because a future book of mine will be written with it,
-so I need a testing ground.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="test">Test</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>My name contains a non-ASCII character: é. Half of the IT-world does not get that right, but this is another topic for a blog post. So when you put that character in <code>jbake.properties</code>, it did not arrive properly in the Freemarker output. This applies to Jbake 2.6.7. Just wanted to give 2.7.0-RC6 a try and voila, it works like a charm.</p>
-</div>
-<div class="paragraph">
-<p>Looking forward to the release of 2.7.0.</p>
-</div>
-</div>
-</div>
-           </div>
+
+       </div>
+       <p class="continue-reading"><a href="../performance/jbake-2.7.0.html">Continue reading<i class="bi bi-fast-forward"></i></a></p>
     </div>
 
     <footer>
-        <ul class="actions">
-            <li><a href="../performance/jbake-2.7.0.html" class="button big">Continue Reading2</a></li>
-        </ul>
 	<ul class="tags">
         	<li><i class="bi bi-tag"></i> <a href="../tags/jbake.html">jbake</a></li>
         	<li><i class="bi bi-tag"></i> <a href="../tags/v2.7.html">v2.7</a></li>
@@ -299,7 +279,6 @@ so I need a testing ground.</p>
 	<div class="utility-nav">
 		<a id="back-to-top" href="#" class="bi bi-arrow-up-circle"></a>
 	</div>
-	<!--<div id="push"></div>-->
 
 <!-- Le javascript
 ================================================== -->
@@ -314,6 +293,7 @@ so I need a testing ground.</p>
 <script src="../js/readingTime.js"></script>
 
 <!-- This is called by default since this theme uses highlight.js -->
-<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.highlightAll();</script>
+
 </body>
 </html>

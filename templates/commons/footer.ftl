@@ -11,4 +11,4 @@
 <script src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>js/readingTime.js"></script>
 
 <!-- This is called by default since this theme uses highlight.js -->
-<script>hljs.initHighlightingOnLoad();</script>
+<script>hljs.highlightAll();</script>

@@ -60,6 +60,20 @@ a:hover {
         color: #555;
     }
 
+/* Deal with the special headline on tags page */
+h1.tag {
+    font-size: 1.75rem;
+    border: 1px solid var(--border-color);
+    background-color: #eee;
+    border-radius: 0.5em;
+    padding: 0.1ex 0.5em;
+    margin-right: 0.5rem;
+    font-weight: 400;
+    font-family: "Noto Serif", serif;
+    color: var(--tag-color);
+    display: inline-block;
+}
+
 /* Sidebar */
 
 #sidebar {
@@ -229,10 +243,6 @@ ul.tags {
 			ul.tags li > * .label {
 				display: none;
 			}
-
-.pagination {
-
-}
 
 .post {
     margin: 0 0 1rem 0;

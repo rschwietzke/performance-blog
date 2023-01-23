@@ -1,9 +1,9 @@
 <!-- Header -->
 <header id="header">
     <#if (content == null)??>
-        <h1><a href="${config.site_host}">${config.site_title}</i></a></h1>
+        <h1><a href="/">${config.site_title}</i></a></h1>
     <#else>
-        <h2><a href="${config.site_host}">${config.site_title}</i></a></h2>
+        <h2><a href="/">${config.site_title}</i></a></h2>
     </#if>
 
     <nav class="links">
@@ -11,7 +11,7 @@
         	<#list config.site_menus_main as menuItem1>
         		<#if (config.site_menus_main_showTagsDropdown?boolean)?? == true && menuItem1 == 'tags'>
         			<li>
-	                    <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else> ${config.site_host}</#if>">
+	                    <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else>/</#if>">
 
 
 	                       <i class="${config['site_menus_main_' + menuItem1 + '_icon']}">&nbsp;</i>${config['site_menus_main_' + menuItem1 + '_label']}
@@ -27,7 +27,7 @@
 
         		<#else>
         			<li>
-	                    <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else> ${config.site_host}</#if>">
+	                    <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else>/</#if>">
 
 	                            <i class="${config['site_menus_main_' + menuItem1 + '_icon']}">&nbsp;</i>${config['site_menus_main_' + menuItem1 + '_label']}
 
@@ -71,7 +71,7 @@
             <ul class="links">
                 <#list config.site_menus_main as menuItem>
         		 <li>
-                    <a href="<#if (config['site_menus_main_' + menuItem + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem + '_url']}<#else> ${config.site_host}</#if>">
+                    <a href="<#if (config['site_menus_main_' + menuItem + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem + '_url']}<#else>/</#if>">
 
                             <i class="${config['site_menus_main_' + menuItem + '_icon']}">&nbsp;</i>${config['site_menus_main_' + menuItem + '_label']}
 
