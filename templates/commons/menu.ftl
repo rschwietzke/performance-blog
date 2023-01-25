@@ -1,10 +1,19 @@
 <!-- Header -->
 <header id="header">
-    <#if (content == null)??>
-        <h1><a href="/">${config.site_title}</i></a></h1>
-    <#else>
-        <h2><a href="/">${config.site_title}</i></a></h2>
-    </#if>
+    <nav class="main">
+        <ul><!--
+            <li class="search">
+                <a class="bi bi-search" href="#search">Search</a>
+                <form id="search" method="get" action="https://google.com/search">
+                    <input type="text" name="q" placeholder="Search" />
+                    <input type="hidden" name="q" value="site:${config.site_host}">
+                </form>
+            </li>-->
+            <li class="menu">
+                <a class="bi bi-list" href="#menu">Menu</a>
+            </li>
+        </ul>
+    </nav>
 
     <nav class="links">
         <ul>
@@ -37,20 +46,6 @@
         		</#if>
 
 			</#list>
-        </ul>
-    </nav>
-    <nav class="main">
-        <ul><!--
-            <li class="search">
-                <a class="bi bi-search" href="#search">Search</a>
-                <form id="search" method="get" action="https://google.com/search">
-                    <input type="text" name="q" placeholder="Search" />
-                    <input type="hidden" name="q" value="site:${config.site_host}">
-                </form>
-            </li>-->
-            <li class="menu">
-                <a class="bi bi-list" href="#menu">Menu</a>
-            </li>
         </ul>
     </nav>
 </header>

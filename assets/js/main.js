@@ -23,32 +23,6 @@
 			$sidebar = $('#sidebar'),
 			$main = $('#main');
 
-		// Disable animations/transitions until the page has loaded.
-			$body.addClass('is-loading');
-
-			$window.on('load', function() {
-				window.setTimeout(function() {
-					$body.removeClass('is-loading');
-				}, 100);
-			});
-
-		// Fix: Placeholder polyfill.
-			$('form').placeholder();
-
-		// Prioritize "important" elements on medium.
-			skel.on('+medium -medium', function() {
-				$.prioritize(
-					'.important\\28 medium\\29',
-					skel.breakpoint('medium').active
-				);
-			});
-
-		// IE<=9: Reverse order of main and sidebar.
-			if (skel.vars.IEVersion <= 9)
-				$main.insertAfter($sidebar);
-
-		$menu.appendTo($body);
-		$shareMenu.appendTo($body);
 
 		$menu.panel({
 			delay: 500,
@@ -88,73 +62,6 @@
 					visibleClass: 'is-menu-visible'
 				});*/
 
-		// Search (header).
-			var $search = $('#search'),
-				$search_input = $search.find('input');
-
-			$body
-				.on('click', '[href="#search"]', function(event) {
-
-					event.preventDefault();
-
-					// Not visible?
-						if (!$search.hasClass('visible')) {
-
-							// Reset form.
-								$search[0].reset();
-
-							// Show.
-								$search.addClass('visible');
-
-							// Focus input.
-								$search_input.focus();
-
-						}
-
-				});
-
-			$search_input
-				.on('keydown', function(event) {
-
-					if (event.keyCode == 27)
-						$search_input.blur();
-
-				})
-				.on('blur', function() {
-					window.setTimeout(function() {
-						$search.removeClass('visible');
-					}, 100);
-				});
-
-		// Intro.
-			var $intro = $('#intro');
-
-			// Move to main on <=large, back to sidebar on >large.
-				skel
-					.on('+large', function() {
-						$intro.prependTo($main);
-					})
-					.on('-large', function() {
-						$intro.prependTo($sidebar);
-					});
-
 	});
 
 })(jQuery);
-
-$(function() {
-
-	$('article').each(function() {
-
-	    $(this).readingTime({
-			readingTimeTarget: $(this).find('.eta'),
-			wordCountTarget: $(this).find('.words'),
-			prependTimeString: 'Read Time: ',
-			remotePath: $(this).attr('data-file'),
-			remoteTarget: $(this).attr('data-target')
-		});
-		
-	});
-	
-});
-

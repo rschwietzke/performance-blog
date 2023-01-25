@@ -59,7 +59,7 @@ public void test()
     public int max(final int a, final int b)
     {
         // inline comment
-        return a > b ? a : b;
+        return a &gt; b ? a : b;
     }
 }
 ----
@@ -69,18 +69,18 @@ are right.
 [source,x86asm]
 ----
 ↗  0x00007f455cc708c1: lea    0x20(%rsp),%rbx
-│          < blah-blah-blah, monitor enter >     ; <--- coarsened!
+│          &lt; blah-blah-blah, monitor enter &gt;     ; &lt;--- coarsened!
 │  0x00007f455cc70918: mov    (%rsp),%r10        ; load $this
 │  0x00007f455cc7091c: mov    0xc(%r10),%r11d    ; load $this.x
 │  0x00007f455cc70920: mov    %r11d,%r10d        ; ...hm...
 │  0x00007f455cc70923: add    $0x42,%r10d        ; ...hmmm...
 │  0x00007f455cc70927: mov    (%rsp),%r8         ; ...hmmmmm!...
 │  0x00007f455cc7092b: mov    %r10d,0xc(%r8)     ; LOL Hotspot, redundant store, killed two lines below
-│  0x00007f455cc7092f: add    $0x108,%r11d       ; add 0x108 = 0x42 * 4 <-- unrolled by 4
+│  0x00007f455cc7092f: add    $0x108,%r11d       ; add 0x108 = 0x42 * 4 &lt;-- unrolled by 4
 │  0x00007f455cc70936: mov    %r11d,0xc(%r8)     ; store $this.x back
-│          < blah-blah-blah, monitor exit >      ; <--- coarsened!
-│  0x00007f455cc709c6: add    $0x4,%ebp          ; c += 4   <--- unrolled by 4
-│  0x00007f455cc709c9: cmp    $0x3e5,%ebp        ; c < 1000?
+│          &lt; blah-blah-blah, monitor exit &gt;      ; &lt;--- coarsened!
+│  0x00007f455cc709c6: add    $0x4,%ebp          ; c += 4   &lt;--- unrolled by 4
+│  0x00007f455cc709c9: cmp    $0x3e5,%ebp        ; c &lt; 1000?
 ╰  0x00007f455cc709cf: jl     0x00007f455cc708c1
 ----
 
@@ -99,7 +99,7 @@ public void test()
     public int max(final int a, final int b) // <1>
     {
         // inline comment
-        return a > b ? a : b; // <2>
+        return a &gt; b ? a : b; // <2>
     }
 }
 ----

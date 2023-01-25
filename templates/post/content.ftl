@@ -14,7 +14,7 @@
     <div class="content">
        <#if (post.featuredimage?has_content) >
            <div class="featured">
-               <img src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>${post.featuredimage}" alt="${post.featuredalt!''}" />
+               <img loading="lazy" src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>${post.featuredimage}" alt="${post.featuredalt!''}" />
            </div>
        </#if>
        <div class="asciidoc">

@@ -10,9 +10,22 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/bootstrap-icons.css" />
 
+    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/defaults.css" />
+
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/add-on.css" />
     <link rel="stylesheet" href="/css/highlight-default.min.css">
+
+    <!-- get us the important fonts we use anyway -->
+    <link rel="preload" href="/fonts/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/open-sans-v34-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/noto-serif-v21-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/open-sans-v34-latin-500.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/open-sans-v34-latin-800.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/open-sans-v34-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/open-sans-v34-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/source-code-pro-v22-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
 
     <link rel="shortcut icon" href="/img/logo.svg" type="image/svg+xml">
     <link rel="shortcut icon" href="/img/favicon.png">

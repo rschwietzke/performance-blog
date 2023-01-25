@@ -1,3 +1,10 @@
+/*
+xlarge:	'(max-width: 1680px)',
+large:	'(max-width: 1280px)',
+medium:	'(max-width: 980px)',
+small:	'(max-width: 736px)',
+xsmall:	'(max-width: 480px)'
+*/
 /* because of the lack of SASS or LESS, we use CSS variables */
 :root {
     --border-color: rgba(160, 160, 160, 0.5);
