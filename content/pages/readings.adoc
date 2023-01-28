@@ -17,5 +17,8 @@ https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-dat
 https://github.com/majodev/google-webfonts-helper
 https://gwfh.mranftl.com/
 
+== JBake
+https://siddheshrane.github.io/jbake-clean-blog-template/get-theme.html
+
 == Ideas
 * There are no negative testcase (obvious/non-obvious; should work, should not work)

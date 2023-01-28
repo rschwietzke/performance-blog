@@ -1,0 +1,124 @@
+:root {
+    --menu-color: #fff;
+    --menu-background-color: #0d47a1;
+
+    --global-background-color: #e3f2fd;
+}
+
+body {
+    color: #000;
+    font-family: "Open Sans", sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+
+    background-color: var(--global-background-color);
+    -webkit-font-smoothing: antialiased;
+
+    box-sizing: border-box;
+}
+
+/* base links style */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+    a:hover {
+        text-decoration: underline;
+    }
+
+/*
+ ====================================================================
+ Some Documentation
+ ====================================================================
+ IDs: We use ids because most tags such as footer and header but main
+ can be used more than once.
+*/
+
+/*
+==================================================================
+ Site Menu, the top bar
+==================================================================
+*/
+#site-menu {
+    grid-area: menu;
+    border: 1px solid Blue;
+
+    background-color: var(--menu-background-color);
+    color: var(--menu-color);
+
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+
+    padding: 0 1rem;
+    line-height: 3;
+
+    display: flex;
+    align-items: center;
+
+    position: sticky;
+    top: 0;
+}
+    #site-menu #drawer {
+        display: none;
+    }
+
+    #site-menu .burger {
+        width: 2rem;
+        border-right: 1px solid rgba(255, 255, 255, 0.5);
+        margin-right: 1rem;
+    }
+    #site-menu .menu {
+        line-height: 1;
+
+    }
+    #site-menu .menu .item {
+        display: inline-block;
+        padding-right: 1rem;
+    }
+        #site-menu .menu .item i {
+            padding-right: 1rem;
+        }
+        #site-menu .menu .item:not(:last-child) {
+            margin-right: 1rem;
+        }
+        #site-menu .menu .item:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+
+
+
+
+
+/* this is the large title and social links */
+#site-header {
+    grid-area: header;
+    border: 1px solid Red;
+}
+
+#site-sidebar {
+    grid-area: sidebar;
+    border: 1px solid Orange;
+}
+
+#content {
+    grid-area: content;
+    border: 1px solid Green;
+
+}
+
+#site-footer {
+    grid-area: footer;
+    border: 1px solid Yellow;
+}
+
+#grid-container {
+    display: grid;
+    grid-template-columns: 22em 1fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "menu menu menu"
+        "header content content"
+        "sidebar content content"
+        ". footer footer";
+}
