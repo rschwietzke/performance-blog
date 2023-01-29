@@ -24,6 +24,12 @@
         </aside>
 
 		<main id="content">
+            <#list published_posts as post>
+                <#if (post??) >
+                    <#assign firstParagraphOnly = true>
+                    <#include "post/content.ftl">
+                </#if>
+            </#list>
         </main>
 
         <footer id="site-footer">

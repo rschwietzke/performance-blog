@@ -33,5 +33,4 @@
     <link rel="shortcut icon" href="/img/favicon.png">
 
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
-
 </head>

@@ -23,13 +23,17 @@
 </nav>
 
 <nav class="menu">
-	<#list config.site_menus_main as menuItem1>
-		<div class="item">
-            <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else>/</#if>">
+    <h1>${config.sidebar_intro_header}</h1>
 
-                    <i class="${config['site_menus_main_' + menuItem1 + '_icon']}"></i>${config['site_menus_main_' + menuItem1 + '_label']}
+    <section class="items">
+    	<#list config.site_menus_main as menuItem1>
+    		<div class="item">
+                <a href="<#if (config['site_menus_main_' + menuItem1 + '_url'] != "/")> ${content.rootpath}${config['site_menus_main_' + menuItem1 + '_url']}<#else>/</#if>">
 
-            </a>
-    	</div>
-	</#list>
+                        <i class="${config['site_menus_main_' + menuItem1 + '_icon']}"></i>${config['site_menus_main_' + menuItem1 + '_label']}
+
+                </a>
+        	</div>
+    	</#list>
+    </section>
 </nav>
