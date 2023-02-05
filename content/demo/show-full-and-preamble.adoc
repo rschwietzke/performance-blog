@@ -1,0 +1,29 @@
+= Show Full Text and Preamble
+:jbake-author: René Schwietzke
+:jbake-date: 2023-02-05
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: demo
+:showFull: true
+:idprefix:
+
+This is the preamble that turns into a TL'DR. So put some love into this text to ensure it is a true summary.
+
+== Headline 1
+This article has a preamble and a flag that indicates that we want to always see
+its full beauty even on the listing page.
+
+=== Headline 2
+Nice data and text.
+
+[source,java]
+----
+@Test
+public void test()
+{
+    public int max(final int a, final int b)
+    {
+        // inline comment and some < > &
+        return a > b ? a : b;
+    }
+}

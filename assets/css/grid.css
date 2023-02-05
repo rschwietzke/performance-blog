@@ -15,12 +15,34 @@
     --site-footer-color: #555;
     --site-footer-border-color: var(--sidebar-border-color);
 
-    --post-border-color: var(--sidebar-border-color);
+    --post-border-color: rgb(160, 160, 160, 0.3);
     --post-description-color: #666;
     --post-backgroound-color: #fff;
 
     --tag-color: var(--post-description-color);
     --tag-border-color: var(--post-border-color);
+
+    --button-border-color: var(--post-border-color);
+
+    --border-color: rgba(160, 160, 160, 0.5);
+    --section-border-color: rgba(230, 230, 230);
+    --headline-color: #ba3925;
+    --link-color: #2156a5;
+    --background-color: #e3f2fd;
+    --header-background-color: #0d47a1;
+    --description-color: #666;
+    --tag-color: var(--description-color);
+    --listingblock-pre-bg-color: #f7f7f8;
+    --preamble-background-color: #f7f7f8;
+    --caption-color: #555;
+
+    --quote-color: #e0e0e0;
+
+    --tip-icon-color: #0d47a1;
+    --warning-icon-color: #bf0000;
+    --caution-icon-color: #ffb117;
+    --note-icon-color: #0d47a1;
+    --important-icon-color: #dc3545;
 
     --xlarge-width: 1680px;
     --large-width:  1280px;
@@ -51,6 +73,12 @@ a {
     a:hover {
         text-decoration: underline;
     }
+
+pre {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+}
 
 /*
  ====================================================================
@@ -108,15 +136,7 @@ a {
 
     #site-menu .menu .items {
         display: inline-block;
-        border-left: 1px solid rgba(255, 255, 255, 0.5);
-        padding-left: 1rem;
     }
-        @media screen and (max-width: 990px) {
-            #site-menu .menu .items {
-                border-left: none;
-                padding-left: 0rem;
-            }
-        }
     #site-menu .menu .item {
         line-height: 1;
         display: inline-block;
@@ -141,21 +161,20 @@ a {
              var(--desktop-component-padding-h)
              0
              var(--desktop-component-padding-h);
+
 }
     @media screen and (max-width: 1280px) {
         #site-header {
             text-align: center;
-            padding: calc(var(--desktop-component-padding-v) / 2)
-                     calc(var(--desktop-component-padding-h) / 2)
-                     0
-                     calc(var(--desktop-component-padding-h) / 2);
+            margin: 0 auto;
+            padding-top: calc(var(--desktop-component-padding-v) / 2);
         }
     }
 
     #site-header .title {
         letter-spacing: 0.2rem;
     }
-        @media screen and (max-width: 1280px) {
+        @media screen and (max-width: 980px) {
             #site-header .logo {
                 display: none;
             }
@@ -195,7 +214,7 @@ a {
     padding: var(--desktop-component-padding-v)
              var(--desktop-component-padding-h);
     color: var(--sidebar-article-color);
-
+    max-width: 62.5rem;
 }
     #site-sidebar h2 {
         font-size: 1.5rem;
@@ -231,15 +250,26 @@ a {
 
 /* the main content area with the articles or a single one, depending on
    the context */
-#content {
+#main-content {
     grid-area: content;
 
     padding: var(--desktop-component-padding-v)
              calc(var(--desktop-component-padding-h) / 2);
+
+     max-width: 62.5rem;
+     width: 100%;
+     margin: 0 auto;
+     box-sizing: border-box; /* makes the 100% easier to set */
 }
     @media screen and (max-width: 1280px) {
-        #content {
+        #main-content {
             padding: 0
+                     calc(var(--desktop-component-padding-h) / 2)
+                     var(--desktop-component-padding-v)
+                     calc(var(--desktop-component-padding-h) / 2);
+        }
+        .single-post #main-content {
+            padding: var(--desktop-component-padding-v)
                      calc(var(--desktop-component-padding-h) / 2)
                      var(--desktop-component-padding-v)
                      calc(var(--desktop-component-padding-h) / 2);
@@ -252,6 +282,9 @@ a {
     color: var(--site-footer-color);
     text-align: center;
     padding: 0 var(--desktop-component-padding-h);
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #grid-container {
@@ -264,6 +297,17 @@ a {
         "sidebar content content"
         ". footer footer";
 }
+    #grid-container.single-post {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "menu"
+            "header"
+            "content"
+            "sidebar"
+            "footer";
+    }
     @media screen and (max-width: 1280px) {
         #grid-container {
             display: grid;
@@ -285,7 +329,7 @@ a {
     padding: 2rem;
 
     background: var(--post-backgroound-color);
-    border: solid 1px rgba(160, 160, 160, 0.3);
+    border: solid 1px var(--post-border-color);
 }
     .post:last-child {
         margin-bottom: 0;
@@ -341,6 +385,9 @@ a {
         text-align: right;
         margin-top: 2ex;
     }
+        .post p.continue-reading a:hover {
+            color: var(--link-color);
+        }
         .post p.continue-reading i {
             margin-left: 0.5rem;
         }
@@ -364,8 +411,6 @@ a {
             max-width: 100%;
         }
 
-
-
 ul.tags {
     list-style: none;
     padding-left: 0;
@@ -380,4 +425,32 @@ ul.tags {
         border-radius: 0.5em;
         padding: 0.1ex 0.5em;
         margin-right: 0.5rem;
+    }
+
+/* The pagination section below posts */
+.pagination {
+    padding-top: 1ex;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+    .pagination .button {
+        line-height: 2.5em;
+        white-space: normal;
+        padding: 1ex  3em;
+        background: white;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid var(--button-border-color);
+    }
+        .pagination .button.disabled {
+            visibility: hidden;
+        }
+    .pagination .button:hover:not(.disabled) {
+        color: var(--link-color);
+        box-shadow: inset 0 0 0 1px var(--link-color);
+    }
+    .pagination .pageinfo {
+        font-size: 1rem;
+        font-weight: 500;
     }

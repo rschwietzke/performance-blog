@@ -1,6 +1,6 @@
 = About
 :jbake-last_updated: 2022-12-29
-:jbake-author: Jonathan Bullock
+:jbake-author: René Schwietzke
 :jbake-type: page
 :jbake-status: published
 :jbake-tags: about, contact, privacy
@@ -26,7 +26,7 @@ This website is as lean as possible. No tracking, no cookies, no data capture, n
 There is only my hoster, who is, of course, running log files of all incoming requests and therefore records IP addresses. With the current data settings, only the first three blocks of an IP address such as `192.168.10.0` are recorded and the last block is set to 0. For IPv6, the first two blocks are recorded and the rest is replaced by `::`.
 
 == Copyright
-Despite the liberal license to reuse and share, there is still a copyright on that content and that means, I am the author, creator, designer, and programmer unless otherwise stated.
+Despite the liberal license to reuse and share, there is still a copyright on the content and that means, I am the author, creator, designer, and programmer unless otherwise stated.
 
 (C) René Schwietzke, 2023
 
@@ -35,12 +35,12 @@ Despite the liberal license to reuse and share, there is still a copyright on th
 === Content
 Except where otherwise noted, content on this site is licensed under a http://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License] - CC BY 4.0. Third party content such as references to other people's work and code might have other licenses.
 
-All source code listed is licensed under MIT License unless otherwise noted, of course.
+All source code is licensed under MIT License unless otherwise noted, of course.
 
 === Design
 The website and theme is based on work by https://github.com/manikmagar/jbake-future-imperfect-template[Manik Magar] - MIT License - which in turn is based on https://github.com/jpescador/hugo-future-imperfect[Julio Pescador's work] - MIT License - which is based on FUTURE IMPERFECT by https://html5up.net/future-imperfect[HTML5 UP]. The work of HTML5 UP is licensed under https://html5up.net/license[CC-BY-3.0]. Thank you all!
 
-My modified theme is released under the MIT license to share back what I was given before!
+At a certain point in time, I went nuts and rewrote almost all HTML and CSS as well as all Freemaker templates. My modified theme is released under the MIT license to share back what I was given before!
 
 ```
 MIT License

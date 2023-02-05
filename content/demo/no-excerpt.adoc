@@ -1,0 +1,11 @@
+= Post without Preamble and Excerpt
+:jbake-author: René Schwietzke
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: demo, excerpt, preamble
+:showexcerpt: false
+:idprefix:
+
+== First headline
+This article does not have have any excerpt or AsciiDoc preamble, so it gets
+just an ugly warning messages on overview pages. Just here to test things.

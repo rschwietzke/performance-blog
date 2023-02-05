@@ -1,36 +1,44 @@
 <!DOCTYPE HTML>
 <!--
-    Based upon Future Imperfect by HTML5 UP html5up.net | @n33co
-    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-
-    Initial adjusted version for Jbake by Manik Magar under MIT License
-    https://github.com/manikmagar/jbake-future-imperfect-template
-
-    Modified by René Schwietzke, MIT license (code) and CC-BY-4.0 license (content)
+    Pure CSS Blog and AsciiDoc René Schwietzke, MIT license (code) and CC-BY-4.0 license (content)
+    Grid and Flexbox
 -->
 <html lang="en">
+
 <#include "commons/head.ftl">
+
 <body>
 	<!-- Wrapper -->
-	<div id="wrapper">
-		<#include "commons/menu.ftl">
+	<div id="grid-container">
+        <nav id="site-menu">
+            <#include "commons/menu.ftl">
+        </nav>
 
-		<main id="main" class="main-tags">
+        <header id="site-header">
+            <#include "commons/site-header.ftl">
+        </header>
+
+        <aside id="site-sidebar">
+            <#include "commons/pinned-posts.ftl">
+            <#include "commons/about.ftl">
+        </aside>
+
+		<main id="main-content">
             <h1 class="tag"><i class="bi bi-tag"></i> ${tag}</h1>
 
             <#list tag_posts as post>
-                <#assign firstParagraphOnly = true>
-				<#include "post/content-list.ftl">
-			</#list>
-		</main>
+                <#if (post??) >
+                    <#assign firstParagraphOnly = true>
+                    <#include "post/content.ftl">
+                </#if>
+            </#list>
+        </main>
 
-		<#include "commons/sidebar.ftl">
-	</div>
-	<div class="utility-nav">
-		<a id="back-to-top" href="#" class="bi bi-arrow-up-circle"></a>
-	</div>
+        <footer id="site-footer">
+            <#include "commons/site-footer.ftl">
+        </footer>
+    </div>
 
-	<#include "commons/footer.ftl">
-
+    <#include "commons/footer.ftl">
 </body>
 </html>

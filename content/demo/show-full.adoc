@@ -1,0 +1,14 @@
+= Show Full Text
+:jbake-author: René Schwietzke
+:jbake-date: 2023-02-05
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: demo
+:showFull: true
+:idprefix:
+
+== First headline
+This article has no preamble but a flag that indicates that we want to always see all content, even on listing pages.
+
+=== Another headline
+More nice text and so on.

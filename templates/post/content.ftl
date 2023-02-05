@@ -19,6 +19,8 @@
        </#if>
        <div class="asciidoc">
            <#assign full = post.showfull?? && post.showfull?boolean>
+           <#assign continueReading = true>
+
            <#if firstParagraphOnly && !full>
                 <#assign preamble>${post.body?keep_after("<div id=\"preamble\">")?keep_before("</div>\\s+<div class=\"sect", "rsm")}</#assign>
                 <#if preamble?trim?length != 0>
@@ -27,10 +29,11 @@
                     ${post.excerpt!'No excerpt defined!'}
                 </#if>
             <#else>
+                <#assign continueReading = false>
                 ${post.body}
             </#if>
        </div>
-       <#if firstParagraphOnly>
+       <#if continueReading>
            <p class="continue-reading"><a href="${content.rootpath}${post.noExtensionUri!post.uri}">Continue reading<i class="bi bi-fast-forward"></i></a></p>
        </#if>
     </div>

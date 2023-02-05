@@ -1,0 +1,11 @@
+= Post without Preamble but Excerpt
+:jbake-author: René Schwietzke
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: demo, excerpt, preamble
+:showexcerpt: false
+:excerpt: This is the excerpt. An excerpt is just a short text without much formatting or other nifty things.
+:idprefix:
+
+== First headline
+This article does not have have an AsciiDoc preamble but features an excerpt.

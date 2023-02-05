@@ -1,0 +1,320 @@
+/*
+ * This is all the formatting for the asciidoc stuff. This is partially taken from the AsciiDoctor-default.css but
+ * not entirely.
+ */
+.asciidoc {
+}
+    .asciidoc #preamble {
+        color: rgba(0,0,0, 0.7);
+        font-size: 1rem;
+        text-align: justify;
+        padding: 0 3em;
+        margin-bottom: 2em;
+    }
+        .asciidoc #preamble .sectionbody >.paragraph:first-child p:before {
+            content: 'tl;dr ';
+            font-weight: 700;
+        }
+
+    /* in case we want to avoid a preamble and a headline h2 */
+    .asciidoc .hide h2 {
+        display: none;
+    }
+
+    .asciidoc code {
+        background: rgba(160, 160, 160, 0.075);
+        border: solid 1px rgba(160, 160, 160, 0.3);
+        font-family: "Ubuntu Mono", monospace;
+        font-size: 0.9em;
+        margin: 0 0.25em;
+        padding: 0.25em 0.25em;
+    }
+
+    .asciidoc p {
+        margin: 0 0 2ex 0;
+    }
+
+    .asciidoc .sectionbody {
+        font-family: "Noto Serif", serif;
+        line-height: 1.6;
+    }
+
+    .asciidoc .sectionbody a {
+        color: var(--link-color);
+        text-decoration: none;
+        border-bottom: none;
+    }
+        .asciidoc .sectionbody a:hover {
+            text-decoration: underline;
+        }
+
+    .asciidoc #preamble {
+        background-color: var(--preamble-background-color);
+        padding: 2ex 2em;
+        border: 0px solid #e0e0dc;
+    }
+        .asciidoc #preamble p {
+            margin-bottom: 0;
+        }
+        .asciidoc #preamble .paragraph + .paragraph {
+            margin-top: 1ex;
+        }
+
+    .asciidoc h2 {
+        font-size: 1.7rem;
+        line-height: 1.2;
+        color: var(--headline-color);
+        letter-spacing: -.01em;
+        word-spacing: -0.05em;
+        font-weight: 400;
+        text-rendering: optimizeLegibility;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+        padding: 0;
+    }
+    .asciidoc h3 {
+        font-size: 1.4rem;
+        line-height: 1.2;
+        color: var(--headline-color);
+        letter-spacing: -.01em;
+        word-spacing: -0.05em;
+        font-weight: 400;
+        text-rendering: optimizeLegibility;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+        padding: 0;
+    }
+    .asciidoc .sect1 {
+        padding-bottom: 1.25em;
+    }
+        .asciidoc .sect1 + .sect1 {
+            border-top: 1px solid var(--section-border-color);
+        }
+        .asciidoc .sect2 {
+            margin-top: 2ex;
+        }
+        .asciidoc .sect3 {
+            margin-top: 1ex;
+        }
+        .asciidoc .sect4 {
+            margin-top: 1ex;
+        }
+
+    .asciidoc img {
+        max-width: 100%;
+    }
+
+    .asciidoc .listingblock {
+        margin: 1ex 0 2ex 0;
+    }
+        .asciidoc .listingblock code {
+            margin: 0;
+            background-color: var(--listingblock-pre-bg-color);
+            line-height: 1.25;
+            font-size: 1rem;
+            border: none;
+        }
+        .asciidoc .listingblock pre {
+            background-color: var(--listingblock-pre-bg-color);
+            margin: 0;
+            background-color: #f7f7f8;
+            line-height: 1.25;
+            font-size: 1rem;
+            border: none;
+            font-family: "Ubuntu Mono", monospace;
+            padding: 0em;
+        }
+        .asciidoc .listingblock pre:not(.highlight) {
+            padding: 1em;
+        }
+
+        /* lists */
+        .asciidoc ul, .asciidoc ol, .asciidoc dl {
+          margin-bottom: 1.25em;
+          list-style-position: outside;
+          font-family: inherit;
+        }
+        /** asciidoc puts p into all lists */
+        .asciidoc ul p, .asciidoc outputl p, .asciidoc dl p {
+            padding: 0 0 0.5ex;
+            margin: 0;
+        }
+        .asciidoc ul, .asciidoc ol {
+          margin-left: 1em;
+        }
+        .asciidoc ul li {
+            padding-left: 0;
+        }
+        .asciidoc ul li ul,
+        .asciidoc ul li ol {
+          margin-left: 1em;
+          margin-bottom: 0;
+        }
+        .asciidoc ol li ul,
+        .asciidoc ol li ol {
+          margin-left: 1em;
+          margin-bottom: 0;
+        }
+
+        .asciidoc dl dt {
+          margin-bottom: 0.3125em;
+          font-weight: bold;
+        }
+
+        .asciidoc dl dd {
+          margin-bottom: 1.25em;
+          margin-left: 1.125em;
+        }
+
+        .asciidoc ul li::marker {
+            color: var(--headline-color);
+        }
+
+    .asciidoc .imageblock {
+        margin: 2ex 0;
+    }
+        .asciidoc .imageblock .title {
+            margin-top: 0;
+            padding-bottom: 0;
+            font-size: 1rem;
+            color: var(--caption-color);
+        }
+
+    .asciidoc .quoteblock {
+        margin: 2ex 0 3ex 0;
+        padding-left: 0em;
+    }
+        .asciidoc .quoteblock blockquote {
+            border-left: solid 10px var(--quote-color);
+            margin: 0;
+            padding-left: 1em;
+            text-align: justify;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: 300;
+            color: rgb(0,0,0, 0.8);
+        }
+            .asciidoc .quoteblock blockquote p {
+                margin: 0;
+            }
+                .asciidoc .quoteblock blockquote .paragraph + .paragraph p {
+                    margin-top: 2ex;
+                }
+        .asciidoc .quoteblock .attribution {
+            text-align: right;
+            font-weight: 600;
+        }
+            .asciidoc .quoteblock .attribution cite {
+                font-weight: 400;
+            }
+
+    /* reset things first */
+    .asciidoc .admonitionblock tr {
+        background-color: inherit;
+        border: none;
+    }
+    .asciidoc .admonitionblock .icon {
+        border-right: 1px solid var(--border-color);
+        width: 2em;
+        font-family: bootstrap-icons;
+        font-size: 2.5rem;
+        padding: 0 0.25em;
+        text-align: center;
+        vertical-align: middle;
+    }
+        .asciidoc .admonitionblock .icon .title {
+            display: none;
+        }
+        .asciidoc .admonitionblock.note .icon:after {
+            content: '\F4C8';
+            color: var(--note-icon-color);
+        }
+        .asciidoc .admonitionblock.important .icon:after {
+            content: '\F333';
+            color: var(--important-icon-color);
+        }
+        .asciidoc .admonitionblock.tip .icon:after {
+            content: '\F46B';
+            color: var(--tip-icon-color);
+        }
+        .asciidoc .admonitionblock.caution .icon:after {
+            content: '\F33B';
+            color: var(--caution-icon-color);
+        }
+        .asciidoc .admonitionblock.warning .icon:after {
+            content: '\F33A';
+            color: var(--warning-icon-color);
+        }
+    .asciidoc .admonitionblock .content {
+        vertical-align: middle;
+        padding-left: 1em;
+    }
+
+
+    .asciidoc #footnotes hr {
+        border-top: 1px solid var(--post-border-color);
+        margin: 1rem 0 0.5rem 0;
+        padding: 0;
+    }
+    .asciidoc #footnotes .footnote {
+        font-size: 0.8rem;
+        padding-left: 0.25rem;
+        color: #555;
+    }
+
+    /*
+        Table styling but only for real tables not
+        design helps such as admonition
+    */
+    .asciidoc table.tableblock {
+        margin: 1rem auto;
+        color: #333;
+        background: white;
+        border: 1px solid grey;
+        font-size: 0.9rem;
+        border-collapse: collapse;
+    }
+        .asciidoc table.tableblock.stretch {
+            width: 100%;
+        }
+        .asciidoc table.tableblock thead th,
+        .asciidoc table.tableblock tfoot th {
+            color: #333;
+            background: rgba(0,0,0,.1);
+        }
+        .asciidoc table.tableblock caption.title {
+            padding-bottom: 0.5rem;
+        }
+        .asciidoc table.tableblock th,
+        .asciidoc table.tableblock td {
+            padding: 0.2rem;
+            border: 1px solid lightgrey;
+        }
+        .asciidoc table.tableblock th {
+            padding: 0.2rem 0.5rem;
+        }
+        .asciidoc table.tableblock th p:last-child,
+        .asciidoc table.tableblock td p:last-child{
+            margin: 0;
+        }
+        .asciidoc table.tableblock tbody tr:nth-of-type(odd) {
+            background: rgba(250,250,250,1);
+        }
+        .asciidoc table.tableblock td.halign-right {
+            text-align: right;
+        }
+        .asciidoc table.tableblock td.halign-left {
+            text-align: left;
+        }
+        .asciidoc table.tableblock td.halign-center {
+            text-align: center;
+        }
+        .asciidoc table.tableblock td.valign-bottom {
+            vertical-align: bottom
+        }
+        .asciidoc table.tableblock td.valign-middle {
+            vertical-align: middle;
+        }
+        .asciidoc table.tableblock td.valign-top {
+            vertical-align: top;
+        }

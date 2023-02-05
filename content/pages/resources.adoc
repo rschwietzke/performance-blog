@@ -1,7 +1,7 @@
-= About
+= Resources
 :jbake-type: page
 :jbake-status: published
-:jbake-tags: links, readings
+:jbake-tags: links, readings, resources
 :description: More interesting sites, links, documents, and more in regards to the topics Java, performance, and testing.
 :idprefix:
 

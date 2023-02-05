@@ -1,0 +1,12 @@
+= Preamble Demo
+:jbake-author: René Schwietzke
+:jbake-date: 2023-02-05
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: blog, asciidoc, demo
+:idprefix:
+
+This is the preamble because it comes before the first headline. This becomes a TL'DR.
+
+== First headline
+This article has a preamble and you see it above as TL'DR or on overview pages as the intro.
