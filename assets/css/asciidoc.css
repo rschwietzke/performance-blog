@@ -107,6 +107,11 @@
     .asciidoc .listingblock {
         margin: 1ex 0 2ex 0;
     }
+        .asciidoc .listingblock .title {
+            text-align: center;
+            letter-spacing:-0.02em;
+            color: var(--caption-color);
+        }
         .asciidoc .listingblock code {
             margin: 0;
             background-color: var(--listingblock-pre-bg-color);
@@ -126,6 +131,33 @@
         }
         .asciidoc .listingblock pre:not(.highlight) {
             padding: 1em;
+        }
+
+    .asciidoc .colist.arabic ol {
+        list-style: none;
+        counter-reset: item;
+        margin-left: 0;
+        padding-left: 1rem;
+    }
+        .asciidoc .colist.arabic ol li {
+            counter-increment: item;
+        }
+        .asciidoc .colist.arabic ol li:before {
+            content: counter(item);
+            border-radius: 100%;
+            border: 1px solid;
+            display: inline-block;
+            height: 1rem;
+            width: 1rem;
+            line-height: 1.2;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 80%;
+            margin-right: 0.5em;
+        }
+        .asciidoc .colist.arabic ol li p {
+            display: inline-block;
+            margin-bottom: 0;
         }
 
         /* lists */
