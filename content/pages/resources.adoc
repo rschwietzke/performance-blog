@@ -8,7 +8,7 @@
 == Java
 * https://mostlynerdless.de/blog/2022/12/27/a-short-primer-on-java-debugging-internals/
 * https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html
-*
+* https://shipilev.net/jvm/anatomy-quarks/[JVM Anatomy Quarks] by Aleksey Shipilëv, the goto place for all things JVM performance
 
 == Web Performance
 https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-data/
@@ -17,8 +17,20 @@ https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-dat
 https://github.com/majodev/google-webfonts-helper
 https://gwfh.mranftl.com/
 
-== JBake
-https://siddheshrane.github.io/jbake-clean-blog-template/get-theme.html
 
-== Ideas
+== Blog
+These are some of the resources I used to build this blog. I have not modified JBake at all, only needed to ensure that I run version 2.7 or higher. I removed almost all JavaScript including but not limited to tracking. The only remaining JavaScript is https://highlightjs.org/[highlight.js] for code styling.
+
+* https://css-tricks.com/svg-favicons-and-all-the-fun-things-we-can-do-with-them/[Favicons]
+* https://freemarker.apache.org/[Freemaker, the template engine used in Jbake]
+* https://css-tricks.com/snippets/css/a-guide-to-flexbox/[CSS Flexbox]
+* https://css-tricks.com/snippets/css/complete-guide-grid/[CSS Grids]
+* https://docs.asciidoctor.org/asciidoctor/latest/[Asciidoctor Documentation]
+* https://html5up.net/future-imperfect[Base of the original theme]
+* https://jbake.org/news/jbake-future-imperfect-template.html[The JBake port of the theme]
+* Some AsciiDoc layout inspration came from https://shipilev.net/jvm/anatomy-quarks/[JVM Anatomy Quarks]
+* https://jbake.org/[JBake, the Java based, open source, static site/blog generator], one of the few Java-based static site generators, maybe I will find time to work on it. There are plenty of features missing.
+* https://github.com/rschwietzke/performance-blog[The GIT repo of the final result... what you are just reading]
+
+== Ideas for Posts
 * There are no negative testcase (obvious/non-obvious; should work, should not work)

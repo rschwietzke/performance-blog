@@ -1,0 +1,56 @@
+= Negative Test Cases - A Rant
+René Schwietzke
+2023-02-07
+:jbake-last_updated: 2023-02-06
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: testing, test cases
+:subheadline: Why there are no negative test cases?
+:_excerpt: Just a short text for the sidebar or in case we don't have anything for our header.
+:pinned: true
+:showfull: false
+:idprefix:
+
+When people talk about test cases, they often divide them into positive and negative test cases. That is absolute non-sense. There is no such thing as a negative test case.
+
+The following article discusses that and gives you material for your next terminology battle with your fellow co-workers.
+
+== The Issue
+When people talk about test cases, they often use the terms positive and negative test case. If you have been in the industry long enough, you might immediately feel that this separation is just wrong.
+
+Here are two definitions I found when searching for negative test cases:
+
+[quote,AVO Automation,'https://avoautomation.ai/how-to-automate-negative-testing/[So what is negative testing?]']
+____
+In positive testing, you focus on setting up tests to validate the software’s expected functionalities...
+
+...Unlike positive testing, negative tests handle exceptions and invalid data. The test reveals how the system responds to an event wherein the erroneous data is entered.
+____
+
+[quote,Geeks for Geeks,'https://www.geeksforgeeks.org/positive-vs-negative-vs-destructive-test-cases/[SPositive vs Negative vs Destructive Test Cases]']
+____
+*Positive test cases*: These are ones in which the system being tested is expected to work correctly. These tests are designed to show that the system can handle valid input and produce the expected output.
+
+*Negative test cases*: These are those in which the system being tested is expected to fail. These tests help ensure that the system can handle invalid input gracefully and produce error messages or other appropriate outputs when necessary.
+____
+
+
+
+== What is Quality?
+
+== What is Testing?
+
+== What are Requirements?
+
+== What are Negative Test Cases?
+
+== The Answer
+
+== An Example
+
+== Conclusion
+While the idea of what is called negative test case  might be clear, at least partially, the naming is absolutely horrible and misleads people. There might be happy-path test cases, the obvious path, but no other test case is less important or does not contribute to our testing goal: "Ensure conformance to requirements."
+
+There might be less obvious test cases that target often implicit requirements, but they are not negative, neither in their question, quality, nor in their result.
+
+Rather give your test cases priorities or group them by test topic, such as valid user input and invalid user input, but get rid off the term negative, please.
