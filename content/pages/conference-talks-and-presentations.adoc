@@ -1,0 +1,67 @@
+= Talks, Presentations, and Publications
+:jbake-type: page
+:jbake-status: published
+:jbake-tags: talks, presentations, publications
+:description: Talks and presentations given at conferences or workshops as well as some publications.
+:idprefix:
+
+== Talks
+
+=== JUG Saxony Day 2022
+This talk is about the Java Memory Model and what you should know to write correct multi-threaded code or at least know that you might not have to care about. It shows some of the details that modern languages and frameworks typically fully hide but Java partially still exposes due to its history. When you write a library for multi-threaded use, make sure you understand what you do. If you consume such a library, you hopefully can really on the quality and consistency provided. If the performance of your application is mediocre, maybe you find a possible reason here.
+
+[link=https://training.xceptance.com/java/400-jmm-jug-saxony-day-2022.html]
+image::/images/pages/jug-saxony-day-2022-cover.jpg[Cover of the Java Memory Model Presentation]
+
+=== Data Science Day 2022
+When load and performance testing, a lot of data is captured. This presentation talks about the sheer amount (293,084 data points per second) and how this data is later condensed down to a few meaningful metrics. All of this, hopefully, without losing too much information and still transporting the most important facts.
+
+
+[link=https://training.xceptance.com/qa-and-test/055-performance-testing-condense-down-data.html]
+image::/images/pages/data-science-day-2022-cover.jpg[Cover of the Presentation for the Data Science Day 2022]
+
+This https://www.db-thueringen.de/rsc/media/embed/AC1235CC552527E157C108F073A461797A9F1F82DBB6A8D567BDA578A5676932?objId=dbt_mods_00052084[talk has been recorded as well] and it was given in English.
+
+=== CinJUG 2022
+A newer version of my High Performance Java talk was given at a CinJUG meetup in 2022.
+
+* https://training.xceptance.com/java/420-high-performance-cinjug-2022.html[High Performance Java]
+
+=== CinJUG 2022
+During the pandemic, I gave a remote presentation to the Cincinnati Java User Group about the Java Memory Model.
+
+* https://training.xceptance.com/java/400-jmm.html[The Java Memory Model]
+
+=== JavaLand 2020 (canceled)
+This is my presentation that was scheduled for JavaLand 2020 but the entire conference got canceled due to the pandemic (in case you read that sometime in future, that was the Covid-19 pandemic). This talk is about all the tricks the JVM applies to get your code executed as quickly as possible. That includes compiler and optimization stages, dropping of code, and more. Also, it is about the modern CPUs and how they optimize code execution. Your code runs in parts concurrently on the CPU without you even knowing that.
+
+[link=https://training.xceptance.com/java/420-high-performance-javaland-2020.html]
+image::/images/pages/javaland2022-cover.jpg[Cover of the Slidedeck]
+
+=== DevTest Leeds 2019
+When testing load and performance, one always faces the problem how to communicate the state and results. Not every stakeholder understands numbers as well as the load testers do, therefore communication might raise more questions than it answers. This talk suggests a simple rating system to convey a test result to many different people in a consitent manner.
+
+[link=https://training.xceptance.com/qa-and-test/050-performance-rating-system-devtest-leeds-2019.html]
+image::/images/pages/devtest-leeds-2019-cover.jpg[Cover of the DevTest Leeds Presentation 2019]
+
+=== JUG Saxony Day 2019
+The Javaland 2020 presentation, with marginal changes, was also given at the JUG Saxony Day 2019 in Dresden.
+
+* https://training.xceptance.com/java/420-high-performance.html[High Performance Java]
+* https://www.youtube.com/watch?v=i3Asw44_Xk8[Recording in German]
+
+Please note, I was horribly overrunning and so I continued into the lunch break. This part has not been recorded.
+
+== Presentations
+This section shows my presentations given, often not any different from a talk. Typically, the crowd is smaller and it was given to a more uniform audience, such as a company department or a group of students.
+
+* https://training.xceptance.com/qa-and-test/000-motivation-software-test.html[Software Testing and Quality Assurance - A Motivation in 60 min or less], Ernst-Abbe-Hochschule Jena, Germany
+
+== Publications
+* Article: link:/documents/05_2020-Java_aktuell-Autor-Rene_Schwietzke-Performancetests_von_Microservices.pdf[Performancetests von Microservices], May 2020, iJUG-Magazin Java aktuell; German
+* Article: link:/documents/02_2020-Java_aktuell-Autor-Rene_Schwietzke-High-Performance-Java-Hinter-den-Kulissen-von-Java.pdf[High Performance Java, February 2020], iJUG-Magazin Java aktuell; German
+
+== Tooling
+All my presentations, some limitations apply, typically use https://github.com/hakimel/reveal.js/[Reveal.JS] and my very own Less-based theme. Please note, the version that is used in these presentations is way older than the latest Reveal.JS version you find on GitHub. My theme might not fit anymore.
+
+Feel free to use my theme or the Less approach for your own work and just feel inspired to use Reveal.JS. Especially, when you want a very uniform styling that can be easily adjusted (just a little bit of CSS and all presentations are updated) or you have to display source code a lot.
