@@ -143,13 +143,15 @@ pre {
     #site-menu .menu .item {
         line-height: 1;
         display: inline-block;
-        padding-right: 1rem;
+        padding: 0 0.5rem;
     }
-        #site-menu .menu .item i {
-            padding-right: 1rem;
+        #site-menu .menu .item:first-child {
+            padding-left: 0;
         }
-        #site-menu .menu .item:not(:last-child) {
-            margin-right: 1rem;
+        #site-menu .menu .item i {
+        }
+        #site-menu .menu .item .name {
+            padding-left: 0.5rem;
         }
         #site-menu .menu .item:not(:last-child) {
             border-right: 1px solid rgba(255, 255, 255, 0.3);
