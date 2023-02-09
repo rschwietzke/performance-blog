@@ -1,13 +1,16 @@
-= Post Number 6
+= Demo - Post with Featured Image
+René Schwietzke
+2023-02-06
 :jbake-type: post
+:jbake-last_updated: 2023-02-07
 :jbake-status: published
-:jbake-tags: blog, asciidoc
-:subheadline: This is the 6th post
-:featuredimage: images/demo/20111016-the-riddle-large.jpg
-:pinned: true
+:jbake-tags: demo, featured image
+:subheadline: This is a feature demo post.
+:featuredimage: /images/demo/20111016-the-riddle-large.jpg
+:pinned: false
 :idprefix:
 
-This article has an excerpt and that is automatically the text before the first headline.
+This article has a preamble and that is automatically the text before the first headline but after any featured image.
 
 == Post #6
 

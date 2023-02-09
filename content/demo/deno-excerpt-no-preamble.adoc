@@ -1,8 +1,10 @@
-= Post without Preamble but Excerpt
-:jbake-author: René Schwietzke
+= Demo - Post w/o Preamble but Excerpt
+René Schwietzke
+2023-02-06
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: demo, excerpt, preamble
+:subheadline: One of the feature demo posts.
 :showexcerpt: false
 :excerpt: This is the excerpt. An excerpt is just a short text without much formatting or other nifty things.
 :idprefix:

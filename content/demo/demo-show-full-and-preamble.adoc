@@ -1,9 +1,12 @@
-= Show Full Text and Preamble
+= Demo - Full Text and Preamble
+René Schwietzke
+2023-02-06
 :jbake-author: René Schwietzke
-:jbake-date: 2023-02-05
+:jbake-date: 2023-02-06
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: demo
+:jbake-tags: demo, theme
+:subheadline: This is another feature demo post.
 :showFull: true
 :idprefix:
 
@@ -27,3 +30,4 @@ public void test()
         return a > b ? a : b;
     }
 }
+----

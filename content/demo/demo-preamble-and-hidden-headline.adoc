@@ -1,0 +1,27 @@
+= Demo - Preamble Limited by Hidden Headline
+René Schwietzke
+2023-02-06
+:jbake-date: 2023-02-06
+:jbake-date_updated: 2023-02-06
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: demo, preamble, asciidoc
+:subheadline: This is another feature demo post.
+:idprefix:
+
+This is regular preamble text that normally stops at the first headline. But one might not want to have that very first headline, so we also have the option to hide that headline and still be able to limit the preamble.
+This text is right before the hide attribute.
+
+[.hide]
+## NoShow
+
+My new blog is using https://jbake.org[JBake] as the static site generator and I also opted for AsciiDoc as the markup because a future book of mine will be written with it, so I need a testing ground.
+
+== Real Headline
+This is a real headline, but the headline that stops the preamble cannot be seen in the rendered output.
+
+.How to hide the headline
+----
+[.hide]
+## NoShow
+----

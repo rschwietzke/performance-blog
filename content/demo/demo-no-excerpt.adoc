@@ -1,9 +1,11 @@
-= Post without Preamble and Excerpt
-:jbake-author: René Schwietzke
+= Demo - Post w/o Preamble and Excerpt
+René Schwietzke
+2023-02-06
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: demo, excerpt, preamble
 :showexcerpt: false
+:subheadline: This is a feature demo post.
 :idprefix:
 
 == First headline
