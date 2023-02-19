@@ -1,0 +1,41 @@
+= My New Blog
+:jbake-pinned: false
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: jbake, blog
+:subheadline: Something about me and this new blog
+:idprefix: my-new-blog
+:showfull: true
+
+## Introduction
+
+Welcome to my new blog. In comparison to my old, which is offline because PHP was updated by my hoster and the blog software I used (Nucleus) is not longer maintained, I am going with a static version this time.
+
+Static website hosting has a lot of advantages and a few disadvantages:
+* You don't depend on provided version of software such as PHP at your hoster.
+* The source is mostly text and easy to migrate if needed.
+* Your data can (and should) live in a repository such as GIT.
+* Almost no security issues.
+* You cannot easily have dynamic content of any kind, such as comments or dynamic image resizing.
+* A site search is hard to integrate and requires external services, hence you won't find a search here at the moment.
+
+Sure, I could have hosted all that myself, but who wants to run outdated PHP and PHP-based software? That is a security nightmare.
+
+I decide to go with JBake as my content generator despite its slow release cycle and a lack of features. The main reason for choosing it, was the proper support of https://docs.asciidoctor.org/asciidoc/latest/[AsciiDoc] as main content language in contrast to pure HTML or Markdown that is used by others. Secondly, it is written in Java, which enables me to make changes and fixes more quickly. It also gives me the opportunity to just fork it and run with my own version from now on, if needed.
+
+One might argue, why to choose AsciiDoc? I am planning to write a book and the AsciiDoc toolchain for that is nice and that gives me the opportunity to learn about it. Also, there is an editor https://asciidocfx.com/[AsciiDoc FX] for that.
+
+I carefully styled the AsciiDoc content and you can see that link:/demo/demo-asciidoc-content.html[here]. This is not full support of every possible AsciiDoc feature, but pretty much enough for the moment. I will certainly adjust that styling occasionally to improve readability and overall layout.
+
+== About the Content
+
+You will mostly find content that relates to my work, despite this blog being a private one. This is my current idea about the content:
+
+ * Performance related topics, such as web or Java performance, and performance testing
+ * General Java topics
+ * Testing and quality assurance
+ * Interesting links and general IT support stuff
+
+== More About The Blog
+
+The entire blog is open source in the sense of the design, theme, template code, and even the content. You find all the relevant information in the link:/pages/about.html[about section]. Please keep in mind, that my content is CC-BY-4.0 licensed but that does not mean you can just copy everything and call it your own! Nope, it is still mine but you can use it and extend it. But you have to give me credit.
