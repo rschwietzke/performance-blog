@@ -3,12 +3,16 @@
 :jbake-status: published
 :jbake-tags: links, readings, resources
 :description: More interesting sites, links, documents, and more in regards to the topics Java, performance, and testing.
-:idprefix:
+:idprefix: resources
 
 == Java
 * https://mostlynerdless.de/blog/2022/12/27/a-short-primer-on-java-debugging-internals/
 * https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html
 * https://shipilev.net/jvm/anatomy-quarks/[JVM Anatomy Quarks] by Aleksey Shipilëv, the goto place for all things JVM performance
+* https://www.youtube.com/watch?v=LGVxiDxIrFM[Project Panama, Vector API]
+
+=== Performance
+* https://www.andreinc.net/2021/11/08/a-tale-of-java-hash-tables
 
 == Web Performance
 https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-data/
@@ -33,4 +37,6 @@ These are some of the resources I used to build this blog. I have not modified J
 * https://github.com/rschwietzke/performance-blog[The GIT repo of the final result... what you are just reading]
 
 == Ideas for Posts
-* There are no negative testcase (obvious/non-obvious; should work, should not work)
+* How to build proper test cases without thinking about positive and negative testing, using an account creation screen as example (username, password, email, name)
+* Erroneous data
+* Coverage is not a metric for quality

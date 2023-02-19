@@ -5,7 +5,7 @@
 :jbake-status: published
 :jbake-tags: about, contact, privacy
 :description: This is just the normal regulatory void we have to fill.
-:idprefix:
+:idprefix: about
 
 [.hide]
 == About

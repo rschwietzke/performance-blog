@@ -214,21 +214,25 @@
 
     .asciidoc .quoteblock {
         margin: 2ex 0 3ex 0;
-        padding-left: 0em;
+        padding-left: 0;
+        padding-right: 2rem;
     }
         .asciidoc .quoteblock blockquote {
-            border-left: solid 10px var(--quote-color);
+            border-left: solid 5px var(--quote-color);
             margin: 0;
             padding-left: 1em;
             text-align: justify;
             font-size: 1rem;
-            font-style: normal;
+            font-style: italic;
             font-weight: 300;
             color: rgb(0,0,0, 0.8);
         }
             .asciidoc .quoteblock blockquote p {
                 margin: 0;
             }
+                .asciidoc .quoteblock blockquote p strong {
+                    font-weight: 700;
+                }
                 .asciidoc .quoteblock blockquote .paragraph + .paragraph p {
                     margin-top: 2ex;
                 }
@@ -241,46 +245,49 @@
             }
 
     /* reset things first */
-    .asciidoc .admonitionblock tr {
-        background-color: inherit;
-        border: none;
+    .asciidoc .admonitionblock {
+        margin: 1rem 0;
     }
-    .asciidoc .admonitionblock .icon {
-        border-right: 1px solid var(--border-color);
-        width: 2em;
-        font-family: bootstrap-icons;
-        font-size: 2.5rem;
-        padding: 0 0.25em;
-        text-align: center;
-        vertical-align: middle;
-    }
-        .asciidoc .admonitionblock .icon .title {
-            display: none;
+        .asciidoc .admonitionblock tr {
+            background-color: inherit;
+            border: none;
         }
-        .asciidoc .admonitionblock.note .icon:after {
-            content: '\F4C8';
-            color: var(--note-icon-color);
+        .asciidoc .admonitionblock .icon {
+            border-right: 1px solid var(--border-color);
+            width: 2em;
+            font-family: bootstrap-icons;
+            font-size: 2.5rem;
+            padding: 0 0.25em;
+            text-align: center;
+            vertical-align: middle;
         }
-        .asciidoc .admonitionblock.important .icon:after {
-            content: '\F333';
-            color: var(--important-icon-color);
+            .asciidoc .admonitionblock .icon .title {
+                display: none;
+            }
+            .asciidoc .admonitionblock.note .icon:after {
+                content: '\F4C8';
+                color: var(--note-icon-color);
+            }
+            .asciidoc .admonitionblock.important .icon:after {
+                content: '\F333';
+                color: var(--important-icon-color);
+            }
+            .asciidoc .admonitionblock.tip .icon:after {
+                content: '\F46B';
+                color: var(--tip-icon-color);
+            }
+            .asciidoc .admonitionblock.caution .icon:after {
+                content: '\F33B';
+                color: var(--caution-icon-color);
+            }
+            .asciidoc .admonitionblock.warning .icon:after {
+                content: '\F33A';
+                color: var(--warning-icon-color);
+            }
+        .asciidoc .admonitionblock .content {
+            vertical-align: middle;
+            padding-left: 1em;
         }
-        .asciidoc .admonitionblock.tip .icon:after {
-            content: '\F46B';
-            color: var(--tip-icon-color);
-        }
-        .asciidoc .admonitionblock.caution .icon:after {
-            content: '\F33B';
-            color: var(--caution-icon-color);
-        }
-        .asciidoc .admonitionblock.warning .icon:after {
-            content: '\F33A';
-            color: var(--warning-icon-color);
-        }
-    .asciidoc .admonitionblock .content {
-        vertical-align: middle;
-        padding-left: 1em;
-    }
 
 
     .asciidoc #footnotes hr {

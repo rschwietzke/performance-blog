@@ -13,7 +13,7 @@ This is regular preamble text that normally stops at the first headline. But one
 This text is right before the hide attribute.
 
 [.hide]
-## NoShow
+== NoShow
 
 My new blog is using https://jbake.org[JBake] as the static site generator and I also opted for AsciiDoc as the markup because a future book of mine will be written with it, so I need a testing ground.
 

@@ -1,0 +1,100 @@
+= JUG Talks and Abstracts - DE
+:jbake-type: page
+:jbake-status: published
+:jbake-tags: JUG,
+:description: Konferenzbeiträge, Präsentationen und Trainings.
+:idprefix: jugs-talks-abstracts-de
+
+== Über René Schwietzke
+René Schwietzke ist Mitgründer und Geschäftsführer der Xceptance GmbH. Er arbeitet seit ca. 25 Jahren im Bereich Last- und Performancetest und hat viele internationale Kunden und Softwareanbieter unterstützt. Er ist Product Owner für das Xceptance Lasttest-Tool XLT und die SaaS-Plattform XTC, die seit Jahren sowohl bei Xceptance als auch bei Kunden erfolgreich im Einsatz sind. XLT ist Open Source unter der Apache-Lizenz 2.0. Des Weiteren beschäftigt sich René mit Qualitäts- und Performancethemen rund um Programmierung und Java, speziell der JVM.
+
+== Das Java Memory Model - Konsistenz und Parallelität
+
+=== Abstract
+Parallele Programmierung ist nicht einfach, selbst mit Frameworks und JDK-Concurrent-Classes. Die meisten Fehler resultieren aus Unkenntnis der Grundmechaniken von Parallelität innerhalb der JVM und auf der CPU sowie die Interaktion mit Memory und Caches.
+
+Dieser Vortrag nimmt die Zuhörer mit hinter die Kulissen der JVM und erklärt das Verhalten anhand des JMM (Java Memory Model), so dass man besser versteht, wie Synchronisation und Memory-Konsistenz erreicht werden. Auch wird dieser Vortrag das Konzept von Happens-Before erläutern, dass nicht nur für Java wichtig ist, sondern allgemein über Programmiersprachen und Hardwarearchitekturen hinweg Gültigkeit hat.
+
+Dieser Vortrag diskutiert keine Bibliotheken oder Datenstrukturen wie ConcurrentHashMap oder CountDownLatch, aber zeigt die verschiedenen Ansätze, um Konsistenz zu sichern (final, volatile, Atomics, synchronized, varhandles).
+
+=== Material
+* Slides: https://training.xceptance.com/java/400-jmm-jug-saxony-day-2022.html
+* Länge: 90 min - 120 min
+
+
+
+== High Performance Java - Die Magie der JVM
+=== Abstract
+Die JVM gehört zu den besten virtuellen Maschinen und hat sich in den letzten Jahren dramatisch weiterentwickelt. Die meisten Entwickler wissen aber nicht, welche Klimmzüge die VM macht, damit Code schnell und zuverlässig läuft.
+
+Dieser Vortrag zeigt an vielen Beispielen, wie die JVM Code optimiert, mit der Hardware interagiert und wie man diesen Wissen nutzen kann, um significant schnelleren Code zu schreiben.
+
+Der Vortrag bindet die Teilnehmer ein, um anhand von Vermutungen zu erarbeiten, welche Lösung schneller ist und warum.
+
+=== Material
+* Slides: https://training.xceptance.com/java/420-high-performance-cinjug-2022.html
+* Länge: 90 bis 120 min
+
+
+
+== Das Java Memory Management - Speicherbedarf und Garbage Collection
+=== Abstract
+Hauptspeicher gehört zu den teuersten Ressourcen im Sinne des Einflusses auf Ausführungsgeschwindigkeit und Latency. Zugleich ist Hauptspeicher nur begrenzt verfügbar.
+
+Diese Vortrag versucht, die Herausforderungen bei der Nutzung von Hauptspeicher zu vermitteln. Wie viel Memory brauchen einzelne Klassen und welche Auswirkungen haben zusätzliche Felder und deren Datentypen? Warum ist Speicher teuer und welche Basisfragen sollten man stellen, wenn man versucht GC Probleme zu lösen? Waurm ist GC nicht das Problem?
+
+Ebenfalls werden die aktuellen GCs vorgestellt und ihre Unterschiede aufgezeigt. GC-Tuning und Logging wird nicht behandelt.
+
+=== Material
+* Slides: https://training.xceptance.com/java/410-memory-management.html
+* Länge: 90 min
+
+
+
+== Performancetuning und Microbenchmarking Java
+=== Abstract
+Im Licht des Trends zu Microservices mit Low-Latency Anforderungen und damit einhergehend dem Bedarf nach Entscheidungen über die Performance des Codes, soll dieser Vortrag interaktiv auf den JMH - Java Measurement Harness eingehen. JMH ist als OpenJDK Projekt frei erhältlich und ab JDK 12 fester Bestandteil des JDK.
+
+Damit man seinen Messungen vertrauen kann, muss man wissen, was Performance in Java bedeutet und was die VM während der Laufzeit tut, damit der Code so läuft, wie er läuft. Nur mit diesem Wissen kann man systematisch und korrekt seinen Code vermessen und Entscheidungen treffen.
+
+Diese Session wird interaktiv ein Problem Schritt für Schritt vermessen. Die Probleme erklären, erläutern wie man einen Benchmark entwirft und die Messungen interpretiert.
+
+=== Material
+* Slides: In Erarbeitung.
+* Workshopformat: 120 bis 240 min
+
+
+
+== Performancetest Erfolgskriterien und Kommunikation
+=== Abstract
+Performancetests gehören zum Test moderner Applikationen dazu und sind gerade für High-Scale Anwendungen essenziell. Allerdings gibt es bei der Kommunikation der Ziele sowie der Kommunikation der Ergebnisse häufig Missverständnisse, die effizientes Arbeiten erschweren. In den meisten Fällen erwarten die verschiedenen Konsumenten von Lasttestergebnissen einfach unterschiedliche Detailgrade, die aber nicht einfach aus der Menge der Ergebnisse abzuleiten sind.
+
+Diese Präsentation stellt einen möglichen Ansatz vor, um Ergebnisse einfacher zu kommunizieren zu machen und gleichzeitig nicht die Qualität der Daten einzuschränken.
+=== Material
+* Slides: https://training.xceptance.com/qa-and-test/050-performance-rating-system-devtest-leeds-2019.html
+* Länge: 30 min
+
+
+
+== Loadtests und Datenmengen
+=== Abstract
+Last- und Performancetests sammeln extreme vielen Daten und müssen diese Daten so aufbereiten, dass alle Zielgruppen damit arbeiten können.
+
+Dieser Vortrag erklärt, was gemessen wird, welche Datenmengen anfallen und wie diese aufbereitet werden. Dazu gibt es Hinweise, wie Daten zu lesen sind und kommuniziert werden können.
+
+=== Material
+* Slides: https://training.xceptance.com/qa-and-test/055-performance-testing-condense-down-data.html
++ Länge: 45 min
+
+
+== Performancetest von Microservices
+=== Abstract
+Eine Softwarearchitektur, die aus kleinen und unabhängigen Teilen zusammengesetzt ist, ist einfacher zu erstellen und zu warten. Microservices sind dadurch zum dominierenden Thema in der modernen Softwareentwicklung geworden. Während die Komplexität auf der Entwicklungsseite sinkt, steigt sie in Bezug auf die
+Themen Architektur, Performance und Zuverlässigkeit. Dieses Präsentation diskutiert die Anforderungen an die Performance und die Planung von Performancetests von Microservices.
+
+=== Material
+* Artikel: https://blog.xceptance.com/wp-content/uploads/2021/01/05_2020-Java_aktuell-Autor-Rene_Schwietzke-Performancetests_von_Microservices.pdf
+* Länge: 90 min
+
+== Misc
+Alle Talks und Trainings haben Slidedecks in Englisch und die Präsentationssprache kann Deutsch oder Englisch sein.

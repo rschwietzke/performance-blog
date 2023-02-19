@@ -1,0 +1,19 @@
+= That is odd...
+:jbake-date: 2023-02-01
+:jbake-type: page
+:jbake-status: published
+:jbake-tags: error
+:subheadline: This is not the page your are looking for
+:idprefix: error-404
+
+## 404
+
+You probably know what that means?! Yes, this is the page you have not been looking for. In case you were looking for that page, you might want to talk to you someone about it. Well... but who I am to question your interests?! Maybe 404-pages calm you down and provide the right relaxation? They are certainly less agitating compared to the news nowadays.
+
+So, let's try again. If you have been looking for this page, welcome! I really appreciate your interest and hope you found what you searched for.
+
+If this page is more boring that expected, how about trying some of my other posts? The list of pinned posts might contain some interesting first readings. Or you just head to the link:/[homepage] and start over again.
+
+Well, whatever you do now, have a nice day and it was a pleasure to meet you!
+
+TIP: If you used a legit link to my blog and the link changed because I took the liberty to modify the link, I apologize. Just let me know and I will take care of it.

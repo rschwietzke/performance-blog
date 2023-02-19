@@ -3,7 +3,7 @@
 :jbake-status: published
 :jbake-tags: talks, presentations, publications
 :description: Talks and presentations given at conferences or workshops as well as some publications.
-:idprefix:
+:idprefix: talks-presentations-publications
 
 == Talks
 
