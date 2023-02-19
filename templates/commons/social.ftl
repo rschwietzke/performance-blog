@@ -1,5 +1,5 @@
 <#if (config.sidebar_social_mastodon?has_content) >
-<li><a href="https://${config.sidebar_social_mastodon_domain}/${config.sidebar_social_mastodon}" target="_blank" title="Mastodon" class="bi bi-mastodon"></a></li>
+<li><a rel="me" href="https://${config.sidebar_social_mastodon_domain}/${config.sidebar_social_mastodon}" target="_blank" title="Mastodon" class="bi bi-mastodon"></a></li>
 </#if>
 
 <#if (config.sidebar_social_github?has_content) >
