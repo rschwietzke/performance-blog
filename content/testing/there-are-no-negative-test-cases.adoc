@@ -1,24 +1,21 @@
 = Negative Test Cases - A Rant
 René Schwietzke
-2023-02-07
-:jbake-last_updated: 2023-02-06
+:jbake-last_updated: 2023-02-19
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: testing, test cases
-:subheadline: Why there are no negative test cases?
-:_excerpt: Just a short text for the sidebar or in case we don't have anything for our header.
+:subheadline: Why you should stop using that term and avoid thinking that way
+:_excerpt: NONE
 :pinned: true
 :showfull: false
-:idprefix:
+:idprefix: negativetestcases-rant
 
-When people talk about test cases, they often divide them into positive and negative test cases. That is absolute non-sense. There is no such thing as a negative test case.
+When people talk about test cases, they often divide them into positive and negative test cases. This article will make the case for abandoning these terms entirely, especially negative test cases. Why is that term wrong after all? Why do people, who use that term often, come up with horrible test cases? Why don't we gain anything when people think about negative test case in the sense of the most popular definitions?
 
-The following article discusses that and gives you material for your next terminology battle with your fellow co-workers.
+This article discusses all of that and gives you material for your next terminology battle with your fellow co-workers. It will also, hopefully, motivate you to approach the search for test case differently. And, last but not least, it is all highly subjective and my personal opinion.
 
 == The Issue
-When people talk about test cases, they often use the terms positive and negative test case. If you have been in the industry long enough, you might immediately feel that this separation is just wrong.
-
-Here are two definitions I found when searching for negative test cases:
+When people talk about test cases, they often use the terms positive and negative test case. If you have been in the industry long enough, you might immediately feel that this separation is just wrong. Let's start with a few definitions you will find when googling around. Here are some definitions I found:
 
 [quote,AVO Automation,'https://avoautomation.ai/how-to-automate-negative-testing/[So what is negative testing?]']
 ____
@@ -27,30 +24,287 @@ In positive testing, you focus on setting up tests to validate the software’s 
 ...Unlike positive testing, negative tests handle exceptions and invalid data. The test reveals how the system responds to an event wherein the erroneous data is entered.
 ____
 
-[quote,Geeks for Geeks,'https://www.geeksforgeeks.org/positive-vs-negative-vs-destructive-test-cases/[SPositive vs Negative vs Destructive Test Cases]']
+It is important to note that the above definition is not using the term negative tests case, just negative tests. This sounds mostly okish, despite the term erroneous data because the term is just too broad (topic of another article). I don't like that positive means expected functionalities and negative means everything else, but we will get to that.
+
+[quote,Geeks for Geeks,'https://www.geeksforgeeks.org/positive-vs-negative-vs-destructive-test-cases/[Positive vs Negative vs Destructive Test Cases]']
 ____
 *Positive test cases*: These are ones in which the system being tested is expected to work correctly. These tests are designed to show that the system can handle valid input and produce the expected output.
 
 *Negative test cases*: These are those in which the system being tested is expected to fail. These tests help ensure that the system can handle invalid input gracefully and produce error messages or other appropriate outputs when necessary.
 ____
 
+Ok, this is more like it. Please pay attention to the following pieces: "is expected to fail", "can handle invalid input", "produce error messages or other appropriate outputs". In a nutshell, a system that produces appropriate outputs is not failing. Also, when you compare it with positive test cases, the terms valid and invalid input are very fuzzy. Also "produce the expected output" and "produce error messages or other appropriate outputs" are also in conflict. This is all expected output. So it seems, that valid and invalid input is our differentiation here.
 
+[quote,Software Testing Material,'https://www.softwaretestingmaterial.com/negative-testing/[Negative Testing Guide]']
+____
+From the software testers’ point of view, it is very important to verify that the software performs its basic functions as per the requirements but it is equally important to verify that the software is able to gracefully handle any abnormal situations or invalid input which helps to determine the stability of the software. Negative testing is performed to find a situation where there is the possibility of software to crash.
+____
+
+The first sentence is absolutely fine. The second sentence gets me started because it says "crash". Why is there no possibility to crash the software with any other test? The premise here is wrong. Once again, it says valid and invalid data but luckily does not connect invalid data with negative test cases. But what the heck is an abnormal situation? Also, it seems that error handling is not considered a basic function.
+
+And because everyone nowadays believes, ChatGPT is right, here is its version of the definition.
+
+[quote, ChatGPT, Fetched on 2023-02-18 12:32:00]
+____
+Negative test cases are test cases that are designed to verify that a system or application behaves correctly when it receives invalid or unexpected input, or when it is subjected to conditions that are outside the normal range of operation. Negative test cases are intended to identify defects in the system's behavior, such as crashes, error messages, incorrect output, or other unexpected results.
+
+In contrast to positive test cases, which verify that a system behaves correctly under normal or expected conditions, negative test cases deliberately test the system's ability to handle exceptional or incorrect conditions.
+
+...
+
+By testing negative scenarios, developers can identify and fix defects in the system that might not be detected by positive testing alone. This helps to improve the overall quality and reliability of the software.
+____
+
+While the intention is clear what the guidance behind negative test cases is, when one reads the sentence "Negative test cases are intended to identify defects in the system's behavior, such as crashes, error messages, incorrect output, or other unexpected results" one might wonder, why these defects cannot occur with positive test cases and why, for instance, an error message is a defect.
+
+=== Definitions Summarized
+
+Negative test cases seem to revolve around invalid data, unexpected input, exceptions, system is expected to fail, error messages, and abnormal situations. Why is any of that asking for different test cases? Why is this positive vs. negative?
+
+In a nutshell, I think these definitions and arguments inherently demonstrate missing understanding of the terms quality, requirements, and testing.
+
+One last thing before we get started: "Negative test cases are those tests that are designed to prove that a system does not work as expected when given invalid inputs."footnote:[https://www.geeksforgeeks.org/positive-vs-negative-vs-destructive-test-cases/[Positive vs Negative vs Destructive Test Cases]] No, there are not. Test cases should never be designed to prove that something does not work. They always are supposed to show (NOT prove) that something works as intended. But let's discuss that later.
+
+One more last thing. Many testers I have interviewed over the past years, a lot of them with certifications and industry practice, came up with horrible test cases. The testers who said, we also need negative test cases, just started to poke around randomly from now on. Most of them missed the essential test cases needed to verify the basic functionality. By the way, this was the original trigger for this article.
 
 == What is Quality?
 
-== What is Testing?
+First, we have to establish, why we test at all. The mysterious term is "quality". Everyone wants and demands quality. Quality sets products apart, quality differentiates brands, and so on. But what is that quality thing everyone talks about?
+
+[quote, ISO 8402, Retired]
+____
+The totality of features and characteristics of a product or service that bear on its ability *to meet stated or implied needs*.
+____
+
+Because one source is not enough, I always cite a definition from the first QA book I ever read.
+
+[quote, Philip B. Crosby, “Quality is free!"]
+____
+
+We define quality as *conformance to requirements*. Requirements must be clearly stated. Measurements determine conformance ... non-conformance detected is the absence of quality.
+____
+
+So, a product or service has quality when it meets the needs and conforms to requirements. While Mr. Crosby says that requirements must be clearly stated, the ISO is more realistic and defines stated and implicit needs.
+
+Based on the terms needs and requirements, we can also easily spot that things might not be the same:
+
+* Requirement: Something stated or assumed that the product or service will deliver. This does not mean, that the consumer or user of that product or service truly needs that.
+* Need: Something that the user wants (awareness of the need) or requires (might not be aware of it). If the user is not aware of it, we have an implicit need.
+
+To sum this all up and also address one last open topic, let me define quality in my own words:
+
+[quote, René Schwietzke]
+____
+What should work, will work - what is not supposed to work, won't.
+____
+
+What is so different now? Well, requirements mostly say what has to work to satisfy a need. But there are often things that should not work or be doable. The most trivial example is a password dialog. Every requirement usually says, when you provide the right user name and the correct password, matching a previously set up password, you are able to log on. But what is mostly never stated is, when there is no password provided, you should not be able to log on. It is kind of logical and assumed, but it is not stated. Also, no password and an incorrect password is technically not the same, but for a human, it is mostly the same.
+
+A user does not need "the no password requirement" to achieve its goals, despite the user, of course, relying on the fact that when given no password, you are not logged on.
 
 == What are Requirements?
+Before we can measure quality, we need an idea what requirements are, otherwise cannot measure them.
 
-== What are Negative Test Cases?
+[quote, Wikipedia, 'https://en.wikipedia.org/wiki/Requirement[Requirement]']
+____
+...a requirement is a singular documented physical or functional need that a particular design, product or process aims to satisfy.
 
-== The Answer
+It is a broad concept that could speak to any necessary (or sometimes desired) function, attribute, capability, characteristic, or quality of a system for it to have value and utility to...
 
-== An Example
+Requirements are also an important input into the verification process, since tests should trace back to specific requirements.
+____
+
+Of course, the most cited source among testers is ISTQB and here we go.
+
+[quote, ISTB Glossary, 'https://istqb-glossary.page/requirement/[Requirement]']
+____
+A condition or capability needed by a user to solve a problem or achieve an objective that must be met or possessed by a system or system component to satisfy a contract, standard, specification, or other formally imposed document.
+____
+
+So, we know that we basically write down everything we want from our software. But there is one thing that is not covered here, the indirect need, something we don't want from our software or service. And this "don't want" means, we hope for the absence of something and might not be aware of that we want it to be absent. Sounds strange? Think of it as the "Must nots".
+
+Most users know what the want but don't know what they don't want, don't need, or should not be able to do.
+
+Besides that, there are so many things one might need but does not know that this is a need at all. You might call that pure basic expectations. These could be things that are so common that everybody just assumes that things are this way and no other. An example could be a font that is large enough to read things easily.
+
+We call these *implicit requirements*, which brings us to the must important dimensions of requirements. It also seems to me that the term negative test case targets this most of the time.
+
+=== Explicit and Implicit Requirements
+
+Explicit requirements are stated, which means, they are written down. They might even be nicely defined and spiced up with user stories, click flows, UI designs, and more. Written down requirements will likely not conform to any standard or any fixed format, rather to something one might have set up company wide as a template. Yes, there are standards for requirements, but only a few industries use them, mainly when the risks are too high.
+
+Implicit requirements are not written down at all. People might know from experience that certain things are best that way. The challenge here lies in: One might know, someone else might not know, because these are highly subjective needs or expectations. We won't get any consistent view on them nor can we convey a consistent message. Many conflicts between testers, developers, and business people stem from implicit requirement discussions.
+
+== What is Testing?
+Now we know what we want - We want quality! And we also know, what quality really is and how it is messaged, through requirements. We also learned that quality comes from conformance to requirements and needs. This make is simple to define what testing is. Let's ask the internet first.
+
+[quote, ISQTB, 'http://istqbexamcertification.com/what-is-software-testing/[What is Software Testing?]']
+____
+Software testing is a process of executing a program or application with the intent of finding the software bugs.
+
+It can also be stated as the process of validating and verifying that a software program or application or product:
+
+* Meets the business and technical requirements that guided it's design and development
+* Works as expected
+* Can be implemented with the same characteristic.
+____
+
+[quote, Wikipedia, 'https://en.wikipedia.org/wiki/Software_testing[Software Testing]']
+____
+Software testing is an investigation conducted to provide stakeholders with information about the quality of the software product or service under test.
+
+...can also provide an objective, independent view of the software to allow the business to appreciate and understand the risks of software implementation.
+
+Test techniques include the process of executing a program or application with the intent of finding software bugs (errors or other defects), and verifying that the software product is fit for use.
+____
+
+I don't want to dispute the definitions, but finding bugs is certainly not our goal and should not be our main activity. Finding bugs is and must be a side effect. If you test to find bugs, you focus on the wrong things. A bug free product might be nice, but useless. A buggy product might be usable and nobody complains despite many defects still being in the product.
+
+Let's come up with an improved definition, that matches also the quality definition better:
+
+[quote, René Schwietzke]
+____
+Testing consists of all activities that increase our confidence that the system will do what it should do and won't do what it shouldn't. As a result of testing, the behavior (or state) is frozen.
+____
+
+So, our definition relies on the concept of "will do what it should", the essence of requirements and "won't do what it shouldn't", which are also requirements. Requirements here can be stated (explicit) or assumed (implicit). All activities that ensure that, make up what is testing.
+
+It is important to call out that this definition is not limited to software. Testing is almost all the time the same concept.
+
+== What are Test Cases?
+
+One last thing before we get to negative test cases, what are test cases after all? Let's take a look at the ISTQB definitions again:
+
+[quote, ISTQB, 'https://glossary.istqb.org/en/search/test%20case[Test Case Definition Search Result]']
+____
+A set of preconditions, inputs, actions (where applicable), expected results and postconditions, developed based on test conditions.
+____
+
+One can see that the ISQTB obscures the definition with another term, test conditions. Let's quickly check on that: __"These are defined by ISTQB as A testable aspect of a component or system identified as a basis for testing. Test conditions represent an item or event of a component or system that could be verified by one or more test cases (ex: function, transaction, feature, etc.)"__footnote:[https://cania-consulting.com/2019/11/08/a-test-manager-guide-test-conditions]. Ok, that sounds like requirements, but is defined in a very obscure way. But hey, there must be a reason for me not to favor ISTQB at all.
+
+Let's also ask the Wikipedia. The definition there comes from IEEE standards:
+
+[quote, Wikipedia, 'https://en.wikipedia.org/wiki/Test_case[Test Case]']
+____
+In software engineering, a test case is a specification of the inputs, execution conditions, testing procedure, and expected results that define a single test to be executed to achieve a particular software testing objective, such as to exercise a particular program path or to verify compliance with a specific requirement.
+____
+
+Ok, so in a nutshell, a test case is specification on how to verify the compliance with a requirement. Great, that matches our thought process because quality is the conformance to requirements.
+
+== Deconstruct Negative Test Cases
+Ok, we know the base definition of quality, testing, and requirements. Most importantly, we know how to measure quality - by testing compliance. Let's get to my rant, why there are no negative test cases, and why you should stop slicing your test cases into negative and positive.
+
+I will now take apart the examples and definitions from the our resources that come on top of a Google search for "what are negative test cases". You already know their base definition, let's get into the details.
+
+[[geeks-for-geeks,Geeks for Geeks]]
+=== Geeks for Geeksfootnote:[https://www.geeksforgeeks.org/positive-vs-negative-vs-destructive-test-cases/]
+> Negative test cases: These are those in which the system being tested is expected to fail.
+
+Why do we have test cases that fail the system? We would already know a defect and don't have a reason to test. A system should never fail and always have a defined state. And, an error message is not a failure! I guess, the word "fail" is used a little too freely here.
+
+> Negative test cases are important because they can uncover errors that would otherwise remain undetected.
+
+The problem here is that this example does not say anything about the test case and their qualities. Also it raises the question, why would they remain undetected, because when one builds proper test cases, enough ground should be covered to avoid that. In a nutshell, properly build test cases without the notion of negative should cover everything as long as you deal with implicit and explicit requirements properly.
+
+> Negative test cases are those tests that are designed to prove that a system does not work as expected when given invalid inputs. For example, a negative test case for a login system might be entering an incorrect username and password combination. This would ensure that the system does not authenticate a user who does not have the correct credentials.
+
+First, we are not going to prove anything as a tester, we validate compliance to requirements. We state the facts and we evaluate the state of the software or service. We are supposed to paint an objective image. The example given here is not a negative test case at all, because the tests case just conforms to a regular requirement of what the system should do (not even what it shouldn't).
+
+> Negative test cases can also be used to check for unexpected behaviors. For example, a negative test case for a search engine might be to enter a query with an unexpected format. This would ensure that the system does not provide unexpected results when given unexpected input.
+
+Since when is that unexpected? That is absolutely part of the set of regular assumptions about input data. The story is simple, there is no unexpected input ever. Period. There is input that is expected, there is input that is valid (might not fall into the expected buckets for whatever reason), and there is everything else. If you already think about what input is invalid, you approach the problem from the wrong angle. That is exactly what leads to many security issues. Don't think about right and wrong. Don't determine wrong, determine right, and the rest is automatically wrong. Also the software should not validate for wrong inputs, it should validate for correct inputs, because that group is smaller and likely finite.
+
+> Negative test cases are also important for ensuring that the system is secure.
+
+Nope. As discussed above, we have right and everything else. The everything else part is usually infinite in size, hence hard to test. Security is also a design principle and should not be tested into the software, rather validated. Requirements, requirements, requirements. Also you cannot test security into software, you have to design it into the software and you have to validate that by reviews in a lot of cases. There can be tests, but they absolutely won't cover everything.
+
+> They can be used to test for input validation, authentication, authorization, access control, and other security measures. For example, a negative test case for an authentication system might be entering an invalid username or password. This would ensure that the system does not authenticate a user who does not have the correct credentials.
+
+This brings us to security testing (almost impossible) and that all of that mentioned is based on regular requirements with no notion of negative or failing or unexpected. If you deal with unexpected in your testing, the software itself is already broken. There should be no unexpected!
+
+[[istqb-negativetesting,Software Testing Material]]
+=== Software Testing Materialfootnote:[https://www.softwaretestingmaterial.com/negative-testing/]
+> It is performed by passing invalid test data
+
+There is no invalid test data. There just test data that might create several outcomes based on the explicit or implicit requirements. For instance, there is ONE user name and password combination that will let that user log on. There are an infinite amount of legit looking but still not matching user name and password combinations, and there is an infinite amount of garbage that does not resemble any of the previously mentioned data patterns.
+
+> It is performed to break the application with unknown set of Test Conditions
+
+Do you remember the test condition definition before? __"Test conditions represent an item or event of a component or system that could be verified by one or more test cases (ex: function, transaction, feature, etc.). Synonyms: test requirement, test situation"__footnote:[https://glossary.istqb.org/en/term/test-condition-3] Well, that for itself could lead to the next blog article but I guess I will postpone that for the moment and just assume that test condition means requirement.
+
+So, we create negative test cases for unknown test conditions. But if they are unknown, how can we create test cases then? Is this suppose to mean implicit requirements? And why do we want to break the application and what does breaking mean? Ok, I leave that in its undefined state here, because the example is very much unclear.
+
+> It covers all possible cases including invalid cases
+
+No, it cannot cover all possible cases, because there are infinite cases all the time unless you have a very very trivial application. Also, once again, there are no invalid cases. Also we assume here, case does not mean test case, rather application input combinations or similar.
+
+> It takes more time
+
+Infinite time to be precise.
+
+> It verifies the work flows which are not mentioned in the requirements
+
+Nope, it just randomly make things up, but it certainly does not cover things that are not mentioned. Sure, you can have implicit workflows the requirements have not talked about, but you certainly don't test that with negative test cases, because even for implicit requirements, you get regular test cases.
+
+> It makes sure the software is defect free
+
+NEVER ever can testing ensure that the software is defect free. What promise is that? Testing verifies and gives confidence but cannot guarantee anything. Most testing happens too late, and when you have read this article carefully, testing is often as lousily executed as the development beforehand.
+
+=== ChatGPT
+Just to take care of the hype, here are the examples given by ChatGPT. No idea where this has been taken from.
+
+> entering invalid or out-of-range input values
+
+The classic example and all of that is not any special test case, just part of the normal test data set.
+
+> entering data in the wrong format or with incorrect syntax
+
+Isn't that out-of-range?
+
+> submitting data in the wrong sequence or order
+
+Nothing special here and they should all be part of normal testing.
+
+> testing error handling and recovery mechanisms
+
+Does not fall into negative for me. Well, likely, because I have a problem with that positive and negative notion in the first place.
+
+> testing boundary conditions, such as maximum and minimum values or system limits
+
+ChatGPT just repeats what it already presented before. The idea has been slightly rephrased but does not present something new.
+
+When ChatGPT stands for the average data and opinion on the internet about that topic, then things are even worse than I expected.
+
+== Summary
+When reading all the definitions and examples, one can easily see that there is no clear idea what positive or negative test cases are. It all falls into the normal/expected and invalid/unexpected buckets.
+
+The term negative test case seems to be applied often under the premise to make up for missing requirements (testing the unknown), to try something that is bad or invalid data, and to break the system. It also overpromises, when following its typically definitions such as delivering all missing test cases, being the driver of security, and just fixes missing requirements.
+
+It also seems, also based on experience with people quoting negative test case strategies, that it is often not any different from randomized testing or poking around. While random testing (fuzzy or brute-force testing) is a valid approach to add some additional variance to testing, it is not a replacement for any structured testing based on explicit and implicit requirements.
 
 == Conclusion
-While the idea of what is called negative test case  might be clear, at least partially, the naming is absolutely horrible and misleads people. There might be happy-path test cases, the obvious path, but no other test case is less important or does not contribute to our testing goal: "Ensure conformance to requirements."
+When the term was coined, the intentions were likely right. It seems, that what the industry made out of it, over time, especially with examples and notes surrounding the definitions, likely turned it upside down. The intention was probably to guide testers to think in all directions. Negative testing was meant to create awareness, that there are situations that are not on the direct path.
 
-There might be less obvious test cases that target often implicit requirements, but they are not negative, neither in their question, quality, nor in their result.
+I learned, when watching people build test cases, once they enter the negative test case territory, things go absurd quickly. Everyone just try to reach for the craziest idea. And the end of the story is, that nobody runs the standard test cases that are so obvious and have a high priority. It seems that the industry teaches test case design incorrectly. It is absolutely disappointing that people with test certification and industry practice just cannot build a simple set of properly covering test cases. We don't talk about testing an airplane here, a simple online calculator is a good example.
 
-Rather give your test cases priorities or group them by test topic, such as valid user input and invalid user input, but get rid off the term negative, please.
+So, I strongly suggest *to give up the terms negative testing and negative test cases* and just try to think properly about your test cases based on requirements and assumptions.
+
+If you still not convinced, just call your test cases the lame and the challenging. The lame are the obvious test cases. The challenging test cases are the once that try things nobody has tried yet or are so off from the main path of the application, that it is just highly unlikely someone already considered them. The challenging are the smaller set. Remember, you cannot test security into the application, so your crazy test cases are not a game changer. When trying crazy ideas such as incorrect characters (whatever that might be), we have heard that so often, remember there are about 140,000 characters in unicode right now and your computer can display and input all. What is valid, what is invalid?
+
+Even if you want to stick to the term, it is important to keep in mind, that a negative test case is certainly not when the application denies you a login or has to react to input that is malformed. That is all still main path testing.
+
+What is next? Likely an article that tries to teach you how you should approach test case design without using the terms positive and negative testing. Stay tuned.
+
+== Recommendations
+Just some last thoughts:
+
+* Abandon the terms positive and negative test case
+* Get rid of the notion that testing is about finding bugs
+* Get rid of the idea that you have to break the system
+* You cannot test everything! Keep that in mind. There will be never 100% coverage.
+* Buggy software and service are not necessarily bad. It all depends on the defects remaining. Perfect (no defects) or high quality (conformance to requirements) software and services can still be unusable and hence useless, because they missed the user's needs. As a tester, it is not your job to compensate for bad requirements or horrible business decisions.
+* Remember, there are explicit requirements and implicit ones, the implicit requirements should resemble common sense and industry best practices. It is not your task to make up for the lack of explicit requirements, rather ask if something is missing than playing product owner.
+* Cover the happy path first and that means, not just one test case. For a password dialog, a wrong password and the right user name is as happy-path test case!
+* Don't go crazy and randomly poke around. Security testing is most likely not what you want to do here. That is a different testing discipline and is approached differently. Just apply commons sense security expectations when you test.
+
+At the end, it is all about testing ideas you derive from requirements, your end user perspective, and the industry best practices, you hopefully know.
