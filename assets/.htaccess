@@ -1,6 +1,49 @@
+ErrorDocument 404 /404.html
+
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,QSA,NC,L]
+
+<IfModule mod_mime.c>
+    AddType text/css .css
+    AddType text/javascript .js
+    AddType text/html .html .htm
+    AddType image/svg+xml .svg .svgz
+    AddType text/plain .txt
+    AddType image/gif .gif
+    AddType image/x-icon .ico
+    AddType image/jpeg .jpg .jpeg
+    AddType application/pdf .pdf
+    AddType image/png .png
+    AddType image/webp .webp
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+</IfModule>
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css A3600
+    ExpiresByType text/javascript A3600
+    ExpiresByType text/html A3600
+    ExpiresByType image/svg+xml A31536000
+    ExpiresByType text/plain A3600
+    ExpiresByType image/gif A31536000
+    ExpiresByType image/x-icon A31536000
+    ExpiresByType image/jpeg A31536000
+    ExpiresByType image/png A31536000
+    ExpiresByType image/webp A31536000
+    ExpiresByType font/woff A31536000
+    ExpiresByType font/woff2 A31536000
+</IfModule>
+<IfModule mod_deflate.c>
+    <IfModule mod_headers.c>
+        Header append Vary User-Agent env=!dont-vary
+    </IfModule>
+        AddOutputFilterByType DEFLATE text/css application/x-javascript application/javascript text/javascript text/x-js text/html image/svg+xml text/plain image/x-icon application/json
+    <IfModule mod_mime.c>
+        # DEFLATE by extension
+        AddOutputFilter DEFLATE js css htm html xml
+    </IfModule>
+</IfModule>
