@@ -1,5 +1,6 @@
 = My New Blog
-:jbake-pinned: false
+:jbake-date: 2023-02-18
+:jbake-pinned: true
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: jbake, blog
@@ -12,6 +13,7 @@
 Welcome to my new blog. In comparison to my old, which is offline because PHP was updated by my hoster and the blog software I used (Nucleus) is not longer maintained, I am going with a static version this time.
 
 Static website hosting has a lot of advantages and a few disadvantages:
+
 * You don't depend on provided version of software such as PHP at your hoster.
 * The source is mostly text and easy to migrate if needed.
 * Your data can (and should) live in a repository such as GIT.
