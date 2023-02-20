@@ -6,7 +6,7 @@
 
     <div class="posts">
 		<#list posts as sideBarPost1>
-            <#assign pinned = sideBarPost1.pinned?? && sideBarPost1.pinned?boolean>
+            <#assign pinned = sideBarPost1.pinned?? && sideBarPost1.pinned?boolean && sideBarPost1.status == "published" > 
 
             <#if pinned>
                 <article>
