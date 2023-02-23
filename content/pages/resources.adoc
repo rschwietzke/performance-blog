@@ -10,6 +10,7 @@
 * https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html
 * https://shipilev.net/jvm/anatomy-quarks/[JVM Anatomy Quarks] by Aleksey Shipilëv, the goto place for all things JVM performance
 * https://www.youtube.com/watch?v=LGVxiDxIrFM[Project Panama, Vector API]
+* https://www.chrisnewland.com/jitwatch[JITWatch]
 
 === Performance
 * https://www.andreinc.net/2021/11/08/a-tale-of-java-hash-tables
@@ -40,3 +41,4 @@ These are some of the resources I used to build this blog. I have not modified J
 * How to build proper test cases without thinking about positive and negative testing, using an account creation screen as example (username, password, email, name)
 * Erroneous data
 * Coverage is not a metric for quality
+* Show why List.get() is not inlined and show what performance gain is possible with a simpler get.

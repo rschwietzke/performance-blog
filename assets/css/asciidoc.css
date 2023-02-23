@@ -207,8 +207,9 @@
     }
         .asciidoc .imageblock .title {
             margin-top: 0;
+            margin-bottom: 1.5rem;
             padding-bottom: 0;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--caption-color);
         }
 

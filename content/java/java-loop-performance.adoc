@@ -1,0 +1,955 @@
+= Java Loops - A Performance Comparison
+René Schwietzke
+:jbake-date: 2023-02-23
+:jbake-last_updated: 2023-02-23
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: testing, test cases
+:subheadline: Make sure, you benchmark correctly
+:_excerpt: NONE
+:pinned: true
+:showfull: false
+:idprefix: java-loops-performance
+
+Recently, I saw some Java loop benchmarks. I am not entirely sure, if the outcome and advise given is correct, so here is my version. I don't want to blame any of the other tests for being incorrect, but judge for yourself.
+
+Spoiler alert: The type of loop might or might not make a difference and overall, it is rather not the loop that makes the difference but all the other code that leads to conditions that might make some loops run faster, despite the same work/task. And yes, `parallelStream()` is mostly a bad idea.
+
+This article also will give you a brief glimpse into benchmarking as well as teach you, that most benchmarks are wrong or better, the benchmark is right but the conclusions are wrong. Bring some time, the article got longer than expected. The article is not teaching you how to benchmark with JMH, how the JVM works, or how that all is executed by the CPU. It might even overwhelm you with facts without given you a detail explanation. But hey, it is not supposed to be the last article on that subject.
+
+== Thesis
+Not all loops are the same because they can or cannot be optimized by the JVM. Some loops are even the same under the hood, despite a different syntax.
+
+NOTE: All of these benchmarks have been executed on cloud machines with proper cooling (Digital Ocean, Dedicated CPU, Compute-Optimized, 8-core), no throttling, plenty of memory, Linux as OS, and repeated and varied several times.
+
+WARNING: Don't use your average laptop for benchmarking. Modern CPUs have thermal management and flexible frequencies, so the more cores you use, the less speed you get, the longer you test, the less speed you have.
+
+== Benchmark Code
+Here is our first version of the benchmark code. It uses the Java Microbenchmark Harness (JMH 1.36).
+
+Each different loops sums up the sizes of all strings in the list or array and passes it on to a blackhole to avoid optimization. These tests used JDK 11.0.18 Temurin.
+
+We use not only a list but also an array to demonstrate the difference between a plain counting for-loop and an enhanced for-loop.
+
+[source,java]
+----
+@State(Scope.Thread)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 3, time = 3, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 3, timeUnit = TimeUnit.SECONDS)
+@Fork(1)
+public class ForEachSimple
+{
+    List<String> list;
+    String[] array = null;
+
+    @Param({"1", "11", "101", "1001"})
+    int length;
+
+    @Setup
+    public void setup()
+    {
+        array = new String[length];
+        list = new ArrayList<>();
+
+        for (int i = 0; i < length; i++)
+        {
+            array[i] = String.valueOf(i);
+            list.add(String.valueOf(i));
+        }
+    }
+
+    @Benchmark
+    public void arrayFor(Blackhole bh)
+    {
+        int result = 0;
+        for (int i = 0; i < array.length; i++)
+        {
+            result += array[i].length();
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void arrayEnhanced(Blackhole bh)
+    {
+        int result = 0;
+        for (String s : array)
+        {
+            result += s.length();
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void classicFor(Blackhole bh)
+    {
+        int result = 0;
+        for (int i = 0; i < list.size(); i++)
+        {
+            result += list.get(i).length();
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void enhancedFor(Blackhole bh)
+    {
+        int result = 0;
+        for (String s : list)
+        {
+            result += s.length();
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void whileCounting(Blackhole bh)
+    {
+        int result = 0;
+        int i = 0;
+
+        while (i < list.size())
+        {
+            result += list.get(i).length();
+            i++;
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void whileIterator(Blackhole bh)
+    {
+        int result = 0;
+        var iterator = list.iterator();
+
+        while (iterator.hasNext())
+        {
+            result += iterator.next().length();
+        }
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void forEach(Blackhole bh)
+    {
+        var w = new Wrapper();
+        list.forEach(s -> w.sum += s.length());
+
+        bh.consume(w.sum);
+    }
+
+    @Benchmark
+    public void lambdaStream(Blackhole bh)
+    {
+        int result = list.stream()
+            .mapToInt(s -> s.length())
+            .sum();
+
+        bh.consume(result);
+    }
+
+    @Benchmark
+    public void parallelLambdaStream(Blackhole bh)
+    {
+        int result = list.parallelStream()
+            .mapToInt(s -> s.length())
+            .sum();
+
+        bh.consume(result);
+    }
+
+    class Wrapper
+    {
+        int sum = 0;
+    }
+}
+----
+
+== For-Loops on Arrays
+Arrays don't have an iterator interface, hence we expect to get the same performance for a traditional for-loop and a for-each loop.
+
+Let's look at the result of a benchmark run with fully warmed up code. That means, the JIT had the chance to make the best compile choices.
+
+[source]
+----
+Benchmark                           (length)  Mode  Cnt      Score       Error  Units
+ForEachSimple.arrayEnhanced                1  avgt    3      3.665 ±     0.259  ns/op
+ForEachSimple.arrayEnhanced               11  avgt    3     11.994 ±     0.312  ns/op
+ForEachSimple.arrayEnhanced              101  avgt    3     73.317 ±     4.613  ns/op
+ForEachSimple.arrayEnhanced             1001  avgt    3   1138.964 ±    22.596  ns/op
+
+ForEachSimple.arrayFor                     1  avgt    3      3.539 ±     0.102  ns/op
+ForEachSimple.arrayFor                    11  avgt    3     11.753 ±     0.968  ns/op
+ForEachSimple.arrayFor                   101  avgt    3     73.158 ±     4.641  ns/op
+ForEachSimple.arrayFor                  1001  avgt    3   1182.275 ±    33.812  ns/op
+----
+
+Ok, the results tells us, there is no difference at all. Just a little noise. But why is it the same, the code is so different and there us even an extra variable `i`.
+
+The explanation is simple, if you decompile the Java bytecode back into Javafootnote:[http://www.javadecompilers.com/], you get identical code. The enhanced for-loop is just syntactic sugar and compiled into a classic-for-loop by `javac`.
+
+[source,java]
+----
+@Benchmark
+public void arrayFor(Blackhole bh) {
+    int result = 0;
+    for (int i = 0; i < this.array.length; ++i) {
+        result += this.array[i].length();
+    }
+    bh.consume(result);
+}
+
+@Benchmark
+public void arrayEnhanced(Blackhole bh) {
+    int result = 0;
+    String[] arrstring = this.array;
+    int n = this.array.length;
+    for (int i = 0; i < n; ++i) {
+        String s = arrstring[i];
+        result += s.length();
+    }
+    bh.consume(result);
+}
+----
+
+== For-Loops on Lists
+Let's check out the `List` version of the loops.
+
+[source]
+----
+Benchmark                           (length)  Mode  Cnt      Score       Error  Units
+ForEachSimple.classicFor                   1  avgt    3      4.563 ±     0.324  ns/op
+ForEachSimple.classicFor                  11  avgt    3     17.026 ±     0.810  ns/op
+ForEachSimple.classicFor                 101  avgt    3     89.444 ±    10.692  ns/op
+ForEachSimple.classicFor                1001  avgt    3   1300.496 ±    20.275  ns/op
+
+ForEachSimple.enhancedFor                  1  avgt    3      5.624 ±     0.345  ns/op
+ForEachSimple.enhancedFor                 11  avgt    3     15.098 ±     0.270  ns/op
+ForEachSimple.enhancedFor                101  avgt    3     92.262 ±     0.691  ns/op
+ForEachSimple.enhancedFor               1001  avgt    3   1406.659 ±   119.568  ns/op
+----
+
+For this, we can see a larger difference that is beyond noise, at least for the 1k loop. When we now try to decompile it, we will see no difference to our original source (not shown here). So, we have to directly look at the bytecode.
+
+[source,java]
+----
+ 0: iconst_0
+ 1: istore_1
+ 2: aload_0
+ 3: getfield        #4   // Field list:Ljava/util/List;
+ 6: invokeinterface #9, 1// InterfaceMethod java/util/List.iterator:()Ljava/util/Iterator;
+11: astore_2
+12: aload_2
+13: invokeinterface #10, 1// InterfaceMethod java/util/Iterator.hasNext:()Z
+18: ifeq            41
+21: aload_2
+22: invokeinterface #11, 1// InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+27: checkcast       #7   // class java/lang/String
+30: astore_3
+31: iload_1
+32: aload_3
+33: invokevirtual   #8   // Method java/lang/String.length:()I
+36: iadd
+37: istore_1
+38: goto            12
+41: iload_1
+42: ireturn
+----
+
+This shows clearly, our enhanced for-loop accesses the `Iterator` interface, despite us not declaring that access. The plain for-loop uses the `get()` method instead. But is that all free? `Iterators` are known to require some memory.
+
+=== Memory Profile Comparison
+Let's compare the classic for-loop and the enhanced for-loop on a list memory-wise to confirm our suspicion that we get almost the same performance but might have to pay with memory for it. Just start the benchmark with `-perf gc`. The result below has been condensed to the most important lines.
+
+[source]
+----
+Benchmark                                     (length)  Mode  Cnt     Score     Error   Units
+ForEachSimple.classicFor:·gc.alloc.rate.norm         1  avgt    3    ≈ 10⁻⁶              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm        11  avgt    3    ≈ 10⁻⁶              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm       101  avgt    3    ≈ 10⁻⁵              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm      1001  avgt    3    ≈ 10⁻⁴              B/op
+
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm        1  avgt    3    ≈ 10⁻⁶              B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm       11  avgt    3    ≈ 10⁻⁵              B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm      101  avgt    3    ≈ 10⁻⁵              B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm     1001  avgt    3    ≈ 10⁻⁴              B/op
+----
+
+That is strange. We access an `Iterator` and don't have to pay a dime? That cannot be right, can it? Well, it is right, because you just witnessed one of the modern JVM/GC marvels - Escape Analysis.
+
+When the JIT compiler determines that an created object does not leave the method scope, it can allocate it on the stack instead on the heap. This means, we don't have to garbage collect it later, rather when returning from the method call, the removal of the method-stack will free the memory automatically and with no effort.
+
+You can turn of that wonder-drug with `-XX:-DoEscapeAnalysis` and you will this result in return. And sure, we are requiring memory for the enhanced-for loop. 32 bytes to be precise. But thanks to the Escape Analysis (when not turned off, of course), we don't allocate that on the heap and hence don't have to garbage collect it. Also the stack is cheap memory because it is close to the CPU (caches!). Splendid!
+
+[source]
+----
+Benchmark                                     (length)  Mode  Cnt     Score     Error   Units
+ForEachSimple.classicFor:·gc.alloc.rate.norm         1  avgt    3    ≈ 10⁻⁶              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm        11  avgt    3    ≈ 10⁻⁶              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm       101  avgt    3    ≈ 10⁻⁵              B/op
+ForEachSimple.classicFor:·gc.alloc.rate.norm      1001  avgt    3    ≈ 10⁻⁴              B/op
+
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm        1  avgt    3    32.000 ±   0.001    B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm       11  avgt    3    32.000 ±   0.001    B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm      101  avgt    3    32.000 ±   0.001    B/op
+ForEachSimple.enhancedFor:·gc.alloc.rate.norm     1001  avgt    3    32.000 ±   0.001    B/op
+----
+
+IMPORTANT: When you benchmark, ensure that you have a theory first. Verify it with the benchmark!
+
+== While-Loops
+Because we saw that we basically go the iterator way with an enhanced for-loop, let's use the iterator explicitly and compare. Additionally, we also use a counting while-loop.
+
+[source]
+----
+Benchmark                           (length)  Mode  Cnt      Score       Error  Units
+
+## we count with for
+ForEachSimple.classicFor                   1  avgt    3      4.563 ±     0.324  ns/op
+ForEachSimple.classicFor                  11  avgt    3     17.026 ±     0.810  ns/op
+ForEachSimple.classicFor                 101  avgt    3     89.444 ±    10.692  ns/op
+ForEachSimple.classicFor                1001  avgt    3   1300.496 ±    20.275  ns/op
+
+## we count with a while
+ForEachSimple.whileCounting                1  avgt    3      4.582 ±     0.175  ns/op
+ForEachSimple.whileCounting               11  avgt    3     17.005 ±     0.562  ns/op
+ForEachSimple.whileCounting              101  avgt    3     89.141 ±     9.996  ns/op
+ForEachSimple.whileCounting             1001  avgt    3   1292.825 ±    60.140  ns/op
+
+## automatic mapping to an Iterator
+ForEachSimple.enhancedFor                  1  avgt    3      5.624 ±     0.345  ns/op
+ForEachSimple.enhancedFor                 11  avgt    3     15.098 ±     0.270  ns/op
+ForEachSimple.enhancedFor                101  avgt    3     92.262 ±     0.691  ns/op
+ForEachSimple.enhancedFor               1001  avgt    3   1406.659 ±   119.568  ns/op
+
+## manual iterator usage
+ForEachSimple.whileIterator                1  avgt    3      5.765 ±     0.375  ns/op
+ForEachSimple.whileIterator               11  avgt    3     15.417 ±     0.800  ns/op
+ForEachSimple.whileIterator              101  avgt    3     92.195 ±     9.009  ns/op
+ForEachSimple.whileIterator             1001  avgt    3   1407.841 ±    35.302  ns/op
+----
+
+No surprise here, the while-loop with a counter matches the classic for-loop and the `Iterator`-based loop is exactly what we got for our enhanced for-loop.
+
+== Streams
+Loops are nowadays considered boring and not sexy, so people do streams all the time. So, let's do streams instead. We can either go the full stream route or just the `forEach` route, which is not a stream but accepts a function too and is effectively a loop. Our classic for-loop for comparison, of course.
+
+[source]
+----
+Benchmark                           (length)  Mode  Cnt      Score       Error  Units
+ForEachSimple.classicFor                   1  avgt    3      8.953 ±     0.525  ns/op
+ForEachSimple.forEach                      1  avgt    3     10.358 ±     0.144  ns/op
+ForEachSimple.lambdaStream                 1  avgt    3     45.239 ±     1.071  ns/op
+ForEachSimple.parallelLambdaStream         1  avgt    3     70.632 ±     6.422  ns/op
+
+ForEachSimple.classicFor                  11  avgt    3     21.126 ±     0.056  ns/op
+ForEachSimple.forEach                     11  avgt    3     24.696 ±     1.727  ns/op
+ForEachSimple.lambdaStream                11  avgt    3     54.382 ±     3.151  ns/op
+ForEachSimple.parallelLambdaStream        11  avgt    3  32823.435 ±  7157.456  ns/op
+
+ForEachSimple.classicFor                 101  avgt    3    106.671 ±     0.221  ns/op
+ForEachSimple.forEach                    101  avgt    3    147.870 ±     2.064  ns/op
+ForEachSimple.lambdaStream               101  avgt    3    180.519 ±     1.747  ns/op
+ForEachSimple.parallelLambdaStream       101  avgt    3  35915.980 ±  5925.201  ns/op
+
+ForEachSimple.classicFor                1001  avgt    3   1401.623 ±    49.657  ns/op
+ForEachSimple.forEach                   1001  avgt    3   1414.010 ±     2.530  ns/op
+ForEachSimple.lambdaStream              1001  avgt    3   1597.659 ±    79.037  ns/op
+ForEachSimple.parallelLambdaStream      1001  avgt    3  35937.046 ± 13351.198  ns/op
+----
+
+As we can see, the more streamy it is, the slower it gets. A `forEach` is surprisingly fast. A non-parallel stream seems to have some overhead to get going (larger difference for small loops). The difference to the leanest loop (for-loop) becomes negligible, when we have more iterations aka more data to process.
+
+One thing is clear. `parallelStream()` is a waste as soon as the stream has more than one element. That is not surprising, because giving a thread something to do, getting the result back and repeating this, is a start and stop operation. That is not efficient. In our case, the task is light, because we just fetch the size from a string and this is just a read of an `int`.
+
+== An Expensive Loop
+Our loop so far was pretty boring and quick. We have not really burned any CPU, hence the loop overhead was likely large compared to the loop content. We also saw, that a `parallelStream()` does not give us any benefit for light operations. So let's make it a little heavier.
+
+[source, java]
+----
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+@Fork(1)
+public class ForEachExpensive
+{
+    final List<BigInteger> list = new ArrayList<>();
+    BigInteger[] array = null;
+
+
+    @Param({"1", "11", "101", "1001", "100001"})
+    int length;
+
+    @Setup
+    public void setup()
+    {
+        array = new BigInteger[length];
+
+        for (int i = 0; i < length; i++)
+        {
+            array[i] = BigInteger.valueOf(i + 1);
+            list.add(BigInteger.valueOf(i + 1));
+        }
+    }
+
+    @Benchmark
+    public void arrayFor(Blackhole bh)
+    {
+        BigInteger total = BigInteger.ZERO;
+        for (int i = 0; i < array.length; i++)
+        {
+            var b = array[i];
+            total = total.add(b.pow(2).divide(b));
+        }
+
+        bh.consume(total);
+    }
+
+    @Benchmark
+    public void arrayEnhanced(Blackhole bh)
+    {
+        BigInteger total = BigInteger.ZERO;
+        for (var b : array)
+        {
+            total = total.add(b.pow(2).divide(b));
+        }
+
+        bh.consume(total);
+    }
+
+    @Benchmark
+    public void classicFor(Blackhole bh)
+    {
+        BigInteger total = BigInteger.ZERO;
+        for (int i = 0; i < list.size(); i++)
+        {
+            var b = list.get(i);
+            total = total.add(b.pow(2).divide(b));
+        }
+
+        bh.consume(total);
+    }
+
+
+    @Benchmark
+    public void enhancedFor(Blackhole bh)
+    {
+        BigInteger total = BigInteger.ZERO;
+        for (var b : list)
+        {
+            total = total.add(b.pow(2).divide(b));
+        }
+
+        bh.consume(total);
+    }
+
+
+    @Benchmark
+    public void lambdaStream(Blackhole bh)
+    {
+        var total = list.stream()
+            .map(b -> b.pow(2).divide(b))
+            .reduce((a, b) -> a.add(b));
+
+        bh.consume(total.orElse(BigInteger.ZERO));
+    }
+
+    @Benchmark
+    public void parallelLambdaStream(Blackhole bh)
+    {
+        var total = list.parallelStream()
+                        .map(b -> b.pow(2).divide(b))
+                        .reduce((a, b) -> a.add(b));
+
+        bh.consume(total.orElse(BigInteger.ZERO));
+    }
+}
+----
+
+Our example keeps the CPU busy by running some calculations with `BigInteger` and, because BigInteger is immutable, will cause some memory churn too.
+
+[source]
+----
+Benchmark                              (length)  Mode  Cnt        Score   Error  Units
+ForEachExpensive.arrayFor                     1  avgt    2       23.160          ns/op
+ForEachExpensive.arrayEnhanced                1  avgt    2       24.681          ns/op
+ForEachExpensive.classicFor                   1  avgt    2       25.704          ns/op
+ForEachExpensive.enhancedFor                  1  avgt    2       26.505          ns/op
+ForEachExpensive.lambdaStream                 1  avgt    2       66.207          ns/op
+ForEachExpensive.parallelLambdaStream         1  avgt    2       84.996          ns/op
+
+ForEachExpensive.arrayFor                    11  avgt    2      680.240          ns/op
+ForEachExpensive.arrayEnhanced               11  avgt    2      687.945          ns/op
+ForEachExpensive.classicFor                  11  avgt    2      701.725          ns/op
+ForEachExpensive.enhancedFor                 11  avgt    2      692.163          ns/op
+ForEachExpensive.lambdaStream                11  avgt    2      787.201          ns/op
+ForEachExpensive.parallelLambdaStream        11  avgt    2    34220.859          ns/op
+
+ForEachExpensive.arrayFor                   101  avgt    2     6540.811          ns/op
+ForEachExpensive.arrayEnhanced              101  avgt    2     6302.211          ns/op
+ForEachExpensive.classicFor                 101  avgt    2     6689.042          ns/op
+ForEachExpensive.enhancedFor                101  avgt    2     6657.927          ns/op
+ForEachExpensive.lambdaStream               101  avgt    2     7134.313          ns/op
+ForEachExpensive.parallelLambdaStream       101  avgt    2    39687.555          ns/op
+
+ForEachExpensive.arrayFor                  1001  avgt    2    64549.934          ns/op
+ForEachExpensive.arrayEnhanced             1001  avgt    2    66166.213          ns/op
+ForEachExpensive.classicFor                1001  avgt    2    66788.819          ns/op
+ForEachExpensive.enhancedFor               1001  avgt    2    66384.256          ns/op
+ForEachExpensive.lambdaStream              1001  avgt    2    69821.081          ns/op
+ForEachExpensive.parallelLambdaStream      1001  avgt    2    59831.436          ns/op
+
+ForEachExpensive.arrayFor                100001  avgt    2  8813801.499          ns/op
+ForEachExpensive.arrayEnhanced           100001  avgt    2  8591560.078          ns/op
+ForEachExpensive.classicFor              100001  avgt    2  8702603.394          ns/op
+ForEachExpensive.enhancedFor             100001  avgt    2  8670508.307          ns/op
+ForEachExpensive.lambdaStream            100001  avgt    2  8763410.470          ns/op
+ForEachExpensive.parallelLambdaStream    100001  avgt    2  2199651.895          ns/op
+----
+
+Our expensive payload for the loop seems almost five times heavier. So, let's see what we got.
+
+Even for a loop of one iteration, a stream is significantly slower. As soon as we have about 10 elements, a regular stream is not that much slower anymore. When the size gets larger, a standard stream does not bring too much overhead (100 elements and up).
+
+WARNING: When I say 100 elements and up, this is just for this example! This is not a golden rule!
+
+When we have more than 1000 elements, finally a parallel stream will boost performance and of course, when we have a lot of elements, it shines.
+
+TIP: The use of `parallelStream()` is mostly wrong in standard code, unless you really know what you do and expect really a lot of data. If your stream operations are more expensive, smaller datasets might also benefit. But keep in mind, you take the CPU away from someone. If you run an application server, I bet that is not cool. It could be good for data crunching operations or jobs, if you have the CPU power at hand!
+
+== Preliminary Conclusion
+So far so good. It seems that a classic for-loop and an enhanced for-loop are not any different besides a little bit more memory use due to the iterator. That is luckily optimized away by Escape Analysis. A `forEach` might be cool as well and even a regular stream operation is not that much of an overhead, as long as we have some calculations to do and the data stream is long enough.
+
+`parallelStream()` is a different beast and likely most of the time incorrectly applied. More threads must be faster - this logic is not true. More threads, more overhead. The calculations have to be long and dependency free before multi-threading in streams can deliver.
+
+== Classic-For vs. Enhanced-For
+Can we safely use our enhanced-for all the time? Well, we already learned that the enhanced-for on a list is not entirely free, while for an array, we get the same code, because it is just syntactic-sugar.
+
+Well, not so fast my friend. A benchmark is a benchmark and hence it is certainly what we measure but we only measure what we think we understand. I am being ahead if myself here.
+
+Just to show you how difficult benchmarking is, here is an example of our previous code with slight modifications.
+
+[source,java]
+----
+@State(Scope.Thread)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 3, time = 2, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 2, timeUnit = TimeUnit.SECONDS)
+@Fork(1)
+public class ForEachUnroll
+{
+    List<String> list;
+
+    @Param({"100"})
+    int length = 100;
+
+    @Setup
+    @Before
+    public void setup()
+    {
+        list = new ArrayList<>();
+
+        for (int i = 0; i < length; i++)
+        {
+            list.add(new String("42"));
+        }
+    }
+
+    @Benchmark
+    public int classicFor()
+    {
+        int result = 0;
+        for (int i = 0; i < list.size(); i++)
+        {
+            var s = list.get(i);
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int classicForAsWhile()
+    {
+        int result = 0;
+        int i = 0;
+        while (i < list.size())
+        {
+            var s = list.get(i);
+            result += s.length() * 2;
+
+            i++;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int enhancedFor()
+    {
+        int result = 0;
+        for (String s : list)
+        {
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int enhancedForAsWhile()
+    {
+        int result = 0;
+        var i = list.iterator();
+        while (i.hasNext())
+        {
+            var s = i.next();
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+}
+----
+
+Let's run that (in this case my T14s is sufficient to show you the challenges), and we get this:
+
+[source]
+----
+Benchmark                         (length)  Mode  Cnt   Score    Error  Units
+ForEachUnroll.classicFor               100  avgt    3  79.412 ±  6.102  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  80.223 ± 13.582  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  81.203 ± 13.272  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  81.936 ±  5.763  ns/op
+----
+
+That is not any different, you might say and yes, that is not different yet. Wait till the end!
+
+=== No JIT
+Let's turn off the JIT aka the C1 and C2 compilers of Hotspot and run all in interpreted mode only (`-Xint`).
+
+[source]
+----
+Benchmark                         (length)  Mode  Cnt      Score       Error  Units
+ForEachUnroll.classicFor               100  avgt    3  43439.493 ±   574.240  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  43279.290 ±  4737.294  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  36760.306 ±  6235.583  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  39371.962 ± 12936.379  ns/op
+----
+
+What we see here is, that in pure interpreter mode, a classic for-loop is more expensive because. It might be the slower bytecode (also 57 vs. 53 bytes), but that is speculation.
+
+=== Some More Work
+We learned, that work changes the pictures, so let's give the loops some work to do and this time, we opt for long and expensive code aka string replacement via regular expressions. Long code here really means a lot of code that is fetched, compiled, and executed.
+
+[source,java]
+----
+@State(Scope.Thread)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 3, time = 2, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 3, time = 2, timeUnit = TimeUnit.SECONDS)
+@Fork(1)
+public class ForEachUnroll
+{
+    List<String> list;
+
+    @Param({"100"})
+    int length = 100;
+
+    @Setup
+    @Before
+    public void setup()
+    {
+        list = new ArrayList<>();
+
+        for (int i = 0; i < length; i++)
+        {
+            // new String makes sure we really have a new memory object,
+            // not just a reference to the same String
+            list.add(new String("42"));
+        }
+    }
+
+    @Benchmark
+    public int classicFor()
+    {
+        int result = 0;
+        for (int i = 0; i < list.size(); i++)
+        {
+            var s = list.get(i);
+            s = s.replace("[0-9]", "aa");
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int classicForAsWhile()
+    {
+        int result = 0;
+        int i = 0;
+        while (i < list.size())
+        {
+            var s = list.get(i);
+            s = s.replace("[0-9]", "aa");
+            result += s.length() * 2;
+
+            i++;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int enhancedFor()
+    {
+        int result = 0;
+        for (String s : list)
+        {
+            s = s.replace("[0-9]", "aa");
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public int enhancedForAsWhile()
+    {
+        int result = 0;
+        var i = list.iterator();
+        while (i.hasNext())
+        {
+            var s = i.next();
+            s = s.replace("[0-9]", "aa");
+            result += s.length() * 2;
+        }
+
+        return result;
+    }
+}
+----
+
+The line `s = s.replace("[0-9]", "aa")` will burn CPU, waste memory, and require more code at the end of the day. Ok, let's check the results.
+
+==== No JIT
+[source]
+----
+Benchmark                         (length)  Mode  Cnt        Score        Error  Units
+ForEachUnroll.classicFor               100  avgt    3  164,581.015 ± 15,760.350  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  160,875.988 ± 51,765.914  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  154,810.944 ± 21,699.395  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  154,565.734 ± 18,431.951  ns/op
+----
+
+Ok, enhanced for-loops are still a little faster but the runtime is huge because it does not get compiled to native code at all. That are the first seconds of your application.
+
+==== JIT
+[source]
+----
+Benchmark                         (length)  Mode  Cnt    Score     Error  Units
+ForEachUnroll.classicFor               100  avgt    3  113.667 ±  21.731  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  116.929 ±  36.295  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  183.416 ± 127.044  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  194.511 ±  98.850  ns/op
+
+# The result without String::replace for comparison
+Benchmark                         (length)  Mode  Cnt    Score     Error  Units
+ForEachUnroll.classicFor               100  avgt    3   79.412 ±   6.102  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3   80.223 ±  13.582  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3   81.203 ±  13.272  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3   81.936 ±   5.763  ns/op
+----
+
+Whoops, things changed a lot. Our classic for-loops are significantly faster now. What? Why?
+
+==== C1 Level 1
+Without talking about the details of why and what, just accept the fact that we can prevent the JVM and its JIT-compiler from putting too much effort into the compile process. Here, we will basically just accept the first simplest level of compilation: `-XX:TieredStopAtLevel=1`
+
+[source]
+----
+ForEachUnroll.classicFor               100  avgt    3  2344.140 ±  518.545  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  2375.217 ±  998.936  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  2339.279 ± 1298.007  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  2306.845 ± 1566.545  ns/op
+----
+
+There is almost no runtime difference between both concepts. Surprising! The C2 compiler seems to be the magic wand here.
+
+==== C2 and No Inlining
+Once again, without explaining it in detail, we test the speed without inlining: `-XX:-Inline`.
+
+[source]
+----
+Benchmark                         (length)  Mode  Cnt     Score      Error  Units
+ForEachUnroll.classicFor               100  avgt    3  2387.720 ±  269.697  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  2332.320 ± 1589.507  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  2259.663 ± 1311.101  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  2355.178 ±  392.075  ns/op
+----
+That result almost resembles our C1 test where we limited the compiler smartness. And yes, inlining of code, avoiding jumping to methods and returning is creating a lot of runtime difference. The CPU is lazy and does not want to jump. It is an expensive operation.
+
+What we discovered is, that, most likely, the enhanced for-loop including its while-loop brother have too much code inside the loop body, so the C2 compiler does not inline as much as possible (there are limits).
+
+Let's ask someone with proper knowledge - JITWatchfootnote:[https://www.chrisnewland.com/jitwatch]. A tool for understanding the behavior of the Java HotSpot Just-In-Time (JIT) compiler during the execution of a program.
+
+.`classicFor` Inlining
+image::/images/java/classicfor-inlining.png[Inlining Chain for classicFor]
+
+.`enhancedFor` Inlining
+image::/images/java/enhancedfor-inlining.png[Inlining Chain for enhancedFor]
+
+And here we go, we see that two method calls (but only one method) have been inlined into our classic for-loop while no method was inlined for the enhanced for-loop example. This is not the fault of the loop concept rather of the methods required to pull off an enhanced for-loop. Also you can see that we require six method calls for it and the fast classic for-loop is just. The reason for not inlining a method is mostly their size.
+
+By the way, I find it interesting that `List.get()` and `String.length()` have not been inlined. That is a topic for another post, I guess.
+
+WARNING: This is just an observation, not any confirmation. I am not a JDK expert, just a user with a touch more under-the-hood knowledge.
+
+==== Ask the Perf Counters
+We already found the explanation, why suddenly our classic for-loop shines. Here is one more thing to check - Perffootnote:[https://perf.wiki.kernel.org/index.php/Main_Page[Linux profiling with performance counters]].
+
+CPU perf-counters can tell us a lot about the code execution. Let's ask them with the JMH flag `-prof perfnorm`. You need to a little bit of Linux kernel-tooling and permission for that.
+
+.Benchmark Results with Perf-Counters
+[source]
+----
+Benchmark                                            (length)  Mode  Cnt     Score  Units
+ForEachUnroll.classicFor                                  100  avgt    3   113.821  ns/op
+ForEachUnroll.classicFor:IPC                              100  avgt          4.936  insns/clk
+ForEachUnroll.classicFor:L1-dcache-loads                  100  avgt        522.912  #/op
+ForEachUnroll.classicFor:branches                         100  avgt        513.400  #/op
+ForEachUnroll.classicFor:cycles                           100  avgt        441.891  #/op
+ForEachUnroll.classicFor:instructions                     100  avgt       2181.063  #/op
+ForEachUnroll.classicFor:stalled-cycles-backend           100  avgt        203.976  #/op
+
+ForEachUnroll.classicForAsWhile                           100  avgt    3   113.001  ns/op
+ForEachUnroll.classicForAsWhile:IPC                       100  avgt          4.902  insns/clk
+ForEachUnroll.classicForAsWhile:L1-dcache-loads           100  avgt        520.509  #/op
+ForEachUnroll.classicForAsWhile:branches                  100  avgt        507.763  #/op
+ForEachUnroll.classicForAsWhile:cycles                    100  avgt        438.979  #/op
+ForEachUnroll.classicForAsWhile:instructions              100  avgt       2151.930  #/op
+ForEachUnroll.classicForAsWhile:stalled-cycles-backend    100  avgt        202.121  #/op
+
+ForEachUnroll.enhancedFor                                 100  avgt    3   182.292  ns/op
+ForEachUnroll.enhancedFor:IPC                             100  avgt          4.450  insns/clk
+ForEachUnroll.enhancedFor:L1-dcache-loads                 100  avgt        951.272  #/op
+ForEachUnroll.enhancedFor:branches                        100  avgt        521.054  #/op
+ForEachUnroll.enhancedFor:cycles                          100  avgt        706.595  #/op
+ForEachUnroll.enhancedFor:instructions                    100  avgt       3144.677  #/op
+ForEachUnroll.enhancedFor:stalled-cycles-backend          100  avgt        255.732  #/op
+
+ForEachUnroll.enhancedForAsWhile                          100  avgt    3   195.116  ns/op
+ForEachUnroll.enhancedForAsWhile:IPC                      100  avgt          4.360  insns/clk
+ForEachUnroll.enhancedForAsWhile:L1-dcache-loads          100  avgt        943.672  #/op
+ForEachUnroll.enhancedForAsWhile:branches                 100  avgt        516.808  #/op
+ForEachUnroll.enhancedForAsWhile:cycles                   100  avgt        710.696  #/op
+ForEachUnroll.enhancedForAsWhile:instructions             100  avgt       3098.458  #/op
+ForEachUnroll.enhancedForAsWhile:stalled-cycles-backend   100  avgt        252.638  #/op
+----
+
+First, mileage may vary. This is AMD Ryzen 4xxx data. Intel data looks slightly different. I also took the liberty to remove everything that does not contribute to our discussion.
+
+Just the most important lines explained first. The data is given for each method call and (important) might also contain the benchmark framework code's CPU usage.
+
+* IPC (instruction per second): Defines how many instructions (machine code) per clock cycle (one Hertz) can be executed. Modern CPUs can run up to 7 instructions per Hertz and effectively run code implicitly in parallel
+* L1-dcache-loads: How often did we successfully fetch data from the L1 cache (the miss line has been omitted)
+* Branches: How often did the CPU jump?
+* Stalled-cycles-backend: How often did we miss the L2 and L3 cache. The AMD CPUs don't not tell us what cache we missed
+* Instructions: How much machine code was executed
+* Cycles: How many Hertz on the CPU (clock ticks) did we need
+
+And here is the verdict without any conclusion, just FYI. This is for our example with classic-for being faster than enhanced-for due to inlining.
+
+* IPC: We run more instructions per cycle, hence we fill the CPU better
+* L1 data cache loads: We have to load less from the caches, which saves time
+* Branches: Both loops run about the same number of branch instructions (give or take)
+* Instruction: We need way more instructions for the same work when we run enhanced for-loops
+* Stalled-cycles-backend: We have to go less often to the memory because we miss less data in the caches
+* Cycles: A side effect of all this is, that we need less clock ticks at the end, hence are are faster
+
+By the way, it is unknown to me, why we need way more instructions in this example compared to our test without the regular expression overhead. Just for completeness and because we already have listed so much data, that one more listing won't make a difference. Once again, the data is condensed to show only the important data points and yes, this is all simplified for your pleasure.
+
+.Benchmark Result For-Loops without `String.replace`
+[source]
+----
+Benchmark                                            (length)  Mode  Cnt     Score  Units
+ForEachUnroll.classicFor                                  100  avgt    3    81.446  ns/op
+ForEachUnroll.classicFor:IPC                              100  avgt          4.359  insns/clk
+ForEachUnroll.classicFor:L1-dcache-loads                  100  avgt        526.824  #/op
+ForEachUnroll.classicFor:branches                         100  avgt        167.188  #/op
+ForEachUnroll.classicFor:cycles                           100  avgt        331.037  #/op
+ForEachUnroll.classicFor:instructions                     100  avgt       1442.873  #/op
+ForEachUnroll.classicFor:stalled-cycles-backend           100  avgt        217.216  #/op
+
+ForEachUnroll.classicForAsWhile                           100  avgt    3    82.326  ns/op
+ForEachUnroll.classicForAsWhile:IPC                       100  avgt          4.357  insns/clk
+ForEachUnroll.classicForAsWhile:L1-dcache-loads           100  avgt        525.339  #/op
+ForEachUnroll.classicForAsWhile:branches                  100  avgt        166.581  #/op
+ForEachUnroll.classicForAsWhile:cycles                    100  avgt        330.463  #/op
+ForEachUnroll.classicForAsWhile:instructions              100  avgt       1439.852  #/op
+ForEachUnroll.classicForAsWhile:stalled-cycles-backend    100  avgt        216.553  #/op
+
+ForEachUnroll.enhancedFor                                 100  avgt    3    82.635  ns/op
+ForEachUnroll.enhancedFor:IPC                             100  avgt          4.463  insns/clk
+ForEachUnroll.enhancedFor:L1-dcache-loads                 100  avgt        531.923  #/op
+ForEachUnroll.enhancedFor:branches                        100  avgt        170.008  #/op
+ForEachUnroll.enhancedFor:cycles                          100  avgt        332.392  #/op
+ForEachUnroll.enhancedFor:instructions                    100  avgt       1483.547  #/op
+ForEachUnroll.enhancedFor:stalled-cycles-backend          100  avgt        163.256  #/op
+
+ForEachUnroll.enhancedForAsWhile                          100  avgt    3    86.888  ns/op
+ForEachUnroll.enhancedForAsWhile:IPC                      100  avgt          4.443  insns/clk
+ForEachUnroll.enhancedForAsWhile:L1-dcache-loads          100  avgt        528.162  #/op
+ForEachUnroll.enhancedForAsWhile:branches                 100  avgt        167.795  #/op
+ForEachUnroll.enhancedForAsWhile:cycles                   100  avgt        329.708  #/op
+ForEachUnroll.enhancedForAsWhile:instructions             100  avgt       1465.001  #/op
+ForEachUnroll.enhancedForAsWhile:stalled-cycles-backend   100  avgt        165.720  #/op
+----
+
+CAUTION: This does not say that enhanced for-loops are worse. It just says, that we have hit a condition, which makes code using enhanced for-loops less ideal for the CPU.
+
+== JDK 17
+Just to confuse you even more, here is a JDK 11 to JDK 17 comparison.
+
+[source]
+----
+## JDK 11.0.17
+Benchmark                         (length)  Mode  Cnt    Score     Error  Units
+ForEachUnroll.classicFor               100  avgt    3  113.667 ±  21.731  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  116.929 ±  36.295  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  183.416 ± 127.044  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  194.511 ±  98.850  ns/op
+
+## JDK 17.0.4
+Benchmark                         (length)  Mode  Cnt    Score    Error  Units
+ForEachUnroll.classicFor               100  avgt    3  144.518 ±  8.738  ns/op
+ForEachUnroll.classicForAsWhile        100  avgt    3  150.021 ± 26.712  ns/op
+ForEachUnroll.enhancedFor              100  avgt    3  191.386 ± 46.860  ns/op
+ForEachUnroll.enhancedForAsWhile       100  avgt    3  189.995 ± 48.755  ns/op
+----
+
+NO! The results are void. Yes, they are. The difference between both loop implementation got smaller. The classic for-loop got slower and that is certainly unexpected. For now, I will stop further drilling down into that. Another day, another post. Hint: Inlining might have changed due to changes of the underlying code.
+
+CAUTION: Don't assume, what you have learned is a law forever. Things can change, even for the worse.
+
+== Conclusion
+Don't take anything for granted. Smaller code variations might result in totally different results. If you benchmark, benchmark the code you later really run, not any bogus shortcut.
+
+In terms of what loop is better. You cannot tell easily. AND... these are all micro-benchmarks, hence when you use that in your program as shown here, you won't see ANY runtime difference. You will only see an impact when you have computational heavy programs and these loops are your hot path.
+
+CAUTION: Don't worry about performance upfront too much. You need a problem first, you have to understand the problems, and you have to properly benchmark it.
+
+Sure, when you start with the wrong algorithm such as bubble sort instead of a quick sort, things are messy right from the start. But this is then not about languages and compiler details, it is about a higher level abstraction. A `List` might be also the wrong thing, when you want to access data later in a unique key fashion (`Map` preferred), but once again, this is an algorithmic change, not a low-level cutting CPU/memory edge change.
