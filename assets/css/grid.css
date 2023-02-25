@@ -368,23 +368,11 @@ pre {
     }
     .post header {
         padding: 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
         width: 100%;
-        justify-content: space-between;
         margin-bottom: 2ex;
         border-bottom: 1px solid var(--post-border-color);
-        align-items: flex-end;
         padding-bottom: 0.5rem;
     }
-        .post header p {
-    		font-size: 0.7em;
-    		font-weight: 400;
-    		letter-spacing: 0.25em;
-    		line-height: 1.25;
-    	}
-
     .post .title {
         padding: 0;
         margin: 0;
@@ -398,21 +386,31 @@ pre {
             line-height: 1.2;
             color: var(--post-main-headline-color);
         }
-        .post .title .description {
-            padding: 0.25rem 0 0 0;
+    .post .meta {
+        margin-top: 0.25rem;
+        padding-left: 2px;
+        color: var(--post-description-color);
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        font-size: 0.9em;
+        align-items: flex-end;
+        letter-spacing: 0.01em;
+        align-items: flex-start;
+    }
+        .post .meta .description {
+            padding: 0;
             margin: 0;
             font-size: 1rem;
             letter-spacing: normal;
             color: var(--post-description-color);
         }
-    .post .meta {
-        color: var(--post-description-color);
-        text-align: right;
-        flex-basis: auto;
-        font-size: 0.9em;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-    }
+        .post .meta time {
+            white-space: nowrap;
+
+        }
+
     .post p.continue-reading {
         text-align: right;
         margin-top: 2ex;

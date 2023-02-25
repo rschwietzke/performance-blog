@@ -2,11 +2,11 @@
     <header>
         <div class="title">
             <h1><a href="${content.rootpath}${post.noExtensionUri!post.uri}">${post.title}</a></h1>
+        </div>
+        <div class="meta">
             <#if (post.subheadline?has_content)>
                 <p class="description">${post.subheadline}</p>
             </#if>
-        </div>
-        <div class="meta">
             <time class="published" datetime='${post.date?string("yyyy-MM-dd")}'>${post.date?string("yyyy-MM-dd")}</time>
         </div>
     </header>
