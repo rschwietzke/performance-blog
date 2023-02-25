@@ -1,4 +1,4 @@
-= Java Loops - A Performance Comparison
+= Java Loops - A Per&shy;for&shy;mance Com&shy;par&shy;i&shy;son
 René Schwietzke
 :jbake-date: 2023-02-23
 :jbake-last_updated: 2023-02-23
