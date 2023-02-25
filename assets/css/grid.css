@@ -131,7 +131,7 @@ pre {
         padding-right: 1rem;
         line-height: 1;
     }
-        @media screen and (max-width: 990px) {
+        @media screen and (max-width: 980px) {
             #site-menu .menu h1 {
                 display: none;
             }
@@ -155,6 +155,13 @@ pre {
         }
         #site-menu .menu .item:not(:last-child) {
             border-right: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* if we are mobile, we don't want all context */
+        @media screen and (max-width: 736px) {
+            #site-menu .items .item .name  {
+                display: none;
+            }
         }
 
 
