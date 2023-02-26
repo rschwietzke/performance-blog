@@ -1,10 +1,9 @@
 <!DOCTYPE HTML>
+<html lang="en">
 <!--
     Pure CSS Blog and AsciiDoc René Schwietzke, MIT license (code) and CC-BY-4.0 license (content)
     Grid and Flexbox
 -->
-<html lang="en">
-
 <#include "commons/head.ftl">
 
 <body>
