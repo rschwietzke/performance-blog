@@ -110,6 +110,7 @@
         .asciidoc .listingblock .title {
             text-align: center;
             letter-spacing:-0.02em;
+            margin-bottom: 0.2rem;
             color: var(--caption-color);
         }
         .asciidoc .listingblock code {
