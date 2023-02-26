@@ -1,7 +1,7 @@
 = Java Loops - A Per&shy;for&shy;mance Com&shy;par&shy;i&shy;son
 René Schwietzke
 :jbake-date: 2023-02-23
-:jbake-last_updated: 2023-02-23
+:jbake-last_updated: 2023-02-26
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: testing, test cases
@@ -11,11 +11,11 @@ René Schwietzke
 :showfull: false
 :idprefix: java-loops-performance
 
-Recently, I saw some Java loop benchmarks. I am not entirely sure, if the outcome and advise given is correct, so here is my version. I don't want to blame any of the other tests for being incorrect, but judge for yourself.
+Recently, I read posts about some Java loop benchmarks. I am not entirely sure, if the outcome and advise given is correct, so here is my version. I don't want to blame any of the other tests for being incorrect, but judge for yourself.
 
 Spoiler alert: The type of loop might or might not make a difference and overall, it is rather not the loop that makes the difference but all the other code that leads to conditions that might make some loops run faster, despite the same work/task. And yes, `parallelStream()` is mostly a bad idea.
 
-This article also will give you a brief glimpse into benchmarking as well as teach you, that most benchmarks are wrong or better, the benchmark is right but the conclusions are wrong. Bring some time, the article got longer than expected. The article is not teaching you how to benchmark with JMH, how the JVM works, or how that all is executed by the CPU. It might even overwhelm you with facts without given you a detail explanation. But hey, it is not supposed to be the last article on that subject.
+This article also will give you a brief glimpse into benchmarking as well as teach you, that most benchmarks are wrong or better, the benchmark is right but the conclusions are wrong. Bring some time, the article got longer than expected. The article is not going to teach you how to benchmark with JMH, how the JVM works, or how that all is executed by the CPU. It might just overwhelm you with facts. But hey, it is not supposed to be the last article on that subject.
 
 == Thesis
 Not all loops are the same because they can or cannot be optimized by the JVM. Some loops are even the same under the hood, despite a different syntax.
@@ -27,9 +27,10 @@ WARNING: Don't use your average laptop for benchmarking. Modern CPUs have therma
 == Benchmark Code
 Here is our first version of the benchmark code. It uses the Java Microbenchmark Harness (JMH 1.36).
 
-Each different loops sums up the sizes of all strings in the list or array and passes it on to a blackhole to avoid optimization. These tests used JDK 11.0.18 Temurin.
+Each different loops sums up the sizes of all strings in the list or array and passes it on to a blackhole to avoid optimization (the JVM is very smart)footnote:[https://shipilev.net/jvm/anatomy-quarks/27-compiler-blackholes/[JVM Anatomy Quark #27: Compiler Blackholes
+]]. These tests used JDK 11.0.18 Temurin.
 
-We use not only a list but also an array to demonstrate the difference between a plain counting for-loop and an enhanced for-loop.
+We use not only a list but also an array to demonstrate the differences between a plain counting for-loop and an enhanced for-loop.
 
 [source,java]
 ----
@@ -174,31 +175,32 @@ public class ForEachSimple
 ----
 
 == For-Loops on Arrays
-Arrays don't have an iterator interface, hence we expect to get the same performance for a traditional for-loop and a for-each loop.
+Arrays don't have an iterator interface, hence we expect to get the same performance for a classic for-loop and an enhanced for-loop.
 
-Let's look at the result of a benchmark run with fully warmed up code. That means, the JIT had the chance to make the best compile choices.
+Let's look at the result of the benchmark run with fully warmed up code. That means, the JIT had a chance to make the best compile choices.
 
 [source]
 ----
 Benchmark                           (length)  Mode  Cnt      Score       Error  Units
-ForEachSimple.arrayEnhanced                1  avgt    3      3.665 ±     0.259  ns/op
-ForEachSimple.arrayEnhanced               11  avgt    3     11.994 ±     0.312  ns/op
-ForEachSimple.arrayEnhanced              101  avgt    3     73.317 ±     4.613  ns/op
-ForEachSimple.arrayEnhanced             1001  avgt    3   1138.964 ±    22.596  ns/op
-
 ForEachSimple.arrayFor                     1  avgt    3      3.539 ±     0.102  ns/op
 ForEachSimple.arrayFor                    11  avgt    3     11.753 ±     0.968  ns/op
 ForEachSimple.arrayFor                   101  avgt    3     73.158 ±     4.641  ns/op
 ForEachSimple.arrayFor                  1001  avgt    3   1182.275 ±    33.812  ns/op
+
+ForEachSimple.arrayEnhanced                1  avgt    3      3.665 ±     0.259  ns/op
+ForEachSimple.arrayEnhanced               11  avgt    3     11.994 ±     0.312  ns/op
+ForEachSimple.arrayEnhanced              101  avgt    3     73.317 ±     4.613  ns/op
+ForEachSimple.arrayEnhanced             1001  avgt    3   1138.964 ±    22.596  ns/op
 ----
 
-Ok, the results tells us, there is no difference at all. Just a little noise. But why is it the same, the code is so different and there us even an extra variable `i`.
+Ok, the results tells us, there is no difference at all. Just a little noise. But why is it the same, the code is so different and there is even an extra variable `i`?
 
 The explanation is simple, if you decompile the Java bytecode back into Javafootnote:[http://www.javadecompilers.com/], you get identical code. The enhanced for-loop is just syntactic sugar and compiled into a classic-for-loop by `javac`.
 
+.Decompiled Java-Bytecode
 [source,java]
 ----
-@Benchmark
+@Benchmark20030071151
 public void arrayFor(Blackhole bh) {
     int result = 0;
     for (int i = 0; i < this.array.length; ++i) {
@@ -237,9 +239,10 @@ ForEachSimple.enhancedFor                101  avgt    3     92.262 ±     0.691 
 ForEachSimple.enhancedFor               1001  avgt    3   1406.659 ±   119.568  ns/op
 ----
 
-For this, we can see a larger difference that is beyond noise, at least for the 1k loop. When we now try to decompile it, we will see no difference to our original source (not shown here). So, we have to directly look at the bytecode.
+For this, we can see a larger difference that seems beyond noise, at least for the 1k loop. When we now try to decompile it, we will see no difference to our original source (not shown here). So, we have to directly look at the bytecode.
 
-[source,java]
+.Bytecode `for (String s : list)`
+[source]
 ----
  0: iconst_0
  1: istore_1
@@ -264,7 +267,7 @@ For this, we can see a larger difference that is beyond noise, at least for the 
 42: ireturn
 ----
 
-This shows clearly, our enhanced for-loop accesses the `Iterator` interface, despite us not declaring that access. The plain for-loop uses the `get()` method instead. But is that all free? `Iterators` are known to require some memory.
+This shows clearly, our enhanced for-loop accesses the `Iterator` interface, despite us not declaring that access. The plain for-loop uses the `get()` method instead. But is that all free, `Iterators` as just objects at the end?
 
 === Memory Profile Comparison
 Let's compare the classic for-loop and the enhanced for-loop on a list memory-wise to confirm our suspicion that we get almost the same performance but might have to pay with memory for it. Just start the benchmark with `-perf gc`. The result below has been condensed to the most important lines.
@@ -285,9 +288,9 @@ ForEachSimple.enhancedFor:·gc.alloc.rate.norm     1001  avgt    3    ≈ 10⁻�
 
 That is strange. We access an `Iterator` and don't have to pay a dime? That cannot be right, can it? Well, it is right, because you just witnessed one of the modern JVM/GC marvels - Escape Analysis.
 
-When the JIT compiler determines that an created object does not leave the method scope, it can allocate it on the stack instead on the heap. This means, we don't have to garbage collect it later, rather when returning from the method call, the removal of the method-stack will free the memory automatically and with no effort.
+When the JIT compiler determines that an created object does not leave the method scope, it can allocate it on the stack instead on the heap. This means, we don't have to garbage collect it later. Instead, when returning from the method call, the removal of the method-stack will free the memory automatically and with no effort.
 
-You can turn of that wonder-drug with `-XX:-DoEscapeAnalysis` and you will this result in return. And sure, we are requiring memory for the enhanced-for loop. 32 bytes to be precise. But thanks to the Escape Analysis (when not turned off, of course), we don't allocate that on the heap and hence don't have to garbage collect it. Also the stack is cheap memory because it is close to the CPU (caches!). Splendid!
+You can turn of that wonder-drug with `-XX:-DoEscapeAnalysis` and you will get this result in return. And sure, we are requiring memory for the enhanced-for loop. 32 bytes to be precise. But thanks to the Escape Analysis (when not turned off, of course), we don't allocate that on the heap and hence don't have to garbage collect it. Also the stack is cheap memory because it is close to the CPU (caches!). Splendid!
 
 [source]
 ----
@@ -306,8 +309,9 @@ ForEachSimple.enhancedFor:·gc.alloc.rate.norm     1001  avgt    3    32.000 ± 
 IMPORTANT: When you benchmark, ensure that you have a theory first. Verify it with the benchmark!
 
 == While-Loops
-Because we saw that we basically go the iterator way with an enhanced for-loop, let's use the iterator explicitly and compare. Additionally, we also use a counting while-loop.
+Because we saw, that we basically go the iterator way with an enhanced for-loop, let's use the iterator explicitly and compare. Additionally, we also use a counting while-loop.
 
+.While-Loops vs. Their For-Counterparts
 [source]
 ----
 Benchmark                           (length)  Mode  Cnt      Score       Error  Units
@@ -338,6 +342,8 @@ ForEachSimple.whileIterator             1001  avgt    3   1407.841 ±    35.302 
 ----
 
 No surprise here, the while-loop with a counter matches the classic for-loop and the `Iterator`-based loop is exactly what we got for our enhanced for-loop.
+
+Caution: A for-loop and a while-loop are not always running the same code. There are chances, that a for-loop can be optimized further.
 
 == Streams
 Loops are nowadays considered boring and not sexy, so people do streams all the time. So, let's do streams instead. We can either go the full stream route or just the `forEach` route, which is not a stream but accepts a function too and is effectively a loop. Our classic for-loop for comparison, of course.
@@ -478,6 +484,7 @@ public class ForEachExpensive
 
 Our example keeps the CPU busy by running some calculations with `BigInteger` and, because BigInteger is immutable, will cause some memory churn too.
 
+.Loops Compared when Loop-Content is Heavier
 [source]
 ----
 Benchmark                              (length)  Mode  Cnt        Score   Error  Units
@@ -648,10 +655,10 @@ ForEachUnroll.enhancedFor              100  avgt    3  36760.306 ±  6235.583  n
 ForEachUnroll.enhancedForAsWhile       100  avgt    3  39371.962 ± 12936.379  ns/op
 ----
 
-What we see here is, that in pure interpreter mode, a classic for-loop is more expensive because. It might be the slower bytecode (also 57 vs. 53 bytes), but that is speculation.
+What we see here is, that in pure interpreter mode, a classic for-loop is more expensive because. It might be the slower, because we got a little more bytecode (also 57 vs. 53 bytes), but that is speculation.
 
 === Some More Work
-We learned, that work changes the pictures, so let's give the loops some work to do and this time, we opt for long and expensive code aka string replacement via regular expressions. Long code here really means a lot of code that is fetched, compiled, and executed.
+We learned, that work changes the picture, so let's give the loops some work to do and this time, we opt for long and expensive code aka string replacement via regular expressions. Long code here really means a lot of code that is fetched, compiled, and executed.
 
 [source,java]
 ----
@@ -743,7 +750,7 @@ public class ForEachUnroll
 }
 ----
 
-The line `s = s.replace("[0-9]", "aa")` will burn CPU, waste memory, and require more code at the end of the day. Ok, let's check the results.
+The line `s = s.replace("[0-9]", "aa")` will burn CPU, waste memory, and require more code to run at the end of the day. Ok, let's check the results.
 
 ==== No JIT
 [source]
@@ -755,7 +762,7 @@ ForEachUnroll.enhancedFor              100  avgt    3  154,810.944 ± 21,699.395
 ForEachUnroll.enhancedForAsWhile       100  avgt    3  154,565.734 ± 18,431.951  ns/op
 ----
 
-Ok, enhanced for-loops are still a little faster but the runtime is huge because it does not get compiled to native code at all. That are the first seconds of your application.
+Ok, enhanced for-loops are still a little faster but the runtime is huge because it does not get compiled to native code at all. That is how the first seconds of your applications look like.
 
 ==== JIT
 [source]
@@ -787,7 +794,7 @@ ForEachUnroll.enhancedFor              100  avgt    3  2339.279 ± 1298.007  ns/
 ForEachUnroll.enhancedForAsWhile       100  avgt    3  2306.845 ± 1566.545  ns/op
 ----
 
-There is almost no runtime difference between both concepts. Surprising! The C2 compiler seems to be the magic wand here.
+There is almost no runtime difference between both concepts. Surprise! The C2 compiler seems to be the magic wand here.
 
 ==== C2 and No Inlining
 Once again, without explaining it in detail, we test the speed without inlining: `-XX:-Inline`.
@@ -800,7 +807,7 @@ ForEachUnroll.classicForAsWhile        100  avgt    3  2332.320 ± 1589.507  ns/
 ForEachUnroll.enhancedFor              100  avgt    3  2259.663 ± 1311.101  ns/op
 ForEachUnroll.enhancedForAsWhile       100  avgt    3  2355.178 ±  392.075  ns/op
 ----
-That result almost resembles our C1 test where we limited the compiler smartness. And yes, inlining of code, avoiding jumping to methods and returning is creating a lot of runtime difference. The CPU is lazy and does not want to jump. It is an expensive operation.
+That result almost resembles our C1 test where we limited the compiler smartness. And yes, inlining of code, avoiding jumping to methods and returning, is creating a huge runtime difference. The CPU is lazy and does not want to jump. It is an expensive operation.
 
 What we discovered is, that, most likely, the enhanced for-loop including its while-loop brother have too much code inside the loop body, so the C2 compiler does not inline as much as possible (there are limits).
 
@@ -812,11 +819,11 @@ image::/images/java/classicfor-inlining.png[Inlining Chain for classicFor]
 .`enhancedFor` Inlining
 image::/images/java/enhancedfor-inlining.png[Inlining Chain for enhancedFor]
 
-And here we go, we see that two method calls (but only one method) have been inlined into our classic for-loop while no method was inlined for the enhanced for-loop example. This is not the fault of the loop concept rather of the methods required to pull off an enhanced for-loop. Also you can see that we require six method calls for it and the fast classic for-loop is just. The reason for not inlining a method is mostly their size.
+And here we go, we see that two method calls (but only one method) have been inlined into our classic for-loop while no method was inlined for the enhanced for-loop example. This is not the fault of the loop concept rather of the methods required to pull off an enhanced for-loop. Also you can see that we require six method calls for it and the fast classic for-loop is just five. The reason for not inlining a method is mostly their size.
 
 By the way, I find it interesting that `List.get()` and `String.length()` have not been inlined. That is a topic for another post, I guess.
 
-WARNING: This is just an observation, not any confirmation. I am not a JDK expert, just a user with a touch more under-the-hood knowledge.
+WARNING: This is just an observation, not any confirmation. I am not a JVM expert, just a user with a touch more under-the-hood knowledge.
 
 ==== Ask the Perf Counters
 We already found the explanation, why suddenly our classic for-loop shines. Here is one more thing to check - Perffootnote:[https://perf.wiki.kernel.org/index.php/Main_Page[Linux profiling with performance counters]].
@@ -953,3 +960,8 @@ In terms of what loop is better. You cannot tell easily. AND... these are all mi
 CAUTION: Don't worry about performance upfront too much. You need a problem first, you have to understand the problems, and you have to properly benchmark it.
 
 Sure, when you start with the wrong algorithm such as bubble sort instead of a quick sort, things are messy right from the start. But this is then not about languages and compiler details, it is about a higher level abstraction. A `List` might be also the wrong thing, when you want to access data later in a unique key fashion (`Map` preferred), but once again, this is an algorithmic change, not a low-level cutting CPU/memory edge change.
+
+== Additional Reading
+* https://tonisagrista.com/blog/2022/java-loop-performance/[https://tonisagrista.com/blog/2022/java-loop-performance/]
+* https://blog.knoldus.com/java-streams-vs-loop/[Java – While vs For vs Iterator Performance Test
+]
