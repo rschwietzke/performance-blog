@@ -121,6 +121,8 @@
             border: none;
         }
         .asciidoc .listingblock pre {
+            box-sizing: border-box;
+
             background-color: var(--listingblock-pre-bg-color);
             margin: 0;
             background-color: #f7f7f8;
