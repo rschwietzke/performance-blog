@@ -199,7 +199,9 @@
           margin-left: 1.125em;
         }
 
-        .asciidoc ul li::marker {
+        .asciidoc ul li::marker,
+        .asciidoc ol li::marker
+        {
             color: var(--headline-color);
         }
 
