@@ -1,0 +1,782 @@
+= Int to String Benchmarks
+René Schwietzke
+:jbake-date: 2023-03-10
+:jbake-last_updated: 2023-03-10
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: Java, performance, JMH
+:subheadline: Learn to deal with fuzzy numbers
+:_excerpt: Recently I saw some benchmarks about converting `int` to `String` and of course, I got curious. Is this really true? Is the result really that conclusive? Can we easily spot the difference and where is it coming from?
+:pinned: true
+:showfull: false
+:idprefix: java-int-to-string-performance
+
+Recently I saw some benchmarksfootnote:[https://twitter.com/xpvit/status/1629788926096429057] about converting `int` to `String` and of course, I got curious. This post shows that the results are legit, but have to be taken with a grain of salt. Time measurement at a certain granularity is questionable, memory allocation and freeing as well as the choice of the time source will plague us. The final advise at the end is, as always, it depends and you likely don't have to care for 99% of your programming.
+
+== Introduction
+The https://twitter.com/xpvit/status/1629788926096429057[benchmark on Twitter] about converting `int` to `String` got me curious. Is this really true? Is the result really that conclusive? Because I have been running performance tests and benchmark for years now, I developed the following golden rule.
+
+TIP: "Never believe any benchmark you have not falsified yourself."
+
+The benchmark results say that `String.valueOf(int)` is faster than `Integer.toString(int)`. When using `"" + i` to convert an `int`, we are fastest. In addition, one also tried a `StringBuilder`-based conversion.
+
+.The Results to Validate
+----
+"" + i                                      27.870 ns/op
+String.valueOf(i)                           28.371 ns/op
+Integer.toString(i)                         29.721 ns/op
+new StringBuilder().append(i).toString()    43.424 ns/op
+----
+
+Can we reproduce this result? Does the result make sense when looking under the hood and comparing the implementations?
+
+== About the Tests
+
+NOTE: All of these benchmarks have been executed mostly on cloud machines with proper cooling (Digital Ocean, dedicated CPU, compute-optimized, 8 to 32 core, up to 64 GB memory), no throttling, plenty of memory, Linux as OS, and repeated and varied several times.
+
+WARNING: Don't just use your average laptop for benchmarking. Modern CPUs have thermal management and flexible frequencies, so the more cores you use, the less speed you get, the longer you test, the less speed you have. Besides, your production code does not run on a laptop.
+
+== Benchmark Code
+Here is our first version of the benchmark code. It uses the Java Microbenchmark Harness (JMH 1.36) and JDK 11.0.18.
+
+We set up a small array of ints first, converting them later to String, and finally return the last one to the caller to avoid fancy optimizations by the JVM. We use the sizes 1, 10, and 100 to vary the measurements.
+
+.The Benchmark Code
+[source,java]
+----
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.SECONDS)
+@Fork(1)
+public class IntegerToString
+{
+    int[] array = null;
+
+    @Param({"1", "10", "100"})
+    int size;
+
+    @Setup
+    public void setup()
+    {
+        array = new int[size];
+        var r = new Random(18);
+
+        for (int i = 0; i < size; i++)
+        {
+            // ensure a fixed length
+            array[i] = r.nextInt(1_000_000) + 1_000_000;
+        }
+    }
+
+    @Benchmark
+    public int noop()
+    {
+        // I am just here to measure the nothing
+        return size;
+    }
+
+    @Benchmark
+    public String integerToString()
+    {
+        var result = "";
+        for (int i : array)
+        {
+            result = Integer.toString(i);
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public String stringValueOf()
+    {
+        var result = "";
+        for (int i : array)
+        {
+            result = String.valueOf(i);
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public String stringConcat()
+    {
+        var result = "";
+        for (int i : array)
+        {
+            result = "" + i;
+        }
+
+        return result;
+    }
+
+    @Benchmark
+    public String stringBuilder()
+    {
+        var result = "";
+        for (int i : array)
+        {
+            result = new StringBuilder().append(i).toString();
+        }
+
+        return result;
+    }
+}
+----
+
+== The First Result
+Ok, here is the first set of results measured on a Digital Ocean CPU-optimized Intel machine. Call it a brute-force test. Please pay attention to the unit of measure. It is nanosecond per test method execution. Hence the decimal digits are kinda nonsense, because these are picoseconds. The noop results are not ordered because it rather validates the benchmark setup than the test.
+
+.First Result (Ordered by Fastest)
+[source]
+----
+Benchmark                              (size)  Mode  Cnt     Score     Error  Units
+IntegerToString.noop                        1  avgt    3     2.355 ±   0.112  ns/op
+IntegerToString.noop                       10  avgt    3     2.337 ±   0.103  ns/op
+IntegerToString.noop                      100  avgt    3     2.357 ±   0.082  ns/op
+
+IntegerToString.integerToString             1  avgt    3    19.108 ±   2.095  ns/op
+IntegerToString.stringConcat                1  avgt    3    20.405 ±   1.149  ns/op
+IntegerToString.stringValueOf               1  avgt    3    20.456 ±   2.520  ns/op
+IntegerToString.stringBuilder               1  avgt    3    24.592 ±   1.525  ns/op
+
+IntegerToString.integerToString            10  avgt    3   163.449 ±   2.071  ns/op
+IntegerToString.stringValueOf              10  avgt    3   163.725 ±  23.491  ns/op
+IntegerToString.stringConcat               10  avgt    3   175.777 ±  18.922  ns/op
+IntegerToString.stringBuilder              10  avgt    3   216.393 ±   9.920  ns/op
+
+IntegerToString.stringValueOf             100  avgt    3  1659.692 ± 156.023  ns/op
+IntegerToString.integerToString           100  avgt    3  1679.467 ±  88.040  ns/op
+IntegerToString.stringConcat              100  avgt    3  1707.656 ±  46.347  ns/op
+IntegerToString.stringBuilder             100  avgt    3  2045.056 ± 179.956  ns/op
+----
+
+This is not the result we have seen for the other benchmark on the internet. Besides that, the data size change also changes the result order. Only `StringBuilder` is always the slowest. Let's try again.
+
+.Second Result (Ordered by Fastest)
+[source]
+----
+Benchmark                              (size)  Mode  Cnt     Score     Error  Units
+IntegerToString.noop                        1  avgt    3     2.338 ±   0.135  ns/op
+IntegerToString.noop                       10  avgt    3     2.351 ±   0.056  ns/op
+IntegerToString.noop                      100  avgt    3     2.348 ±   0.245  ns/op
+
+IntegerToString.stringValueOf               1  avgt    3    18.945 ±   1.693  ns/op
+IntegerToString.integerToString             1  avgt    3    19.056 ±   2.695  ns/op
+IntegerToString.stringConcat                1  avgt    3    20.332 ±   2.722  ns/op
+IntegerToString.stringBuilder               1  avgt    3    24.336 ±   0.760  ns/op
+
+IntegerToString.integerToString            10  avgt    3   162.985 ±   4.381  ns/op
+IntegerToString.stringValueOf              10  avgt    3   163.706 ±  18.393  ns/op
+IntegerToString.stringConcat               10  avgt    3   190.088 ±   4.595  ns/op
+IntegerToString.stringBuilder              10  avgt    3   210.622 ±   4.033  ns/op
+
+IntegerToString.integerToString           100  avgt    3  1653.628 ± 291.396  ns/op
+IntegerToString.stringValueOf             100  avgt    3  1669.797 ± 141.551  ns/o
+IntegerToString.stringConcat              100  avgt    3  1880.126 ± 217.447  ns/op
+IntegerToString.stringBuilder             100  avgt    3  2029.199 ± 104.099  ns/op
+----
+
+We can see that our noop-probe is almost the same runtime again (and of course the size of the data does not influence the outcome), but beyond that, things change all the time. Yes, `StringBuilder` is still bad, but the rest does not really position itself clearly. It would be enough to have always the same order for the moment and ignore the absolute numbers, but this is not true either.
+
+Let's turn that into a different numbers set. The deviation is the difference to the average in percent. This assumes, that the average might be the correct value. This is mathematically not correct, but it something easy to grasp.
+
+.Results and Differences Viewed Differently
+[%header,format=tsv,cols="2,>1,>1,>1,>1,>1,>1,>1",%autowidth]
+|===
+Test	Size	#1	#2	Diff	Avg	Dev #1	Dev #2
+noop	1	2.355	2.338	-0.017	2.347	-0.36%	0.36%
+integerToString	1	19.108	19.056	-0.052	19.082	-0.14%	0.14%
+stringValueOf	1	20.456	18.945	-1.511	19.701	-3.69%	3.99%
+stringConcat	1	20.405	20.332	-0.073	20.369	-0.18%	0.18%
+stringBuilder	1	24.592	24.336	-0.256	24.464	-0.52%	0.53%
+noop	10	2.337	2.351	0.014	2.344	0.30%	-0.30%
+integerToString	10	163.449	162.985	-0.464	163.217	-0.14%	0.14%
+stringValueOf	10	163.725	163.706	-0.019	163.716	-0.01%	0.01%
+stringConcat	10	175.777	190.088	14.311	182.933	4.07%	-3.76%
+stringBuilder	10	216.393	210.622	-5.771	213.508	-1.33%	1.37%
+noop	100	2.357	2.348	-0.009	2.353	-0.19%	0.19%
+integerToString	100	1679.467	1653.628	-25.839	1666.548	-0.77%	0.78%
+stringValueOf	100	1659.692	1669.797	10.105	1664.745	0.30%	-0.30%
+stringConcat	100	1707.656	1880.126	172.47	1793.891	5.05%	-4.59%
+stringBuilder	100	2045.056	2029.199	-15.857	2037.128	-0.39%	0.39%
+|===
+
+We can see that the difference between two measurements can be be pretty large, but in many cases, it is pretty small. There is not trend how much our repeated measurement is off.
+
+By the way, and I am a little ahead of myself, writing such a loop test is good and bad at the same time. Good because it eliminates the overhead the call the test method and bad, because it introduces potential loop optimizations into the mix as well as might expose cache effects. We will get to that in another blog post.
+
+== Narrow the Tests
+Let's throw away the `StringBuilder` test, because it is clearly the slowest and might not contribute to our goal at the moment. It is also the ugliest solution by far.
+
+We are simplifying the tests by removing the loop. The random setup of the `int` avoids early optimization and the cast from a System.time-`long` is always creating an integer with the same length.
+
+.Removing the Loop
+[source,java]
+----
+public class IntegerToStringNoLoop
+{
+    int number;
+
+    @Setup
+    public void setup()
+    {
+        // Constant length int with unknown value to the compiler
+        // to avoid early optimization.
+        number = (int) System.currentTimeMillis();
+    }
+
+    @Benchmark
+    public int noop()
+    {
+        return number;
+    }
+
+    @Benchmark
+    public String integerToString()
+    {
+        return Integer.toString(number);
+    }
+
+    @Benchmark
+    public String stringValueOf()
+    {
+        return String.valueOf(number);
+    }
+
+    @Benchmark
+    public String stringConcat()
+    {
+        return  "" + number;
+    }
+}
+----
+
+.Run 1 of Loopless Conversion
+[source]
+----
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.170 ± 0.066  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  17.392 ± 2.535  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  18.427 ± 2.642  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  18.810 ± 0.786  ns/op
+----
+
+Let's validate with another run to see if we get the same results.
+
+.Run 2 of Loopless Conversion
+[source]
+----
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.172 ± 0.090  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  17.322 ± 1.534  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  18.407 ± 1.961  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  18.523 ± 0.766  ns/op
+----
+
+Great... that is very much consistent. There are smaller changes in the numbers but concat is the winner and String.valueOf is next. But the distance between the last two is varying a lot.
+
+The general numbers differ from the test we saw on Twitter, but the order is the same. Not bad. We also seem to have fancier hardware, because we are 10 ns faster per call.
+
+But we shall not stop here because we have not yet explored other aspects of benchmarking.
+
+== Cost
+Let's see how costly our benchmark is at the moment. Let's use `-perf gc` to check on the memory churn. At the moment, these tests run with `-Xms1g -Xmx1g -XX:+AlwaysPreTouch`.
+
+.GC Profiling (G1)
+[source]
+----
+Benchmark                                                  Mode  Cnt     Score     Error   Units
+IntegerToStringNoLoop.noop                                 avgt    3     2.177 ±   0.087   ns/op
+IntegerToStringNoLoop.noop:·gc.alloc.rate                  avgt    3    ≈ 10⁻⁴            MB/sec
+IntegerToStringNoLoop.noop:·gc.alloc.rate.norm             avgt    3    ≈ 10⁻⁷              B/op
+IntegerToStringNoLoop.noop:·gc.count                       avgt    3       ≈ 0            counts
+
+IntegerToStringNoLoop.stringConcat                         avgt    3    17.235 ±   0.184   ns/op
+IntegerToStringNoLoop.stringConcat:·gc.alloc.rate          avgt    3  3098.143 ±  32.589  MB/sec
+IntegerToStringNoLoop.stringConcat:·gc.alloc.rate.norm     avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.stringConcat:·gc.count               avgt    3    46.000            counts
+IntegerToStringNoLoop.stringConcat:·gc.time                avgt    3    89.000                ms
+
+IntegerToStringNoLoop.stringValueOf                        avgt    3    18.426 ±   1.351   ns/op
+IntegerToStringNoLoop.stringValueOf:·gc.alloc.rate         avgt    3  2898.027 ± 210.789  MB/sec
+IntegerToStringNoLoop.stringValueOf:·gc.alloc.rate.norm    avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.stringValueOf:·gc.count              avgt    3    43.000            counts
+IntegerToStringNoLoop.stringValueOf:·gc.time               avgt    3    89.000                ms
+
+IntegerToStringNoLoop.integerToString                      avgt    3    18.501 ±   2.240   ns/op
+IntegerToStringNoLoop.integerToString:·gc.alloc.rate       avgt    3  2886.161 ± 354.247  MB/sec
+IntegerToStringNoLoop.integerToString:·gc.alloc.rate.norm  avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.integerToString:·gc.count            avgt    3    43.000            counts
+IntegerToStringNoLoop.integerToString:·gc.time             avgt    3   111.000                ms
+----
+
+There is no memory-allocation going on for our noop, but there is a lot of memory churn for the other three. We request up to 3 GB per second!!! We can also see that that memory allocation per operation is identical for all three.
+
+The G1 is a concurrent GC and works in the background. When we have 1 GB of memory and we consume 3 GB per second, we have to work a lot to get that provided as well as we might not really benefit from background activities to keep pauses short. We just eat through the memory  quickly, hence G1 does not help us here at all.
+
+So let's go old-school and use the Serial GC which is not running in the background. It only cleans when it cannot satisfy the next allocation request. There is no proactive work going on. Use `-XX:+UseSerialGC` on the command line to activate it.
+
+.GC Profiling (SerialGC)
+[source]
+----
+Benchmark                                                  Mode  Cnt     Score     Error   Units
+IntegerToStringNoLoop.noop                                 avgt    3     2.166 ±   0.054   ns/op
+IntegerToStringNoLoop.noop:·gc.alloc.rate                  avgt    3    ≈ 10⁻⁴            MB/sec
+IntegerToStringNoLoop.noop:·gc.alloc.rate.norm             avgt    3    ≈ 10⁻⁷              B/op
+IntegerToStringNoLoop.noop:·gc.count                       avgt    3       ≈ 0            counts
+
+IntegerToStringNoLoop.stringConcat                         avgt    3    17.781 ±   1.647   ns/op
+IntegerToStringNoLoop.stringConcat:·gc.alloc.rate          avgt    3  3003.026 ± 275.419  MB/sec
+IntegerToStringNoLoop.stringConcat:·gc.alloc.rate.norm     avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.stringConcat:·gc.count               avgt    3    99.000            counts
+IntegerToStringNoLoop.stringConcat:·gc.time                avgt    3    15.000                ms
+
+IntegerToStringNoLoop.integerToString                      avgt    3    18.012 ±   1.468   ns/op
+IntegerToStringNoLoop.integerToString:·gc.alloc.rate       avgt    3  2964.358 ± 242.411  MB/sec
+IntegerToStringNoLoop.integerToString:·gc.alloc.rate.norm  avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.integerToString:·gc.count            avgt    3    97.000            counts
+IntegerToStringNoLoop.integerToString:·gc.time             avgt    3    14.000                ms
+
+IntegerToStringNoLoop.stringValueOf                        avgt    3    18.433 ±   2.064   ns/op
+IntegerToStringNoLoop.stringValueOf:·gc.alloc.rate         avgt    3  2896.679 ± 322.732  MB/sec
+IntegerToStringNoLoop.stringValueOf:·gc.alloc.rate.norm    avgt    3    56.000 ±   0.001    B/op
+IntegerToStringNoLoop.stringValueOf:·gc.count              avgt    3    95.000            counts
+IntegerToStringNoLoop.stringValueOf:·gc.time               avgt    3    15.000                ms
+----
+
+So, the allocation rate did not change but we spent less time in GC but gc-ed more often. That is great, but can we do better?
+
+== Look Ma, no GC!
+Let's try to take the garbage collection out of the picture. We bring in the non-freeing EpsilonGCfootnote:[https://blogs.oracle.com/javamagazine/post/epsilon-the-jdks-do-nothing-garbage-collector]. Because we don't free memory, we have to supply it with a lot. In this case, we give the JVM 60 GB to work with.
+
+----
+-Xms60g -Xmx60g -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC -XX:+AlwaysPreTouch
+----
+
+The option `-XX:+AlwaysPreTouch` is important, otherwise the OS cheats and does not really hand the memory to the program when it asks for it in the beginning, rather when it wants to use it. To fix that, we use the memory during startup already by writing to it. This will make us own the memory for sure and give us most likely a linear memory mapping (no fragmentation). But it takes quite some time to do that. You can find an example without pretouch at the end of the article.
+
+.Results using EpsilonGC
+[source]
+----
+# Run 1
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.065          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.386          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.409          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.591          ns/op
+
+# Run 2
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.083          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.166          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.554          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.561          ns/op
+
+# Run 3
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.073          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.390          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.486          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.673          ns/op
+----
+
+As we can see, the order still changes and the measurements are still fluctuating. Is this good enough? You might have expected better repeatability, don't you? Let's look at the numbers in comparison. The deviation columns define how much the value of the run deviates from the average across all runs.
+
+.Results and Differences
+[%header,format=tsv,cols="2,>1,>1,>1,>1,>1,>1,>1",%autowidth]
+|===
+Test	#1	#2	#3	Avg	Dev	Dev	Dev
+noop	2.065	2.083	2.073	2.074	0.42%	-0.45%	0.03%
+stringValueOf	20.386	20.561	20.39	20.474	0.43%	-0.43%	0.41%
+integerToString	20.409	20.554	20.486	20.482	0.36%	-0.35%	-0.02%
+stringConcat	20.591	20.166	20.673	20.379	-1.03%	1.05%	-1.42%
+|===
+
+It is actually not that bad... at all! Sure, String concatenation has some outliers, but they are well below 2%. That is nothing. So, this is actually a good benchmark result. Small deviations, the same trend per run. Done!
+
+IMPORTANT: Don't look at the pure numbers. Always put them in perspective to each other. The numbers might look very much different, but math tells us otherwise. Less than 2% deviation between runs is actually quite good.
+
+NOTE: *Off topic* - When you run load and performance tests for web sites and web services, a 10% variations between runs is good and perfectly normal.
+
+== Time is Everything
+Well, of course, we are not done yet, because there is more we have to understand. For instance, time measurement itself. One might ask now, how does a computer actually measure time? And yes, this is an excellent and important question.
+
+On Linux, and likely on other OSs as well, there are different sources for time. Some are relative and some are absolute. If you want to read more about it, here is a https://www.kernel.org/doc/Documentation/virtual/kvm/timekeeping.txt[document from Red Hat] published on Kernel.org. It explains the possible time sources PIT, RTC, APIC, HPET, and Time Stamp Counters (TSC). There are additional sources such as xen and kvm-clock, depending on where your machine is located (hardware vs. virtualized vs. containered).
+
+I don't want to discuss these sources here. Please just accept the fact, that TSC is often the most accurate, but might not be available on virtualized hardware. All measurements above have been taken with kvm-clock.
+
+If you want to know what sources your setup supports, look into `/sys/devices/system/clocksource/clocksource0/available_clocksource` and check the list. On the machines I used for benchmarking, the data looks like that:
+
+[source,bash]
+----
+~# cat /sys/devices/system/clocksource/clocksource0/available_clocksource
+kvm-clock tsc hpet acpi_pm
+----
+
+You can switch to another source by setting it in `/sys/devices/system/clocksource/clocksource0/current_clocksource`. You can also read the active one from there.
+
+[source,bash]
+----
+~# cat /sys/devices/system/clocksource/clocksource0/current_clocksource
+kvm-clock
+~# echo 'tsc' > /sys/devices/system/clocksource/clocksource0/current_clocksource
+~# cat /sys/devices/system/clocksource/clocksource0/current_clocksource
+tsc
+----
+
+Let's run our benchmarks again and check the timings with `tsc` as clocksource. We still keep the GC out and run Epsilon GC.
+
+Some suggested reading: https://blog.trailofbits.com/2019/10/03/tsc-frequency-for-all-better-profiling-and-benchmarking/[TSC Frequency For All: Better Profiling and Benchmarking].
+
+.Runs with TSC (Ordered by Time)
+[source]
+----
+# Run 2
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.083          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.590          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.620          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.690          ns/op
+
+# Run 3
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.089          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.504          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.799          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.865          ns/op
+
+# Run 4
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    2   2.084          ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    2  20.440          ns/op
+IntegerToStringNoLoop.integerToString  avgt    2  20.669          ns/op
+IntegerToStringNoLoop.stringConcat     avgt    2  20.740          ns/op
+----
+
+The order is almost the same, great. Even though the difference is similar to our `kvm-clock` run. Our calculated deviation is below 0.6% now. It was 1.4% for the kvm-clock. I discard the first result, because it is often way off.
+
+.Results and Differences with TSC
+[%header,format=tsv,cols="2,>1,>1,>1,>1,>1,>1,>1",%autowidth]
+|===
+Test	#1	#2	#3	Avg	Dev	Dev	Dev
+noop	2.083	2.089	2.084	2.085	0.11%	-0.18%	0.06%
+stringValueOf	20.590	20.504	20.440	20.547	-0.21%	0.21%	0.52%
+integerToString	20.620	20.799	20.669	20.710	0.43%	-0.43%	0.20%
+stringConcat	20.690	20.865	20.740	20.778	0.42%	-0.42%	0.18%
+|===
+
+=== This is Humbug
+Now it is about time to tell you, that this is all humbug at the end of the day, because you cannot really measure nanoseconds with that such accuracy. Just check what https://shipilev.net/blog/2014/nanotrusting-nanotime/[Aleksey Shipilёv - Nanotrusting the Nanotime] once wrote. The resolution of nanotime is 15-30 ns at best. Because you have to read the timer and when you read it, you need time for reading it. A kind of Heisenberg problemfootnote:[https://en.wiktionary.org/wiki/Heisenberg_uncertainty_principle].
+
+To compensate for that, the benchmark framework measures not single executions but a lot of executions and a total time for that. It later divides the call count by the total time. Only this can give us these small measurements. This also explains why we are talking about something hard to measure here. 0.3 ns difference? Well, you cannot get that right at all.
+
+==== A Hypothetical Example
+If a method call takes 20 ns, we can execute our method 50 million times per second. Let's assume we have a GC cycle to run, which takes 15 ms, we can now only execute the method 49,250,000 times. But because we think we had the full second for us, we get now a runtime of 20.3 ns. Voilà, our measurement difference.
+
+But didn't we eliminate the GC from all that and now I just used it as an example for the change in timing? Yes, because we still need memory at the end even though we don't free it, this example is as legit as all others. Besides, you cannot remove the GC from most of the benchmarks easily and you would also heavily distort your results.
+
+To avoid making our post even larger, just accept, that memory allocation does not have constant runtime either. Each ask for memory might have a slight different cost due to location of the memory, OS management overhead, the influence of caches, and a few more things. That is a topic for another day, I guess.
+
+== All is Relative
+Just one last thing before we dive into the code behind our methods. If you use another machine, you have to start over again. See this example. I just started another Digital Ocean instance, same image, same config, same datacenter. I just started it a few hours later. I also destroyed my first instance before that.
+
+.Different Machine (TSC Clocksource)
+[source]
+----
+# Run 2
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.070 ± 0.128  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  21.038 ± 2.320  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  21.323 ± 0.749  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  21.410 ± 2.309  ns/op
+
+# Run 3
+Benchmark                              Mode  Cnt   Score    Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.070 ±  0.131  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  20.308 ±  2.239  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  20.527 ±  1.004  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  23.116 ± 35.255  ns/op
+
+# Run 4
+Benchmark                              Mode  Cnt   Score    Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.068 ±  0.056  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  20.250 ±  0.078  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  20.447 ±  1.250  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  20.480 ±  1.616  ns/op
+----
+
+As you can see, we landed likely someplace else with our machine and no longer enjoy reliable measurements as we have seen before. It starts to jump around despite no GC and TSC as time source.
+
+WARNING: There is almost no way to measure timing at this granularity correctly. There is a lot of noise all the time and you have to deal with it. Don't declare one thing faster than the other prematurely.
+
+One might say, I used a cloud-machine and hence things are bad. Ok, I get it, let's try something more fixed. I have a 4+4 Core Intel-7700K 32 GB machine at home. It runs Linux and I disabled the turbo-boost for some more predictability. Sadly, I cannot run Epsilon GC here, because 32 GB are not enough. TSC as clocksource, of course.
+
+.Non-Cloud Intel-7700K
+[source]
+----
+Benchmark                              Mode  Cnt   Score    Error  Units
+IntegerToStringNoLoop.noop             avgt    3   1.913 ±  0.125  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  18.149 ±  3.247  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  19.209 ±  0.870  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  19.417 ±  4.192  ns/op
+
+Benchmark                              Mode  Cnt   Score    Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.111 ±  1.342  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  18.634 ±  3.235  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  19.221 ±  1.743  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  19.924 ± 10.257  ns/op
+
+Benchmark                              Mode  Cnt   Score    Error  Units
+IntegerToStringNoLoop.noop             avgt    3   1.934 ±  0.258  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  18.959 ±  1.769  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  19.204 ±  3.873  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  19.927 ±  7.971  ns/op
+----
+
+As you can see, the order is almost fix but the differences are not. Once again, we are measuring on a level where smaller side effects can dramatically change the result.
+
+TIP: Have a real world problem you can measure, because we typically spend more than 20 ns for it. You will also quickly realize, that your choice of the integer conversion does not make a difference. Instead you might find out that writing your own very specialist conversion helps even more... or not :)
+
+== Behind the Scenes
+Ok, we measured a lot and found a certain order, but the differences are small. So, let's get to the code behind these calls. Once again, JitWatchfootnote:[https://github.com/AdoptOpenJDK/jitwatch/wiki] is our friend.
+
+=== Bytecode
+The following code block lists the Java code first and afterwards the bytecode.
+
+[source,java]
+----
+public String integerToString(int i)
+{
+    return Integer.toString(i);
+}
+// 0: iload_1
+// 1: invokestatic    #2   // Method java/lang/Integer.toString:(I)Ljava/lang/String;
+// 4: areturn
+----
+
+Ok, `Integer.toString` is not a surprise, we call the method. Period.
+
+[source,java]
+----
+public String stringValueOf(int i)
+{
+    return String.valueOf(i);
+}
+// 0: iload_1
+// 1: invokestatic    #3   // Method java/lang/String.valueOf:(I)Ljava/lang/String;
+// 4: areturn
+----
+
+Ok, `String.valueOf` is also not a surprise, we call the method. Period.
+
+[source,java]
+----
+public String stringConcat(int i)
+{
+    return "" + i;
+}
+// 0: iload_1
+// 1: invokedynamic   #4, 0// InvokeDynamic #0:makeConcatWithConstants:(I)Ljava/lang/String;
+// 6: areturn
+----
+
+Our strange code is a surprise, because it is not building a String via `StringBuilder`, instead we call something very specialized. These methods exist since Java 9 and are a far more efficient way of putting strings together. And yes, this is the reason why some of the most popular performance advises, please use `StringBuilder` instead of `+`, is mostly not longer valid.
+
+Here is code behind it: https://github.com/openjdk/jdk/blob/jdk-11%2B28/src/java.base/share/classes/java/lang/invoke/StringConcatFactory.java[StringConcatFactory]. It is highly complex code. But at the end, this might also just call `Integer.toString(int)` for the conversion.
+
+I found a write up at https://www.baeldung.com/java-invoke-dynamic[Baeldung - Java Invoke Dynamic] that explains the magic behind `InvokeDynamic`.
+
+=== String.valueOf(int)
+Ok, let's move on to the remaining methods. Let's check the JDK and see how `String.valueOf(int)` is implemented.
+
+[source,java]
+----
+public static String valueOf(int i) {
+    return Integer.toString(i);
+}
+----
+
+Surprise! It is just sending everyone to `Integer.toString(int)`.
+
+=== Integer.toString(int)
+So, because we use this and also get send here, let's check the actual implementation in JDK 11.
+
+[source,java]
+----
+@HotSpotIntrinsicCandidate
+public static String toString(int i) {
+    int size = stringSize(i);
+    if (COMPACT_STRINGS) {
+        byte[] buf = new byte[size];
+        getChars(i, size, buf);
+        return new String(buf, LATIN1);
+    } else {
+        byte[] buf = new byte[size * 2];
+        StringUTF16.getChars(i, size, buf);
+        return new String(buf, UTF16);
+    }
+}
+----
+You see that the code is pretty long and makes a difference between compact `Strings` and full Strings. This is a Java 11 feature to improve the memory consumption by storing most Strings as single-byte array because they are plain ASCII.
+
+But the interesting part is `@HotSpotIntrinsicCandidate`. This indicates, that the JDK might bring a native implementation to the table. But it does not mean, that there is a native implementation available all the time.
+
+When we use the options `-XX:+UnlockDiagnosticVMOptions -XX:+PrintIntrinsics` when starting the test, we will see a list of intrinsics actually being used. For JDK 11 on x84-64, there is no such intrinsic for `Integer.toString(int)` coming up, so we seem to use the Java code here.
+
+To the JVM experts: Please help me out here, because I have seen an intrinsic being registered in the code, but still it does not seem to be used.
+
+== Conclusion
+First, it is hard to get to consistent measurement data. When this is finally achieved, one does not find a large difference. When the code is reviewed, it is clear why, because that code is not really different.
+
+It is not clear why `String.valueOf(int)` is slightly faster than `Integer.valueOf(int)` despite of just calling the other method, hence it should rather be slightly slower. The new Java 9 String concatenation routines seem to be a little more efficient than `Integer.toString(int)`. That is a little surprising.
+
+== One Last Thing - Newer JDKs
+Just for completeness, here are the JDK 17 and 20-EA results.
+
+[source]
+----
+# JDK 17
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   0.516 ± 0.029  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  17.317 ± 0.777  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  17.743 ± 0.436  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  17.773 ± 1.358  ns/op
+
+# JDK 20-EA+34
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   0.520 ± 0.051  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  15.997 ± 0.394  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  16.374 ± 1.235  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  16.420 ± 2.406  ns/op
+----
+
+All slightly different, but the JDK 17 results match my expectations more.
+
+By the way, calling a method that just returns a value is likely not faster than before. I suspect that either we have inlined the code by accident or something else changed in regards to measuring. All to be proven, so not final verdict here.
+
+IMPORTANT: Don't believe your results blindly. Measure several times and if the results don't match your expectations, vary the angle of attack, review the code more closely, and ask an expert.
+
+== One More Last Thing - Pretouch
+If you run the benchmarks without `-XX:+AlwaysPreTouch`, you will get the results below. You can clearly see the extra overhead when getting memory late from the OS, instead of upfront and at once.
+
+.No Early Memory Allocation with `-XX:+AlwaysPreTouch`
+[source]
+----
+Benchmark                              Mode  Cnt   Score   Error  Units
+IntegerToStringNoLoop.noop             avgt    3   2.069 ± 0.007  ns/op
+IntegerToStringNoLoop.stringValueOf    avgt    3  47.195 ± 2.008  ns/op
+IntegerToStringNoLoop.stringConcat     avgt    3  47.259 ± 1.355  ns/op
+IntegerToStringNoLoop.integerToString  avgt    3  47.677 ± 4.098  ns/op
+----
+
+The runtimes are more than double. It is important to note that this mostly applies to our Epsilon GC runs because Epsilon needs fresh memory all the time. Our regular GCs have requested all the memory within the first seconds and will not expose that overhead when measuring normally.
+
+== The Final Last Thing
+And because benchmarking never ends, I just tried to benchmark by throughput and measured a lot of times (100 times for 100 ms). The larger the number, the faster. These are not execution times but number of executions per one millisecond. Three test rounds with 1 GB memory and SerialGC.
+
+.Throughout Benchmark (Larger Score is Better)
+[source]
+----
+Benchmark                                 Mode  Cnt    Score      Error   Units
+# Avg 452,889 Max Dev 0.33%
+IntegerToStringNoLoopTP.noop             thrpt  100  454,396 ± 2007.679  ops/ms
+IntegerToStringNoLoopTP.noop             thrpt  100  451,395 ± 2545.805  ops/ms
+IntegerToStringNoLoopTP.noop             thrpt  100  452,876 ± 2470.990  ops/ms
+
+# Avg 38,269 Max Dev 0.17%
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   38,214 ±  206.816  ops/ms
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   38,334 ±  178.169  ops/ms
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   38,258 ±  200.615  ops/ms
+
+# Avg 44,291 Max Dev 0.30%
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   44,206 ±  172.121  ops/ms
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   44,242 ±  247.796  ops/ms
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   44,424 ±  445.330  ops/ms
+
+# Avg 44,472 Max Dev 1.03%
+IntegerToStringNoLoopTP.integerToString  thrpt  100   44,018 ±  340.036  ops/ms
+IntegerToStringNoLoopTP.integerToString  thrpt  100   44,578 ±  219.118  ops/ms
+IntegerToStringNoLoopTP.integerToString  thrpt  100   44,822 ±  345.935  ops/ms
+
+# Avg 46,675 Max Dev 0.85%
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   46,467 ±  261.002  ops/ms
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   46,481 ±  220.266  ops/ms
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   47,078 ±  245.964  ops/ms
+----
+
+As you can see, the maximum deviation from the average is about 1%. Interestingly, not all tests have the same behavior in terms of deviation. But when we measure memory stress, they all consume the same per operation (except noop), but not the same overall, because `StringBuilder` is slower, hence less stress. This might be the reason for the greater stability here in terms of throughput.
+
+Here is the config for the measurements. I know, it is a nuts setup and pros likely go another route, even might just call that stupid, but it is for the purpose of showing measurement stability.
+
+.Throughput Setup
+[source, java]
+----
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@Warmup(iterations = 5, time = 2000, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 100, time = 100, timeUnit = TimeUnit.MILLISECONDS)
+@Fork(1)
+public class IntegerToStringNoLoopTP
+{
+    // the usual code here... see above
+}
+----
+
+== What Did We Learn Today?
+We could confirm the benchmarks results. String concatenation rules despite the code looking stupid. `String.valueOf(int)` is slightly faster than `Integer.toString(int)` and we have a hard time to understand why. `StringBuilder` is off by a lot.
+
+1. Use whatever you like to convert an `int` to a `String` except for a hand-rolled `StringBuilder`.
+2. Measuring something down to the nanosecond is technically impossible, we just averaging a bunch of executions because measuring time takes time.
+3. Memory churn heavily influences measurement stability.
+4. You cannot expect stable measurements in the sense of exact repeatable results. You might only follow trends most of the time.
+4. Different JDKs, different results.
+4. Different hardware, despite the same config, might yield different results.
+5. The length of the code does not tell us anything about speed.
+6. String concatenation with `+` is surprisingly fast.
+8. You have to live with noise and that can be easily 5%, but of course less is preferred.
+9. Measure several times, discard the biggest outliers and use the rest.
+10. Benchmarking is full of surprises.
+
+== Open Questions
+These question are open at the moment, because I simply don't know better.
+
+* Why is `String.valueOf(int)` faster than `Integer.toString(int)` despite just calling the other method?
+* How does the String concatenation magic work that is in place since JDK 9? I get the basic idea of on-the-fly code generation, but maybe there is more documentation available?
+* Why is there no intrinsic used for `Integer.toString(int)`?
+* Why is the JDK 17 benchmark for a noop method call suddenly way faster (despite that benchmarking being questionable in general)?
+
+Please contact me if you know more about that and I will happily add this information and correct my assumptions.
+
+== The Famous P.S.
+I couldn't resist and tested on my local T14s with *turbo boost off*. I also assigned only the first four real cores to the Java process (`taskset -c`) + TSC plus SerialGC. Don't forget, that is throughput and not time, so higher is better. Seems to be very stable but the time distance between each method varies despite the order being the same.
+
+.T14s AMD Test
+[source]
+----
+Benchmark                                 Mode  Cnt    Score   Error Units
+# Run 1
+IntegerToStringNoLoopTP.noop             thrpt  100  111,387 ± 701   ops/ms
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   19,104 ± 242   ops/ms
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   25,747 ± 318   ops/ms
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   26,200 ± 201   ops/ms
+IntegerToStringNoLoopTP.integerToString  thrpt  100   26,451 ± 134   ops/ms
+
+# Run 2
+IntegerToStringNoLoopTP.noop             thrpt  100  111,419 ± 584   ops/ms
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   19,328 ± 101   ops/ms
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   26,202 ± 189   ops/ms
+IntegerToStringNoLoopTP.integerToString  thrpt  100   26,390 ± 154   ops/ms
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   26,361 ± 247   ops/ms
+
+# Run 3
+IntegerToStringNoLoopTP.noop             thrpt  100  111,324 ± 555   ops/ms
+IntegerToStringNoLoopTP.stringBuilder    thrpt  100   19,488 ± 109   ops/ms
+IntegerToStringNoLoopTP.stringConcat     thrpt  100   26,087 ± 147   ops/ms
+IntegerToStringNoLoopTP.integerToString  thrpt  100   26,113 ± 286   ops/ms
+IntegerToStringNoLoopTP.stringValueOf    thrpt  100   26,418 ± 114   ops/ms
+----
