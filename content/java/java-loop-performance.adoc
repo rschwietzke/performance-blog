@@ -1,10 +1,10 @@
 = Java Loops - A Per&shy;for&shy;mance Com&shy;par&shy;i&shy;son
 René Schwietzke
 :jbake-date: 2023-02-23
-:jbake-last_updated: 2023-02-26
+:jbake-last_updated: 2023-03-08
 :jbake-type: post
 :jbake-status: published
-:jbake-tags: testing, test cases
+:jbake-tags: Java, performance, JMH, benchmarking
 :subheadline: Make sure, you benchmark correctly
 :_excerpt: NONE
 :pinned: true
@@ -200,7 +200,7 @@ The explanation is simple, if you decompile the Java bytecode back into Javafoot
 .Decompiled Java-Bytecode
 [source,java]
 ----
-@Benchmark20030071151
+@Benchmark
 public void arrayFor(Blackhole bh) {
     int result = 0;
     for (int i = 0; i < this.array.length; ++i) {
@@ -343,7 +343,7 @@ ForEachSimple.whileIterator             1001  avgt    3   1407.841 ±    35.302 
 
 No surprise here, the while-loop with a counter matches the classic for-loop and the `Iterator`-based loop is exactly what we got for our enhanced for-loop.
 
-Caution: A for-loop and a while-loop are not always running the same code. There are chances, that a for-loop can be optimized further.
+CAUTION: A for-loop and a while-loop are not always running the same code. There are chances, that a for-loop can be optimized further.
 
 == Streams
 Loops are nowadays considered boring and not sexy, so people do streams all the time. So, let's do streams instead. We can either go the full stream route or just the `forEach` route, which is not a stream but accepts a function too and is effectively a loop. Our classic for-loop for comparison, of course.
@@ -957,7 +957,7 @@ Don't take anything for granted. Smaller code variations might result in totally
 
 In terms of what loop is better. You cannot tell easily. AND... these are all micro-benchmarks, hence when you use that in your program as shown here, you won't see ANY runtime difference. You will only see an impact when you have computational heavy programs and these loops are your hot path.
 
-CAUTION: Don't worry about performance upfront too much. You need a problem first, you have to understand the problems, and you have to properly benchmark it.
+TIP: Don't worry about performance upfront too much. You need a problem first, you have to understand the problems, and you have to properly benchmark it.
 
 Sure, when you start with the wrong algorithm such as bubble sort instead of a quick sort, things are messy right from the start. But this is then not about languages and compiler details, it is about a higher level abstraction. A `List` might be also the wrong thing, when you want to access data later in a unique key fashion (`Map` preferred), but once again, this is an algorithmic change, not a low-level cutting CPU/memory edge change.
 
