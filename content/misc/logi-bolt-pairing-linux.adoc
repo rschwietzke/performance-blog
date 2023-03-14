@@ -1,0 +1,49 @@
+= Pair Logi Bolt Receiver on Linux
+:jbake-date: 2023-03-14
+:jbake-pinned: false
+:jbake-type: post
+:jbake-status: published
+:jbake-tags: Linux, mouse, pairing, Logitech, Ubuntu
+:subheadline: How to bring the mouse back
+:idprefix: logi-bolt-moouse
+:showfull: false
+
+Logitech's universal USB receiver supports Linux but when the pairing to the device is lost, one cannot easily repair that without Windows or Mac. The project Solaar fixes that. Follow the steps to bring your mouse or keyboard back to live on Linux. It fixed my Logitech M650 L issue. Thanks!
+
+## Logi Bolt M650 L
+My Logitech universal receiver, that came with my mouse Logitech M650 L, forgot the pairing with its mouse or vice versa. Because Logitech does not deliver any driver or tooling for Linux and using Bluetooth (which works fine by the way) all the time was not an option, I googled and found a solution.
+
+This article by https://fazlearefin.medium.com/logitech-mx-keys-mini-logi-bolt-usb-receiver-linux-12b6a3a302a4[Logitech MX Keys Mini | Logi Bolt USB Receiver | Linux] by Fazle Arefin was really helpful. Within a few seconds, everything was back to normal.
+
+## Steps
+Just in case the article will disappear, here are the steps.
+
+### Install Solaar package
+
+Install Solaar but the Ubuntu repo version is too old, hence you need a fresh install via PIP. More on the https://pwr-solaar.github.io/Solaar/[homepage] of Solaar.
+
+----
+$ sudo pip3 install solaar
+----
+
+### Add the udev rules
+----
+$ git clone https://github.com/pwr-Solaar/Solaar.git /tmp/solaar
+$ sudo cp /tmp/solaar/rules.d/42-logitech-unify-permissions.rules /etc/udev/rules.d/
+$ sudo udevadm control --reload-rules
+----
+
+### Open Solaar
+
+* Open Solaar
+* Unpair your device (if it was paired but did not work)
+* Pair it again and follow the instructions
+* You should be back in business!
+
+.Solaar Window on Cinnamon Desktop
+image::/images/misc/linux-solaar-window-with-logi-m650-l.png[Solaar Window]
+
+No warranties are given that this will work for you. You are on your own.
+
+## Misc
+By the way, I love my M650 L mouse. It was a perfect buy. It is precise, responsive, not laggy, works on almost any surface, and, that is most important, fits my hand perfectly. It is also easy to carry because the receiver has its home in the mouse when not being needed.
