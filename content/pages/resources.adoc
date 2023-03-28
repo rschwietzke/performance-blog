@@ -45,4 +45,5 @@ These are some of the resources I used to build this blog. I have not modified J
 * Show why List.get() is not inlined and show what performance gain is possible with a simpler get.
 * Memory allocation cost is no constant
 * Tinymap vs. Hashmap
-* Simple list vs. ArrayList
+* Simple list vs. ArrayList, cache and things
+* Matcher.reset vs. Pattern.matcher
