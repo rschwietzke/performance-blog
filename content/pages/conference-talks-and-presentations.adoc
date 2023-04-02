@@ -7,6 +7,10 @@
 
 == Talks
 
+=== Devoxx Poland 2023
+
+My talks https://devoxx.pl/talk-details/?id=4916[Java - Parallel Programming is Hard] based on the JUG Saxony Day 2022 material and my new presentation https://devoxx.pl/talk-details/?id=4918[Micro Benchmarking - The Art of Realizing One is Wrong] have been accepted for https://devoxx.pl/[Devoxx Poland 2023]. See you there!
+
 === JUG Saxony Day 2022
 This talk is about the Java Memory Model and what you should know to write correct multi-threaded code or at least know that you might not have to care about. It shows some of the details that modern languages and frameworks typically fully hide but Java partially still exposes due to its history. When you write a library for multi-threaded use, make sure you understand what you do. If you consume such a library, you hopefully can really on the quality and consistency provided. If the performance of your application is mediocre, maybe you find a possible reason here.
 
