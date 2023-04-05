@@ -1,7 +1,7 @@
 = Benchmarking - A Number Journey
 René Schwietzke
 :jbake-date: 2023-03-10
-:jbake-last_updated: 2023-03-28
+:jbake-last_updated: 2023-04-04
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: Java, performance, JMH
@@ -11,7 +11,6 @@ René Schwietzke
 :showfull: false
 :aliass: java-int-to-string-performance-benchmark
 :idprefix: java-int-to-string-performance
-:toc:
 
 Recently I saw some benchmarksfootnote:[https://twitter.com/xpvit/status/1629788926096429057] about converting `int` to `String` and of course, I got curious. This post shows that the results are legit, but have to be taken with a grain of salt.
 
