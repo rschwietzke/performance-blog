@@ -1,6 +1,6 @@
 = My New Blog
 :jbake-date: 2023-02-18
-:jbake-pinned: true
+:jbake-pinned: false
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: jbake, blog

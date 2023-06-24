@@ -9,7 +9,7 @@ René Schwietzke
 :_excerpt: Recently I saw some benchmarks about converting `int` to `String` and of course, I got curious. Is this really true? Is the result really that conclusive? Can we easily spot the difference and where is it coming from?
 :pinned: true
 :showfull: false
-:aliass: java-int-to-string-performance-benchmark
+:alias: java-int-to-string-performance-benchmark
 :idprefix: java-int-to-string-performance
 
 Recently I saw some benchmarksfootnote:[https://twitter.com/xpvit/status/1629788926096429057] about converting `int` to `String` and of course, I got curious. This post shows that the results are legit, but have to be taken with a grain of salt.

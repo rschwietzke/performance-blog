@@ -1,6 +1,6 @@
 = JBake 2.7.0 Solves UTF-8 Issue
 :jbake-date: 2023-02-08
-:jbake-pinned: true
+:jbake-pinned: false
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: jbake, UTF-8

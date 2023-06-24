@@ -2,7 +2,7 @@
 René Schwietzke
 2023-02-07
 :jbake-type: post
-:jbake-pinned: true
+:jbake-pinned: false
 :jbake-status: published
 :subheadline: Shows and tests every possible content snippet.
 :jbake-tags: asciidoc, demo
