@@ -27,13 +27,13 @@ Yes, once upon a time, there was a need to do manual string construction using `
 
 The advice stems from the general property of Java-Strings to be immutable. Therefore, temporary Strings will be created even during intermediate operations. A `StringBuilder` avoids temporary intermediate strings.
 
-By the way, this myth has a brother: "Always use a properly sized `StringBuilder'". Let's discuss these myths, and while we're at it, you will see a step-by-step approach for running microbenchmarks. Start small, grow, and observe.
+By the way, this myth has a brother: "Always use a properly sized StringBuilder". Let's discuss these myths, and while we're at it, you will see a step-by-step approach for running microbenchmarks. Start small, grow, and observe.
 
 NOTE: And yes, there is `String` and there is string. There is a difference, but for this article, I will either ignore it or do it wrong.
 
 == Thesis
 
-Modern Java (i.e., JDK 11 or higher) doesn't require the use of 'StringBuilder' for string concatenation anymore because the JVM does it more efficiently on its own. This will not require more memory or lead to a decrease in speed. Only special operations, such as repeated concatenation in a loop, may still require the old `StringBuilder' approach.
+Modern Java (i.e., JDK 11 or higher) doesn't require the use of `StringBuilder` for string concatenation anymore because the JVM does it more efficiently on its own. This will not require more memory or lead to a decrease in speed. Only special operations, such as repeated concatenation in a loop, may still require the old `StringBuilder` approach.
 
 We will also raise the theory here that cold code (such as startup-only code) might benefit from the old programming pattern because the JVM has not yet been able to come up with proper compiled code.
 
