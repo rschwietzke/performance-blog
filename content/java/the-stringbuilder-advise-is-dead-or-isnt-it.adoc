@@ -138,10 +138,14 @@ Ok, that is surprising. First, a `StringBuilder` is faster in its unsized and si
 
 A standard string operation is right in the middle of the pack, even `String::concat` is faster.
 
-=== Summary
 If you don't write fluid code for `StringBuilder`, it is slower.
 
-NOTE: This test used one character strings, and we talk about a difference of 2 ns between `StringBuilder` and a classic string operation. You need a pretty good reason to justify ugly code when the difference is just 2 ns (memory is the same), especially when this is not the hottest (prove it!) path of your implementation.
+[NOTE]
+====
+This test used one character strings, and we talk about a difference of 2 ns between `StringBuilder` and a classic string operation. You need a pretty good reason to justify ugly code when the difference is just 2 ns (memory is the same), especially when this is not the hottest (prove it!) path of your implementation.
+
+We will later learn that Java is not using your fluid StringBuilder code at all. That explains why the memory churn of fluid vs. non-fluid are so different!
+====
 
 == Experiment 2 - Three Different Size Strings
 
@@ -194,7 +198,7 @@ nonfluidBuilder,27.558 ns,43.271 ns,44.623 ns,77.029 ns,109.543 ns
 nonfluidBilderSized,26.056 ns,35.696 ns,36.046 ns,47.040 ns,61.881 ns
 |===
 
-Our classic string building wins in most cases. The non-fluid versions of the `StringBuilder` are always slower than their fluid counterpart. `String::concat` is ok for shorter string operations, it gets slower when you append larger strings.
+Our classic string building wins in most cases. The non-fluid versions of the `StringBuilder` are always slower than their fluid counterpart. `String::concat` is ok for shorter string operations, but it gets slower when you append larger strings.
 
 .Results Memory T02a
 [%header,format=csv,cols="1,>1,>1,>1,>1,>1",%autowidth]
@@ -213,11 +217,10 @@ Our `StringBuilder` sizing myth is also partially busted because the fluid versi
 === Intermediate Summary
 It seems more than clear that the use-always-`StringBuilder` claim is more than wrong nowadays. There is no reason to prefer `StringBuilder` over `String` concatentation in the tested cases.
 
-
 == Experiment 3 - More Than Strings
-Ok, what about non-string case, such as a wild combination of strings and integers for instance? There must be an advantage, shouldn't it?
+Ok, what about non-string cases, such as a wild combination of strings and integers for instance? There must be an advantage, shouldn't it?
 
-.Striings and a Number
+.Strings and a Number
 [source,java]
 ----
 public class TC03a_Naive_StringsAndLong
@@ -266,9 +269,9 @@ nonfluidBuilderSized:·gc.alloc.rate.norm  avgt    3   144.000 ±    0.001    B/
 That was easy. Classic string concatenation is faster and more memory efficient. Period.
 
 == Experiment 4 - Random Strings
-When you benchmark frequently, you might know that data is the key driver of incorrect benchmark results and therefore creator of famous myths. So let's counter that effect but varying the data a lot. This restricts the ability of the VM to make up perfect code, which only applies to benchmark scenarios.
+When you benchmark frequently, you might know that data is the key driver of incorrect benchmark results and therefore creator of famous myths. So let's counter that effect but varying the data a lot. This restricts the ability of the VM to make up perfect code, which would only applies to our synthetic benchmark scenarios.
 
-Because we don't know what the `String` length is upfront, we have to guess a basic builder size instead.
+Because we don't know the `String` length upfront, we have to guess a basic builder size instead.
 
 .Random String Concatenation
 [source,java]
@@ -326,7 +329,7 @@ nonfluidBuilderSized:·gc.alloc.rate.norm  avgt    3   331.734 ±    0.040    B/
 Boom! Classic string building is the winner with total random and unpredictable data. It also beats the `StringBuilder` version regarding memory usage by far. *Myth busted!*
 
 == Experiment 5 - The Classic StringBuilder Use Case
-There must be a reason for StringBuilder, don't you think? So let's give it a try and fabricate a classic use case for a `StringBuilder`. We will build upon our 5th test case and instead of random `String` picking, we will just put everything together into a huge `String`.
+There must be a reason for StringBuilder, don't you think? So let's give it a try and fabricate a classic use case for a `StringBuilder`. We will build upon our 5th test case and instead of random `String` picking, we will just put everything together resulting in a huge `String`.
 
 .StringBuilder used properly
 [source,java]
@@ -388,7 +391,7 @@ public class TC05a_Random_ManyAndLong {
 .Results
 [source]
 ----
-Benchmark                                                       Mode  Cnt      Score      Error   Units
+Benchmark                              Mode  Cnt      Score      Error   Units
 classic                                avgt    3   1125.415 ±   54.227   ns/op
 classic:·gc.alloc.rate.norm            avgt    3  10280.000 ±    0.001    B/op
 
@@ -414,7 +417,7 @@ As a bonus, we added a test case for different sizing options of the builder. In
 
 If not mistaken, a `StringBuilder` doubles in size plus 2 when it runs out of capacity. Therefore, getting it wrong by 1 is similar to giving it just half the target size. It has to grow at least once. Being off by 1 might even be worse because we have are doubling for just one more character, while half the size might just land right. So, very hard to get it right.
 
-== Experiment 7 - Startup
+== Experiment 6 - Startup
 I can clearly hear a "but". What happens when the code is not hot, such as during server startup? Well, let's take a look and see how that turns out. So, we will modify the benchmark and eliminate the warm up. We will reduce the runtime of the test iterations to something small but still measurable for JMH.
 
 Keep in mind, single iterations are not measured, rather many measurements and https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html#/20[we later calculate the runtime]. Only in the case of iterations that take milliseconds, you can afford to measure each one.
@@ -428,7 +431,7 @@ Keep in mind, single iterations are not measured, rather many measurements and h
 
 // New
 // No warmup and 5 extremly short measurement cycles. You cannot measure
-// a single iteration because they are so extremly short, that the machine
+// a single iteration because they are so extremely short, that the machine
 // clock will always work against you
 @Warmup(iterations = 0, time = 2, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 10, timeUnit = TimeUnit.MILLISECONDS)
@@ -450,7 +453,7 @@ nonFluidBuilderSized,295,106,30,69,20
 
 Damn, the first classic round is slow. But the explanation is simple. No other String operation of that kind was executed before. When we bring in a String concatenation before the measurement iterations as part of the setup, the tide turns. Be aware, that the benchmark framework touches things before your code, hence measuring base Java class performance is hard. The `StringBuilder` should show something similar, but I guess it was touched before our code by JMH or that code is just light enough.
 
-.Touching String in Setup
+.Touching Strings in Setup
 [source,java]
 ----
 @Setup
@@ -466,7 +469,7 @@ public void setup()
 }
 ----
 
-.Results No Warmup, `"a" + "b"`, TC01b, String concat in setup
+.Results No Warmup, `"a" + "b"`, TC01b, String Concat in Setup
 [%header,format=csv,cols="3,>1,>1,>1,>1,>1",%autowidth]
 |===
 Type,1,2,3,4,5
@@ -492,11 +495,12 @@ nonFluidBuilder,221,567,188,264,280
 nonFluidBuilderSized,212,176,108,60,57
 |===
 
-`StringBuilder` and concat are preferable when the code is cold and lurk warm, but the classic version picks up steam quickly.
+`StringBuilder` and concat are preferable when the code is cold or lurk warm, but the classic version picks up steam quickly.
 
 WARNING: Yes, cold code benefits from `StringBuilder` use and might justify some ugliness. BUT, how much code is really cold and does your tiny string operation impact a 5 sec startup really that much? Don't claim, measure!
 
 Please execute the benchmark yourselves, in case you also want to glance at the warm-up times of the other string sizes.
+
 == Conclusion
 For the 99.5% of you, who write regular Java code that is not called often, please don't follow the `StringBuilder` advice because you will be wrong regarding memory consumption (sizing) and mostly runtime. When you cannot write it in a non-fluid way, you lose instantly too. In addition, your code will look horrible and will be harder to understand.
 

@@ -17,15 +17,20 @@ I was an honor to be invited to speak at Devoxx Poland 2023. It was a really fun
 My first talk was about the right approach to microbenchmarking and the mistakes you can make if you try it a little too naively -  https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong]. About 60 people attended and I was rated with 4.5 of 5 stars. I tried to put too much into the presentation so I had to rush towards the end. Sorry about that, but take as much time as you need to go through the slides.
 
 .René Schwietzke presentating at Devoxx Poland 2023
-image::/images/misc/devoxx-poland-2023-rene-schwietzke-microbenchmarking.jpg[René Schwietzke presenting at Devoxx Poland 2023, Microbenchmarking - The Art of Realizing One is Wrong]
+image::/images/misc/devoxx-poland-2023-rene-schwietzke-microbenchmarking-2.jpg[René Schwietzke presenting at Devoxx Poland 2023, Microbenchmarking - The Art of Realizing One is Wrong]
+
+.Microbenchmarking - The Art of Realizing One is Wrong on YouTube
+[link=https://www.youtube.com/watch?v=3SWsLIZt3vE,target=_blank]
+image::/images/misc/devoxx-poland-2023-rene-schwietzke-microbenchmarking-youtube.jpg[René Schwietzke presenting at Devoxx Poland 2023, Microbenchmarking - The Art of Realizing One is Wrong]
 
 Friday's was all about parallel programming and why it is so important to know at least some details about the internals of the JVM in order to programm correctly. https://training.xceptance.com/java/400-jmm-parallel-programming-is-hard-devoxx-poland-2023.html[PARALLEL PROGRAMMING IS HARD - Why you really need synchronization and it is not what you think]. 350 people showed interest and attended my session. It was rated 4.35 out of 5 stars. Many thanks to Douglas Q Hawkins and his 2017 Devoxx talk on https://www.youtube.com/watch?v=ADxUsCkWdbE[Concurrency Concepts in Java]. It was both an inspiration and a foundation for my talk.
 
 .René Schwietzke, Devoxx Poland 2023, Parallel Programming is Hard
-image::/images/misc/devoxx-poland-2023-rene-schwietzke-parallel-programming-is-hard.jpg[René Schwietzke dpresenting at Devoxx Poland 2023, Parallel Programming is Hard]
+image::/images/misc/devoxx-poland-2023-rene-schwietzke-parallel-programming-is-hard-2.jpg[René Schwietzke presenting at Devoxx Poland 2023, Parallel Programming is Hard]
 
-As soon as the videos are online, I will add them here.
-
+.Parallel Programming is Hard on YouTube
+[link=https://www.youtube.com/watch?v=uucLUYcjUeI,target=_blank]
+image::/images/misc/devoxx-poland-2023-rene-schwietzke-parallel-programming-is-hard-youtube.jpg[René Schwietzke presenting at Devoxx Poland 2023, Parallel Programming is Hard]
 
 === JUG Saxony Day 2022
 This talk is about the Java Memory Model and what you should know to write correct multi-threaded code or at least know that you might not have to care about. It shows some of the details that modern languages and frameworks typically fully hide but Java partially still exposes due to its history. When you write a library for multi-threaded use, make sure you understand what you do. If you consume such a library, you hopefully can really on the quality and consistency provided. If the performance of your application is mediocre, maybe you find a possible reason here.
