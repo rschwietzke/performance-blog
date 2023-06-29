@@ -444,7 +444,7 @@ Because we are not interested in a total, we list the result differently and ign
 |===
 Type,1,2,3,4,5
 Classic,13539562,1706,219,104,109
-Concat,90,27.15.14.14
+Concat,90,27,15,14,14
 fluidBuilder,120,66,35,12,12
 fluidBuilderSized,697,114,55,14,14
 nonFluidBuilder,191,102,29,32,32
@@ -495,11 +495,14 @@ nonFluidBuilder,221,567,188,264,280
 nonFluidBuilderSized,212,176,108,60,57
 |===
 
-`StringBuilder` and concat are preferable when the code is cold or lurk warm, but the classic version picks up steam quickly.
+`StringBuilder` and concat are preferable when the code is cold or lurk warm, but the classic version picks up steam quickly. Please execute the benchmark yourselves, in case you also want to glance at the warm-up times of the other string sizes.
 
-WARNING: Yes, cold code benefits from `StringBuilder` use and might justify some ugliness. BUT, how much code is really cold and does your tiny string operation impact a 5 sec startup really that much? Don't claim, measure!
+[CAUTION]
+====
+Yes, cold code benefits from `StringBuilder` use and might justify some ugliness. BUT, how much code is really cold and does your tiny string operation impact a 5 sec startup really that much? Don't claim, measure!
 
-Please execute the benchmark yourselves, in case you also want to glance at the warm-up times of the other string sizes.
+Also, when you check all the numbers above, please keep in mind that these are mostly really really small. Nanoseconds! So, 12 ns vs. 220 ns is not a huge difference when only done a few times. Only when you do that really often, it will become a problem. Premature tuning is often the beginning of bad and ugly code. *Tune when needed!* Have a problem first!
+====
 
 == Conclusion
 For the 99.5% of you, who write regular Java code that is not called often, please don't follow the `StringBuilder` advice because you will be wrong regarding memory consumption (sizing) and mostly runtime. When you cannot write it in a non-fluid way, you lose instantly too. In addition, your code will look horrible and will be harder to understand.
@@ -507,12 +510,13 @@ For the 99.5% of you, who write regular Java code that is not called often, plea
 Furthermore, if you really hunt for 3-6 ns of runtime difference, you cannot just switch out one for the other. Trust me that string code is most likely not your problem. Sure, when you run your own logging library, or you put a layer on top of LOG4J that enriches data, yes, you might win a little with `StringBuilder` but you have to measure it carefully. Don't imply anything! The most important gain is less memory churn rather not less runtime.
 
 There are only two true and legit reasons to use `StringBuilder`:
+
 * You are truly building a String, hence you might run a loop or similar with an undefined amount of components
 * Your code is cold and will be executed only a few times, so it has no chance to warm up AND this code leaves a notable mark on the runtime of your application
 
 Also, as we have seen, we have many edge-cases where a heavily optimizing VM beats the hell of simple code. Anything that is more complicated is just slower.
 
-IMPORTANT: The internet might be right, but the internet is also often wrong, especially when it just repeats nonsense again and again in the hunt for indexable content.
+WARNING: The internet might be right, but the internet is also often wrong, especially when it just repeats nonsense again and again in the hunt for indexable content.
 
 == One Last Thing
 We have not talked about the reasons why basic string concatenations and fluid StringBuilder usage are that fast. We might do that in another article. But for the moment:
