@@ -6,22 +6,21 @@
 :idprefix: resources
 
 == Java
-* https://mostlynerdless.de/blog/2022/12/27/a-short-primer-on-java-debugging-internals/
-* https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html
+* https://mostlynerdless.de/blog/2022/12/27/a-short-primer-on-java-debugging-internals/[Debugging of Java Internals]
+* https://jpbempel.github.io/2016/03/16/compilecommand-jvm-option.html[Java CompileCommand Options]
 * https://shipilev.net/jvm/anatomy-quarks/[JVM Anatomy Quarks] by Aleksey Shipilëv, the goto place for all things JVM performance
 * https://www.youtube.com/watch?v=LGVxiDxIrFM[Project Panama, Vector API]
 * https://www.chrisnewland.com/jitwatch[JITWatch]
 * https://alidg.me/blog/2020/12/10/hotspot-intrinsics[HotSpot Intrinsics - What you see isn't what you get!]
 
-=== Performance
-* https://www.andreinc.net/2021/11/08/a-tale-of-java-hash-tables
+== Performance
+* https://www.andreinc.net/2021/11/08/a-tale-of-java-hash-tables[A tale of Java Hashtables]
 
 == Web Performance
-https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-data/
+* https://kulturbanause.de/blog/datensparmodus-mit-css-steuern-prefers-reduced-data/[Data Bandwidth Reduction with Media-Queries]
 
 == Web Design
-https://github.com/majodev/google-webfonts-helper
-https://gwfh.mranftl.com/
+* https://gwfh.mranftl.com/[Google WebFont Downloader]
 
 
 == Blog

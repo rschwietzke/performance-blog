@@ -1,7 +1,7 @@
 = JUG Talks and Abstracts - DE
 :jbake-type: page
 :jbake-status: published
-:jbake-tags: JUG,
+:jbake-tags: JUG
 :description: Konferenzbeiträge, Präsentationen und Trainings.
 :idprefix: jugs-talks-abstracts-de
 
