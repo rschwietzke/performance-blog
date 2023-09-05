@@ -7,9 +7,17 @@
 
 == Talks
 
+=== JUG Workshops Bern and Zurich 2023
+
+In November 2023 (13-14th), I am going to give  workshops in Bern and Zurich, Switzerland. They are the extended version of my DevoxxPL https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] talk. But because these will be workshops, things will be hands-on. So bring your laptop and let's master the maze of benchmarking.
+
 === Accento Java/Web/Dev 2023
 
 If you want to see the https://2023.accento.dev/talks/java-parallel-programming/[Parallel Programming is Hard] talk (in German this time, slides in English) in person, join me for https://2023.accento.dev/[Accento 2023 in Karlsruhe, Germany] on 24th October 2023.
+
+=== JUG Saxony Day 2023
+
+I am looking forward to meet you at the https://jugsaxony.org/day/[JUG Saxony Day 2023] in Dresden on 29 September 2023. This year, my presentation talks about good and hopefully high quality code (not clean code, that is a different story). We will touch simple ideas to motivate you to think about your very own code. In addition, we will talk about APIs, style, tests, and of course, about the longevity of code. See you there!
 
 === Devoxx Poland 2023
 I was an honor to be invited to speak at Devoxx Poland 2023. It was a really fun conference and I am grateful to have met so many wonderful people, speakers and regular attendees alike.
@@ -83,6 +91,7 @@ This section shows my presentations given, often not any different from a talk. 
 * https://training.xceptance.com/qa-and-test/000-motivation-software-test.html[Software Testing and Quality Assurance - A Motivation in 60 min or less], Ernst-Abbe-Hochschule Jena, Germany
 
 == Publications
+* Article: https://foojay.io/today/the-curious-case-of-different-runtimes-with-different-training-data-jit/[The Curious Case of Different Runtimes] at Foobar.io
 * Article: link:/documents/05_2020-Java_aktuell-Autor-Rene_Schwietzke-Performancetests_von_Microservices.pdf[Performancetests von Microservices], May 2020, iJUG-Magazin Java aktuell; German
 * Article: link:/documents/02_2020-Java_aktuell-Autor-Rene_Schwietzke-High-Performance-Java-Hinter-den-Kulissen-von-Java.pdf[High Performance Java, February 2020], iJUG-Magazin Java aktuell; German
 
