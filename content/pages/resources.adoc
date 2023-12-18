@@ -39,6 +39,7 @@ These are some of the resources I used to build this blog. I have not modified J
 
 == Ideas for Posts
 * How to build proper test cases without thinking about positive and negative testing, using an account creation screen as example (username, password, email, name)
+* Switch or if-else
 * Erroneous data
 * Coverage is not a metric for quality
 * Show why List.get() is not inlined and show what performance gain is possible with a simpler get.
