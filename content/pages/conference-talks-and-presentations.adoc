@@ -7,17 +7,29 @@
 
 == Talks
 
+=== JavaLand 2024
+
+Let's meet at https://www.javaland.eu/de/home/[JavaLand 2024] from 9 April to 11 April 2024 at the Nürburgring, Germany. "Guter Code - Eine Motivation" (Good Code - A Motivation) will be my topic this time. Because I got 100 min, you will see an extended and further polished version of my JUG Saxony talk. Looking forward to meet you there.
+
 === JUG Workshops Bern and Zurich 2023
 
-In November 2023 (13-14th), I am going to give  workshops in Bern and Zurich, Switzerland. They are the extended version of my DevoxxPL https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] talk. But because these will be workshops, things will be hands-on. So bring your laptop and let's master the maze of benchmarking.
+In November 2023 (13-14th), I was giving two workshops in Bern and Zurich, Switzerland. These were the extended versions of my DevoxxPL https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] talk.
+
+Zurich was a hands-on workshop and therefore featured more content, more discussions, and more trial-and-error. You can find the extended slide deck https://training.xceptance.com/java/502-the-art-of-microbenchmarking-workshop.html[here]. The deck also features a link to the GIT repo with all examples used.
 
 === Accento Java/Web/Dev 2023
 
-If you want to see the https://2023.accento.dev/talks/java-parallel-programming/[Parallel Programming is Hard] talk (in German this time, slides in English) in person, join me for https://2023.accento.dev/[Accento 2023 in Karlsruhe, Germany] on 24th October 2023.
+You might have joined me for https://2023.accento.dev/talks/java-parallel-programming/[Parallel Programming is Hard] talk (in German this time, slides in English) at https://2023.accento.dev/[Accento 2023 in Karlsruhe, Germany] on 24th October 2023. Accento was a fun event and I am grateful for all feedback and great discussion before, during, and after the conference.
 
 === JUG Saxony Day 2023
 
-I am looking forward to meet you at the https://jugsaxony.org/day/[JUG Saxony Day 2023] in Dresden on 29 September 2023. This year, my presentation talks about good and hopefully high quality code (not clean code, that is a different story). We will touch simple ideas to motivate you to think about your very own code. In addition, we will talk about APIs, style, tests, and of course, about the longevity of code. See you there!
+I hope we had the opportunity to meet at https://jugsaxony.org/day/[JUG Saxony Day 2023] in Dresden on 29 September 2023. My presentation talked about good and hopefully high quality code (not clean code, that is a different story). I presentated simple ideas to motivate you to think about your very own code. In addition, we talked about APIs, style, tests, and of course, about the longevity of code.
+
+Because a few speakers got sick, I got a second slot and presented my microbenchmark challenges talk. It was similar to the Devoxx Poland 2023 version but saw some minor updates.
+
+* https://training.xceptance.com/java/201-good-code.html[GOOD CODE
+Ideas for Code that Sucks Less]
+* https://training.xceptance.com/java/501-the-art-of-microbenchmarking-devoxx-jsd-2023.html[MICROBENCHMARKING- The Art of Realizing One is Wrong]
 
 === Devoxx Poland 2023
 I was an honor to be invited to speak at Devoxx Poland 2023. It was a really fun conference and I am grateful to have met so many wonderful people, speakers and regular attendees alike.
