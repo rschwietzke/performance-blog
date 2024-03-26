@@ -5,11 +5,31 @@
 :description: Talks and presentations given at conferences or workshops as well as some publications.
 :idprefix: talks-presentations-publications
 
-== Talks
+== Talks 2024
+
+Here are my plans for 2024 so far. Hope to see you at one of this conferences.
 
 === JavaLand 2024
 
 Let's meet at https://www.javaland.eu/de/home/[JavaLand 2024] from 9 April to 11 April 2024 at the Nürburgring, Germany. "Guter Code - Eine Motivation" (Good Code - A Motivation) will be my topic this time. Because I got 100 min, you will see an extended and further polished version of my JUG Saxony talk. Looking forward to meet you there.
+
+=== DevDays Dresden
+
+If you missed my  https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] talk at the JUGSaxony in 2023, you can join me for https://www.devday.de/dev-day-2024/talk/10-tipps-wie-man-seine-microbenchmarks-ruiniert/[devday.24] in Dresden, Germany on 16 April 2024.
+
+=== LTB 2024
+
+If you are into load testing, you can join me for a talk about load and performance testing in practise and the challenges of numbers at the https://ltb2024.github.io/[The Twelfth International Workshop on Load Testing and Benchmarking of Software Systems (LTB 2024)] on 7 May 2024 South Kensington, London, UK.
+
+=== JPrime 2024
+
+This year, I will present at jPrime 24 Sofia Bulgaria on 28 and 29 May 2024. The topic will be "GCs - Real Life Latency and Overhead". It is a first for that one. Brand new content for you!
+
+=== Devoxx PL 2024
+
+Also Devoxx Poland accepted my proposal and so we will hopefully meet at Devoxx Poland in Krakow, Poland on 19 to 21 June 2024. The topic will be "The First 80% of Reading One Billion Rows Really Fast". This one is brand new content as well and will talk about the low handing fruits of tuning for speed by using the https://github.com/gunnarmorling/1brc[1BRC] example by Gunnar Morling from January 2024.
+
+== Talks 2023
 
 === JUG Workshops Bern and Zurich 2023
 
@@ -23,7 +43,7 @@ You might have joined me for https://2023.accento.dev/talks/java-parallel-progra
 
 === JUG Saxony Day 2023
 
-I hope we had the opportunity to meet at https://jugsaxony.org/day/[JUG Saxony Day 2023] in Dresden on 29 September 2023. My presentation talked about good and hopefully high quality code (not clean code, that is a different story). I presentated simple ideas to motivate you to think about your very own code. In addition, we talked about APIs, style, tests, and of course, about the longevity of code.
+I hope we had the opportunity to meet at https://jugsaxony.org/day/[JUG Saxony Day 2023] in Dresden on 29 September 2023. My presentation talked about good and hopefully high quality code (not clean code, that is a different story). I presented simple ideas to motivate you to think about your very own code. In addition, we talked about APIs, style, tests, and of course, about the longevity of code.
 
 Because a few speakers got sick, I got a second slot and presented my microbenchmark challenges talk. It was similar to the Devoxx Poland 2023 version but saw some minor updates.
 
@@ -52,6 +72,8 @@ image::/images/misc/devoxx-poland-2023-rene-schwietzke-parallel-programming-is-h
 [link=https://www.youtube.com/watch?v=uucLUYcjUeI,target=_blank]
 image::/images/misc/devoxx-poland-2023-rene-schwietzke-parallel-programming-is-hard-youtube.jpg[René Schwietzke presenting at Devoxx Poland 2023, Parallel Programming is Hard]
 
+== Talks 2022
+
 === JUG Saxony Day 2022
 This talk is about the Java Memory Model and what you should know to write correct multi-threaded code or at least know that you might not have to care about. It shows some of the details that modern languages and frameworks typically fully hide but Java partially still exposes due to its history. When you write a library for multi-threaded use, make sure you understand what you do. If you consume such a library, you hopefully can really on the quality and consistency provided. If the performance of your application is mediocre, maybe you find a possible reason here.
 
@@ -76,6 +98,8 @@ A newer version of my High Performance Java talk was given at a CinJUG meetup in
 During the pandemic, I gave a remote presentation to the Cincinnati Java User Group about the Java Memory Model.
 
 * https://training.xceptance.com/java/400-jmm.html[The Java Memory Model]
+
+== Talks 2020 and Before
 
 === JavaLand 2020 (canceled)
 This is my presentation that was scheduled for JavaLand 2020 but the entire conference got canceled due to the pandemic (in case you read that sometime in future, that was the Covid-19 pandemic). This talk is about all the tricks the JVM applies to get your code executed as quickly as possible. That includes compiler and optimization stages, dropping of code, and more. Also, it is about the modern CPUs and how they optimize code execution. Your code runs in parts concurrently on the CPU without you even knowing that.

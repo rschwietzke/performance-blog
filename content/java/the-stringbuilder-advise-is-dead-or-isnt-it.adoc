@@ -39,7 +39,7 @@ We will also raise the theory here that cold code (such as startup-only code) mi
 
 == Experiment 1 - Two One-Character Strings
 
-Let's start with a simple test. We will concatenate two strings in several ways. We will also test the theory that you should always size a `StringBuilder` and not rely on its internal defaults. Of course, this is a JMH benchmark. The code shown here does not show all the details, please see https://github.com/Xceptance/jmh-jmm-training(repository) for the full source code, the package `org.blog.buildervsstring` is where the fun takes place.
+Let's start with a simple test. We will concatenate two strings in several ways. We will also test the theory that you should always size a `StringBuilder` and not rely on its internal defaults. Of course, this is a JMH benchmark. The code shown here does not show all the details, please see https://github.com/Xceptance/jmh-jmm-training[repository] for the full source code, the package `org.blog.buildervsstring` is where the fun takes place.
 
 .First Naive Benchmark T01a
 [source,java]
