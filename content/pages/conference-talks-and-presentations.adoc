@@ -5,29 +5,73 @@
 :description: Talks and presentations given at conferences or workshops as well as some publications.
 :idprefix: talks-presentations-publications
 
+== Talks 2025
+
+2025 will probably a quieter year for me due to workrelated tasks and plans. Stay tuned for more.
+
+=== Jfokus 2025, Stockholm
+
+But one talk has been scheduled already and I am truly looking forward to my trip to https://www.jfokus.se/[Jfokus 2025, Stockholm] with https://www.jfokus.se/talks/2178[The First 80% of Reading One Billion Rows Fast Enough]. Hope to see you there and the talk will differ from all 2024 versions with new and updated content. Keep watching my https://github.com/rschwietzke/1brc-the-first-80-meters[GitHub repo].
+
 == Talks 2024
 
-Here are my plans for 2024 so far. Hope to see you at one of this conferences.
+2024 was a great conference year. Thanks to all organisers and participants and thank you for all the feedback, suggestions, questions, and comments.
 
 === JavaLand 2024
 
-Let's meet at https://www.javaland.eu/de/home/[JavaLand 2024] from 9 April to 11 April 2024 at the Nürburgring, Germany. "Guter Code - Eine Motivation" (Good Code - A Motivation) will be my topic this time. Because I got 100 min, you will see an extended and further polished version of my JUG Saxony talk. Looking forward to meet you there.
+We might have met at https://www.javaland.eu/de/home/[JavaLand 2024] from 9 April to 11 April 2024 at the Nürburgring, Germany. https://training.xceptance.com/java/202-good-code-javaland-2024.html[Guter Code - Eine Motivation" (Good Code - A Motivation)] was my first talk. Because I got 100 min, you saw an extended and further polished version of my previous JUG Saxony talk. My second talk was "Microbenchmarks - Wer misst misst Mist" about the typical microbenchmarking mistakes. You might remember the 2023 Devoxx PL talk, close but not the same.
 
 === DevDays Dresden
 
-If you missed my  https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] talk at the JUGSaxony in 2023, you can join me for https://www.devday.de/dev-day-2024/talk/10-tipps-wie-man-seine-microbenchmarks-ruiniert/[devday.24] in Dresden, Germany on 16 April 2024.
+The participants at DevDay Dresden saw my https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong] on 16 April 2024.
 
 === LTB 2024
 
-If you are into load testing, you can join me for a talk about load and performance testing in practise and the challenges of numbers at the https://ltb2024.github.io/[The Twelfth International Workshop on Load Testing and Benchmarking of Software Systems (LTB 2024)] on 7 May 2024 South Kensington, London, UK.
+If you are into load testing, you likely joined my talk about load and performance testing in practise and the challenges of numbers given at the https://ltb2024.github.io/[The Twelfth International Workshop on Load Testing and Benchmarking of Software Systems (LTB 2024)] on 7 May 2024 South Kensington, London, UK.
+
+My talk touched on the topic of test data and test data sharing: https://training.xceptance.com/qa-and-test/056-performance-testing-LTB24.html[How To Sell Performance Test Results]. Enjoy and feedback is appreciated.
 
 === JPrime 2024
 
-This year, I will present at jPrime 24 Sofia Bulgaria on 28 and 29 May 2024. The topic will be "GCs - Real Life Latency and Overhead". It is a first for that one. Brand new content for you!
+I sadly had to cancel my talk at jPrime 24 Sofia Bulgaria. The planned topic was "GCs - Real Life Latency and Overhead". Hope to be able to make up for that.
 
-=== Devoxx PL 2024
+=== Devoxx Poland 2024
 
-Also Devoxx Poland accepted my proposal and so we will hopefully meet at Devoxx Poland in Krakow, Poland on 19 to 21 June 2024. The topic will be "The First 80% of Reading One Billion Rows Really Fast". This one is brand new content as well and will talk about the low handing fruits of tuning for speed by using the https://github.com/gunnarmorling/1brc[1BRC] example by Gunnar Morling from January 2024.
+Also Devoxx Poland accepted my proposals and so we met at Devoxx Poland in Krakow, Poland on 19 to 21 June 2024. The topics were "The First 80% of Reading One Billion Rows Really Fast". This one was brand at this time. We talked about the low handing fruits of tuning for speed by using the https://github.com/gunnarmorling/1brc[1BRC] example by Gunnar Morling from January 2024. And here are the https://training.xceptance.com/java/450-the-first-80p-of-1BRC-2024.html[slides] for your consumption.
+
+.The First 80% of Reading One Billion Rows Really Fast
+[link=https://www.youtube.com/watch?v=Kd0nOCrOnL0,target=_blank]
+image::/images/java/devoxxpl-2024-reneschwietzke-01.jpg[René Schwietzke presenting at Devoxx Poland 2024, The First 80% of Reading One Billion Rows Really Fast]
+
+My second talk strayed slightly from Java, focusing on XLT, a load testing tool developed and open-sourced by Xceptance. Even though XLT is built on Java, uses Java as its scripting language, the talk primarily explored the motivations behind creating XLT, given the existing landscape of tools, and detailed the journey of its development up to the present day. Enjoy the https://training.xceptance.com/xlt/000-why-we-wrote-yet-another-load-test-tool.html[slides].
+
+.Writing another load test tool? What a stupid idea!
+[link=https://www.youtube.com/watch?v=hRvZNsx1yNs,target=_blank]
+image::/images/java/devoxxpl-2024-reneschwietzke-02.jpg[René Schwietzke presenting at Devoxx Poland 2024, Writing another load test tool? What a stupid idea! ]
+
+=== Devoxx Belgium 2024
+
+In Antwerp, I presented the deep dive extended version of https://training.xceptance.com/java/502-the-art-of-microbenchmarking-workshop-devoxxbe-2024.html#/[Micro Benchmarking - The Art of Realizing One is Wrong]. If you like, we even have a recording which is about 150 min long.
+
+.Microbenchmarking - Deep Dive The Art of Realizing One is Wrong
+[link=https://www.youtube.com/watch?v=u5XC2nriqpQ,target=_blank]
+image::/images/java/devoxxbe-2024-reneschwietzke.jpg[René Schwietzke presenting at Devoxx Belgium 2024, Microbenchmarking - The Art of Realizing One is Wrong]
+
+
+=== JavaForum Nord, Hannover
+
+At the Java Forum Nord in Hannover on 30 July 2024 I presented the German version of "The First 80% of Reading One Billion Rows Fast Enough titled "Die 1 Milliarde Zeilen Herausforderung - #1BRC - Die ersten 80%".
+
+=== Java Forum Stuttgart
+
+I also presented the #1BRC talk in Stuttgart.
+
+.René Schwietzke presenting at Java Forum Stuttgart
+image::/images/java/javaforum-stuttgart-20240731_111342-scaled.webp[René Schwietzke presenting on the stage at Java Forum Stuttgart 2024]
+
+=== JUG Saxony 2024
+
+This was not planned but I covered for a slot that was vacant due to a speaker who had to cancel. And because I had a talk ready in English and that was an English slot, I presented my https://training.xceptance.com/java/450-the-first-80p-of-1BRC-2024.html[The First 80% of Reading One Billion Rows Really Fast] talk.
 
 == Talks 2023
 
@@ -56,7 +100,7 @@ I was an honor to be invited to speak at Devoxx Poland 2023. It was a really fun
 
 My first talk was about the right approach to microbenchmarking and the mistakes you can make if you try it a little too naively -  https://training.xceptance.com/java/500-the-art-of-microbenchmarking-devoxx-pl-2023.html[MICROBENCHMARKING - The Art of Realizing One is Wrong]. About 60 people attended and I was rated with 4.5 of 5 stars. I tried to put too much into the presentation so I had to rush towards the end. Sorry about that, but take as much time as you need to go through the slides.
 
-.René Schwietzke presentating at Devoxx Poland 2023
+.René Schwietzke presenting at Devoxx Poland 2023
 image::/images/misc/devoxx-poland-2023-rene-schwietzke-microbenchmarking-2.jpg[René Schwietzke presenting at Devoxx Poland 2023, Microbenchmarking - The Art of Realizing One is Wrong]
 
 .Microbenchmarking - The Art of Realizing One is Wrong on YouTube
