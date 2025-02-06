@@ -9,7 +9,7 @@ René Schwietzke
 :_excerpt: While running some final tests, we noticed extremely erratic runtime behavior. It was hard to reproduce but very annoying because it means that the application runtime goes up from 5 to almost 14 min. This article tries to show how we diagnosed it and condensed it down to a few test cases. These might hopefully help us to provide some answers. Maybe, but only maybe, we discovered a defect or at least strange edge-case in the JVM.
 :pinned: true
 :showfull: false
-#:alias: java-the-curious-case-of-different-runtimes
+:_alias: java-the-curious-case-of-different-runtimes
 :idprefix: java-the-curious-case-of-different-runtimes
 
 While running final tests, we noticed extremely erratic runtime behavior.  This was difficult to reproduce, but very frustrating because it meant the application runtime increased from 5 to almost 14 minutes. This article describes how we diagnosed the issue and distilled it down to a few test cases. These might help us find some answers. Perhaps we've discovered a defect or at least a strange edge case in the JVM.
