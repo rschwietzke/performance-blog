@@ -6,8 +6,8 @@ René Schwietzke
 :jbake-status: published
 :jbake-tags: Java, performance, JMH, benchmarking
 :subheadline: Make sure, you benchmark correctly
-:_excerpt: NONE
-:pinned: true
+:_excerpt: Recently, I read posts about some Java loop benchmarks. I am not entirely sure, if the outcome and advise given is correct, so here is my version. I don't want to blame any of the other tests for being incorrect, but judge for yourself.
+:pinned: false
 :showfull: false
 :idprefix: java-loops-performance
 

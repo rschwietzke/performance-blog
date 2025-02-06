@@ -6,8 +6,8 @@ René Schwietzke
 :jbake-status: published
 :jbake-tags: Java, performance, JMH, String, StringBuilder
 :subheadline: The old advice is not valid anymore
-:_excerpt: NONE
-:pinned: true
+:excerpt: Since I just read again the advice to always use `StringBuilder` instead of `String` concatenation, we will close this chapter once and for all, right now!
+:pinned: false
 :showfull: false
 :idprefix: java-stringbuilder-advise
 
