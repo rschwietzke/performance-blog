@@ -4,5 +4,21 @@
 
 <script src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>js/highlight.min.js"></script>
 
-<!-- This is called by default since this theme uses highlight.js -->
-<script>hljs.highlightAll();</script>
+<#noparse>
+<script>
+    // 1. Find all <code> tags that have a "data-lang" attribute
+    const codeBlocks = document.querySelectorAll('code[data-lang]');
+
+    codeBlocks.forEach(block => {
+        // 2. Get the language string (e.g., "java", "python", "rust")
+        const lang = block.getAttribute('data-lang');
+
+        // 3. Add the corresponding class (e.g., "language-java")
+        if (lang) {
+            block.classList.add(`language-${lang}`);
+        }
+    });
+
+    hljs.highlightAll();
+</script>
+</#noparse>
