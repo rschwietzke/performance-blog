@@ -1,7 +1,7 @@
 = #1BRC - The First 80% of the Way
 René Schwietzke
-:jbake-date: 2025-12-20
-:jbake-last_updated: 2025-12-20
+:jbake-date: 2026-10-11
+:jbake-last_updated: 2026-10-11
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: Java, performance, 1BRC, tuning
@@ -10,16 +10,14 @@ René Schwietzke
 :showfull: false
 :idprefix: 1brc-the-first-80p
 
-The https://www.morling.dev/blog/one-billion-row-challenge/[One Billion Row Challenge (1BRC)] started as a way to kill time during the 2023/2024 holidays, asking a simple question: How fast can Java crunch temperature values from a text file and calculate the min, mean, and max per weather station? The catch is the file has one billion rows, totaling roughly 13.8 GB.
+The https://www.morling.dev/blog/one-billion-row-challenge/[One Billion Row Challenge (1BRC)] started as a way to kill time during the 2023/2024 holidays, asking a simple question: How fast can Java crunch temperature values from a text file and calculate the min, mean, and max per weather station? The catch is the file has one billion rows, totaling at about 13.8 GB.
 
-The top result came from Thomas Wuerthinger, Quan Anh Mai, and Alfonso Peterssen at 1.5 s on 8 cores. That was insanely and unexpectedly fast. But when you take a closer look at the code, you will see that it is beyond your daily dose of Java. It is complex, single use-case oriented, skips all safety features, and most of the tunings applied cannot be easily reused. 
+The top result came from Thomas Wuerthinger, Quan Anh Mai, and Alfonso Peterssen in 1.5 seconds on 8 cores. That was insanely and unexpectedly fast. But when you take a closer look at the code, you will see that it is beyond your daily dose of Java. It is complex, single-use-case oriented, skips safety features, and most of the tunings applied cannot be easily reused. 
 
-This article will show you how to get to an 80% of the result with simpler and more maintainable code. It will also focus on a single-thread approach to keep us focused. You can use most of the ideas in your own code easily, if you need such tuning. 
+This article will show you how to get 80% of the result with simpler and more maintainable code. It will also focus on a single-threaded approach to keep us focused. You can use most of the ideas in your own code easily if you need such tuning. But yes, we will also make decisions that a clean code coach would consider big no-nos.
 
-== The Original Challenge 
-At the end of 2023, when everyone was busy with the holidays, https://www.morling.dev/[Gunnar Morling] got bored. So he came up with a fun little project to read one billion rows from a CSV file as fast as possible. And because it is only fun when the great Java community gets to it, he turned it into a competition. He wanted to see how fast people could make Java run.footnote:[https://www.morling.dev/blog/one-billion-row-challenge/[The One Billion Row Challenge]]
-
-CAUTION: All runtime numbers have been measured by me on 8-core cloud machines at Hetzner (AMD CPUs) and Digital Ocean (Intel CPUs). This means your mileage might vary, and because machines and setups change, I might not be able to reproduce the exact numbers. You always have to measure the entire series to get a good picture of the runtimes.
+== The Original Challenge
+At the end of 2023, when everyone was busy with the holidays, https://www.morling.dev/[Gunnar Morling] got bored. So he came up with a fun little project to read one billion rows from a CSV file as fast as possible. Recognizing that performance challenges are best tackled by the community, he turned it into a competition. He wanted to see how fast Java code could become with the help of other Java nerds.footnote:[https://www.morling.dev/blog/one-billion-row-challenge/[The One Billion Row Challenge]]
 
 === The Task
 Imagine a data file with one billion rows, each row containing the name of a weather station aka city and a temperature value. The goal is to calculate the min, mean, and max temperature per weather station as fast as possible.
@@ -57,7 +55,7 @@ The final output was supposed to look like this. Out of pure laziness, Gunnar we
 
 Several things are important to note.
 
-* The file is encoded in UTF-8 and characters outside of the ASCII range.
+* The file is encoded in UTF-8 and contains characters outside the ASCII range.
 * The file is fully valid. No BOM, no invalid characters, no trailing spaces, no empty lines.
 * We can have up to 10,000 stations but the base version of the file has only 413.
 * All line endings are \n.
@@ -66,14 +64,15 @@ Several things are important to note.
 
 For the competition itself, one could use up to 8-cores. The file was in the file cache because the measurement was done five times and the best three were averaged. But this is not important for our 80% journey.
 
-=== The Outcome and Our Goal
-The following results have been achieved. Once again, these are my measurements and not the official results. Also, as a reminder, we will avoid multi-threading for now to keep things as simple as possible. The baseline is straightforward Java code that does the job. This was the baseline suggested by Gunnar Morling.
+The following results have been achieved. Once again, these are my measurements and not the official results. Also, as a reminder, we will avoid multi-threading for now to keep things as simple as possible. The baseline, suggested by Gunnar Morling, is straightforward Java code that does the job.
 
 .The Remeasured 1BRC Results
-[cols="2,>1,>1,>1", options="header"]
+[width=75%,cols="2,>1,>1,>1", options="header"]
 |===
-|Test |Cores|Time DO Intelfootnote:[Digital Ocean, Amsterdam, Dedicated Machine, Intel CPU-optimized, 16 core, 32 GB, Jan 2025
-]|Time Hetzner AMDfootnote:[Hetzner, Finland, Dedicated Machine, AMD, 8 core, 32 GB, Jan 2025]
+|Test |Cores a|Time +
+DO Intelfootnote:[Digital Ocean, Amsterdam, Dedicated Machine, Intel CPU-optimized, 16 core, 32 GB, Jan 2025
+] a|Time +
+Hetzner AMDfootnote:[Hetzner, Finland, Dedicated Machine, AMD, 8 core, 32 GB, Jan 2025]
 |Baseline|1|247.6 s |152.1 s
 |Baseline|8|111.3 s |81.4 s
 |Thomas Wuerthinger|1|8.9 s |7.3 s
@@ -83,31 +82,29 @@ The following results have been achieved. Once again, these are my measurements 
 
 You can already see where we want to go today: our 80% goal or, rather, our 80% tuning. Certainly, this is not a record-breaking number, but most of the tuning and profiling can be applied to your daily work.
 
-TIP: You might not want to brute-force apply the tuning here to your code. You have to have a problem first. Just because you can, doesn't mean you should. Clean and maintainable code always comes first.
+TIP: You might not want to brute-force apply the tunings from here to your code. You have to have a problem first. Just because you can, doesn't mean you should. Clean and maintainable code always comes first.
 
-=== The Daily Life Limits
-When you look at the winning solution, you can see that it uses Unsafe, GraalVM and native builds, a ton of bit-magic, and a lot of other things that are not something you would use in your own code. Impressive, interesting, but with limited daily life reuse. 
+CAUTION: All runtime numbers have been measured by me on 8-core cloud machines at Hetzner (AMD CPUs) and Digital Ocean (Intel CPUs). This means your mileage might vary, and because machines and setups change, I will likely not be able to reproduce the exact numbers when I would run that today. You always have to measure the entire series to get a good picture of the runtimes.
 
-If you want to dive into the final solution, try to understand the https://questdb.com/blog/1brc-merykittys-magic-swar/[branch-less parsing] because it is the key driver for the performance compared to other solutions as well as our's today.
+=== What Code Will Work for You
+When you look at the winning solution, you can see that it uses `Unsafe`, GraalVM native builds, a ton of bit magic, and many other things that you wouldn't use in your everyday code. Impressive and interesting, but with limited practical reuse. GraalVM native images excluded.
+
+If you want to dive into the final solution, try to understand the https://questdb.com/blog/1brc-merykittys-magic-swar/[branch-less parsing] (also known as SWAR - SIMD Within A Register) because it is the key driver for performance compared to other solutions as well as ours today.
 
 == Our 80% Goal
-To save 80% of the runtime and ensure a proper result all the time, I wrote a small framework for executing the 1BRC task and verifying the result with SHA-512. By comparing the checksum against the original baseline solution's output, I ensure nothing has been broken.
+We don't want to be as fast as the winning solution (which is about 9 seconds for a single thread, more later), we just want to end up with a fifth of the runtime. So we want to shave off 80% of the runtime. 
 
-By the way, I really broke the solution several times while tuning. The worst bug was only happening when changing the input data set. That took ages to find.
-
-*Just to repeat it quickly*: We want to save 80% of the runtime and only go with one thread for simplicity.
-
-You can find the code at https://github.com/rschwietzke/1brc-the-first-80-meters. I will either link to the implementation or just mention the class by name.
+You can find all the code at https://github.com/rschwietzke/1brc-the-first-80-meters. I will either link to the implementation or just mention the class by name.
 
 === The Measurement Framework
-Just to detour quickly. The original 1BRC uses single Java files and always runs them several times. To make measurements easier and also allow for better learning in regards to Java JIT compile, I wrote a https://github.com/rschwietzke/1brc-the-first-80-meters/blob/main/src/main/java/dev/morling/onebrc/Baseline.java[small framework] for executing each solution including measurement, warming, and checksumming, not to forget batch execution.
+Just to detour quickly. The original 1BRC uses single Java files and always runs them several times. To make measurements easier and also allow for better learning in regards to Java JIT compilation, I wrote a https://github.com/rschwietzke/1brc-the-first-80-meters/blob/main/src/main/java/org/rschwietzke/Benchmark.java[small framework] for executing each solution including measurement, warming, and checksumming, not to forget batch execution.
 
 == Step 0: The Baseline
-The baseline is the original solution by Gunnar Morling. 
+The baseline is the original solution by Gunnar Morling. As you will see, we have a plain stream implementation that uses features Java provides, such as collecting and grouping. I leave the interpretation to you or just read about that in all of the other 1BRC articles out there.
 
 NOTE: This and any following code has been modified to fit the article. Please always refer to the repository for the full code. Formatting is likely inconsistent too.
 
-[source, java]
+[source,java]
 ----
 Collector<Measurement, MeasurementAggregator, ResultRow> collector = 
         Collector.of(MeasurementAggregator::new,
@@ -139,10 +136,8 @@ var result = Files.lines(Paths.get(fileName))
 return new TreeMap<>(result).toString();
 ----
 
-As you can see, we have a plain stream implementation that uses features Java provides, such as collecting and grouping. I leave the interpretation to you or just read about that in all of the other 1BRC articles out there. AI is your friend here.
-
 == Step 1: Get to Know the Code
-The above code runs for a moment, but we don't know yet where it might spend most of its time. We don't want to guess what to optimize; we want to see. For that, we look into our toolbox and find the https://github.com/async-profiler/async-profiler[AsyncProfiler]. The most wonderful open-source profiler for Java. 
+The above code runs for a moment, but we don't know yet where it might spend most of its time. We don't want to guess what to optimize; we want to see. For that, we look into our toolbox and find the https://github.com/async-profiler/async-profiler[AsyncProfiler] – perhaps the most versatile and powerful open-source profiler for Java. 
 
 With this command line, you can create this flamegraph and browse it yourself.
 
@@ -227,7 +222,7 @@ IMPORTANT: This does not mean you should abandon streams. Streams are a powerful
 Things moved a little, but the overall distribution is nearly the same. Our manual merge is slower and we will learn later why, and then use that knowledge to fix it.
 
 == Step 2: Split
-Split consumes the majority of our time, so let's get rid of that first. Split is a very powerful method that normally uses regular expressions to split a string. When you look at the https://github.com/openjdk/jdk21u-dev/blob/248eb5468f3c7ba5f338c09af35048ac22ca8e86/src/java.base/share/classes/java/lang/String.java#L3320[JDK code of split], you can see that it tries to be smart. It features a fastpath when the split char is a single char and not a regex. The JIT (Just-In-Time) compiler might or might not be able to "constant fold" it (calculating the value once and reusing it). That still leaves us with a call to a larger method that creates objects and might not be https://baeldung.com/jvm-method-inlining[inlined] (where the compiler copies the method's code into the caller to avoid the overhead of a jump). 
+Split consumes the majority of our time, so let's get rid of that first. Split is a very powerful method that normally uses regular expressions to split a string. When you look at the https://github.com/openjdk/jdk21u-dev/blob/248eb5468f3c7ba5f338c09af35048ac22ca8e86/src/java.base/share/classes/java/lang/String.java#L3320[JDK code of split], you can see that it tries to be smart. It features a fastpath when the split char is a single char and not a regex. The JIT (Just-In-Time) compiler might or might not be able to "constant fold" it (calculating the value once and reusing it). Even when this is folded, it still leaves us with a call to a larger method that creates objects and might not be https://www.baeldung.com/jvm-method-inlining[inlined] (where the compiler copies the method's code into the caller to avoid the overhead of a method jump). 
 
 [source,java]
 ----
@@ -328,7 +323,7 @@ public static double parseDouble(final String s, final int offset, final int end
 
 I had some code available that I used in another project, so I used that here. The code is already prepared to cover the next steps as well. 
 
-CAUTION: This code is not 100% correct due to the inherent imprecision of floating-point calculations on CPUs, but it works well enough in our case due to the limitation to one decimal place.
+CAUTION: This code is not 100% correct due to the inherent imprecision of floating-point calculations on CPUs (see https://en.wikipedia.org/wiki/IEEE_754[IEEE 754]), but it works well enough in our case due to the limitation to one decimal place.
 
 .BRC06_NewDoubleParsingST
 [width=75%,cols="2,>1,>1,>1,>1",options="header"]
@@ -340,7 +335,7 @@ CAUTION: This code is not 100% correct due to the inherent imprecision of floati
 |`BRC06_NewDoubleParsingST`|141.2 s |57.0%|99.0 s |65.2%
 |===
 
-We gained a lot on the Intel CPU. For AMD, we got it 10 seconds faster.
+We gained a lot on the Intel CPU. For the AMD CPU, we got it 10 seconds faster.
 
 .Profiling Data BRC06_NewDoubleParsingST
 [width=75%,cols="2,>1,>1,>1,>1",options="header"]
@@ -400,7 +395,7 @@ That was simple and very effective.
 |Total|78.4 %|80.4 %|81.3 %|76.2 %|76.4 %
 |`readLine`|17.7 %|17.9 %|31.6 %|32.8 %|29.6 %
 |`split`|31.7 %|26.8 %|n/a|n/a|n/a
-|`indexOf`|n/a|n/a|2.2 %|2.2 %|2.6 %s
+|`indexOf`|n/a|n/a|2.2 %|2.2 %|2.6 %
 |`subString`|n/a|9.2 %|7.6 %|9.9 %|5.8 %
 |`parseDouble`|11.7 %|12.2 %|14.8 %|4.4 %|6.0 %
 |`merge`|14.4 %|21.0 %|23.9 %|25.8 %|28.7 %
@@ -600,10 +595,10 @@ Our open map uses a backing array as well but stores key and value next to each 
 |`BRC12_NewMapST`|109.6 s |44.3%|80.2 s |52.9%
 |===
 
-So, some gain for AMDs, but not much for Intel.
+So, some gain for AMD CPUs, but not much for Intel.
 
 == Step 9: Turn the Map Into a Set
-Our current map has a disadvantage. It needs two slots and it needs a wrapper for the values. Why not combine that into a single entry? And so we get a set.
+Our current map has a drawback. It needs two slots and it needs a wrapper for the values. Why not combine that into a single entry? And so we get a set.
 
 .A Simple Open Hashing Set
 image::images/openset.svg[A Sketch of a Open Hashing Set]
@@ -662,7 +657,7 @@ public void getPutOrUpdate( final String city, int value ) {
 |`BRC13_HardcodedSetST`|105.3 s |42.6%|76.5 s |50.3%
 |===
 
-Ok, we gained about 2%. Not much, but we are getting there.
+Ok, we gained about 2%. Not much, but we are making progress.
 
 .Profiling Data BRC13_HardcodedSetST
 [width=75%,cols="2,>1,>1,>1,>1,>1,>1,>1",options="header"]
@@ -730,7 +725,7 @@ private void readFromChannel()
         {
             // we move the buffer indirectly, because
             // the ByteBuffer just wraps our array,
-            // nothing for the tenderhearted
+            // not for the faint of heart
             System.arraycopy(data, pos, data, 0, data.length - pos);
             end = end - pos;
             pos = 0;
@@ -819,12 +814,12 @@ What a leap! Let's check our profiling data. Because the code is so different no
 |> `equals`      |7.5 %  |14.4 % 
 |===
 
-Our `readLine` contains a method call to `read` and that is 2.2% of the runtime. The rest is used for our data processing. Yes, it could have been extracted nicer into its own method. Next time!
+Our `readLine` contains a method call to `read` and that is 2.2% of the runtime. The rest is used for our data processing. Yes, it could have been extracted more neatly into its own method. Next time!
 
 == The Unexpected Bonus
-When we run our baseline code with EpsilonGC, we get about 3.2 GB of heap usage for 10 million lines. That sums up to a staggering 320 GB for 1 billion rows. That is memory churn at the end of the day. Request memory, clean it, use it, investigate if still in use, add it to the free list or move the content around when still in use. By the way, We are not really allocating and deallocating against the OS here, because the JVM does its own memory segment management (ask for a chunk of memory and own that as long as possible),
+When we run our baseline code with EpsilonGC, we get about 3.2 GB of heap usage for 10 million lines. That sums up to a staggering 320 GB for 1 billion rows. That is memory churn at the end of the day. Request memory, clean it, use it, investigate if still in use, add it to the free list or move the content around when still in use. By the way, we are not really allocating and deallocating against the OS here, because the JVM does its own memory segment management (ask for a chunk of memory from the OS and own that as long as possible),
 
-NOTE: EpsilonGC is a GC that does not do any GC at all. It just reserves or assigns memory, but never frees it. Hence, a program might crash after a while if it needs more memory than what the heap can hold. Perfect for tuning and investigations because all background GC processes are offline.
+NOTE: EpsilonGC (see https://openjdk.org/jeps/318[JEP 318]) is a GC that does not do any GC at all. It just reserves or assigns memory, but never frees it. Hence, a program might crash after a while if it needs more memory than what the heap can hold. Perfect for tuning and investigations because all background GC processes are offline.
 
 [source,bash]
 ----
@@ -1128,7 +1123,8 @@ If you want to see what changed, hop over to the https://github.com/rschwietzke/
 There we go—tuned without turning the code into a complete disaster. It's a bit "messy" perhaps, but still maintainable. Keep in mind that we're relying on clean, well-formatted data. If we had to add checks for malformed data or varying lengths, the complexity (and performance) would look quite different.
 
 == Behind the Scenes
-For the fans of hard-core performance and low-level facts, let's dive into the CPU and memory details. These statistics are provided by the https://perfwiki.github.io/main/tutorial/#counting-with-perf-stat[`perf`] tool, courtesy of the Linux kernel.
+For the fans of hard-core performance and low-level facts, let's dive into the CPU and memory details. This is where "Mechanical Sympathy" – designing software that works in harmony with the underlying hardware – truly comes into play. These statistics are provided by the https://perfwiki.github.io/main/tutorial/#counting-with-perf-stat[`perf`] tool, courtesy of the Linux kernel.
+
 CAUTION: `perf` does not work on all cloud machines. It depends on the virtualization layer and the set permissions. Your mileage might vary!
 
 === Baseline, 20% Solution, and Winner Compared
@@ -1150,7 +1146,7 @@ Bottom line: the initial code needs about 2,258 CPU instructions for each CSV li
 |*Instructions* | 2,258,010 M | 303,659 M | 164,487 M
 |*Instructions Per Cycle (IPC)* | 4.19 | 3.09 | 4.16
 |*Branches* | 522,584 M | 55,868 M | 15,668 M
-|*Branch-misses* | 2,479 M (0.47%) | 1,540 M (2.76%) | 149,0 M (0.95%)
+|*Branch-misses* | 2,479 M (0.47%) | 1,540 M (2.76%) | 149 M (0.95%)
 |*Instructions per CSV Line* | 2,258 | 303 | 164
 |===
 
@@ -1208,7 +1204,7 @@ NOTE: *IPC (Instructions Per Cycle)* measures how much work the CPU completes in
 # 303 instructions per CSV line
 ----
 
-* The number of branches (ifs and loops) dropped by a factor of five from baseline to our BRC45.
+* The number of branches dropped by a factor of five from baseline to our BRC45.
 * Cache misses (stalled-cycles-frontend) dropped to 25%. 
 * We now require only 14% of the instructions.
 * Branch-misses absolute are down, but relatively they have increased.
@@ -1219,7 +1215,7 @@ NOTE: *IPC (Instructions Per Cycle)* measures how much work the CPU completes in
 ----
 # Thomas Wuerthinger, 1 core
 # Hetzner, AMD, 21.0.4-tem
-# Mean Measurement Runtime: 11,281 ms 7.4% (to baseline),
+# Mean Measurement Runtime: 11,281 ms 7.4% (to baseline)
 # 41.7% of BRC45_DoubleTheSetSize
 
       11,269.99 msec task-clock              #   0.999 CPUs utilized
@@ -1241,7 +1237,7 @@ NOTE: *IPC (Instructions Per Cycle)* measures how much work the CPU completes in
 # 164 instructions per CSV line
 ----
 
-* The reduction in the number of branches is insane and mostly comes from branchless number parsing.
+* The reduction in the number of branches is staggering and mostly comes from branchless number parsing.
 * The instruction reduction stems mostly from reading 8 bytes at once instead of byte by byte.
 * Branch-misses reduction makes it truly fly.
 
@@ -1250,22 +1246,22 @@ By the way, we could avoid `Unsafe` and read a `long` legally from the `ByteBuff
 == Different Machines
 We already have seen that CPUs are very much different, we can easily extend that warning to all types of machines.
 
-.Different Machines Types and Their Performance
+.Different Machine Types and Their Performance
 [width=75%,cols="2,2,>1,>1",options="header"]
 |===
 |Test|Machine|Time|%
-|BRC01_BaselineST	    |Thinkpad T14s |218.8 s |100.0 %
-|BRC01_BaselineST	    |GCP-C2-4c-32g	|278.4 s	|100.0 %
-|BRC01_BaselineST	    |GCP-C2D-4c-32g	|172.4 s	|100.0 %
-|BRC01_BaselineST	    |DO Intel Standard 16c-32g	|247.6 s	|100.0 %
-|BRC01_BaselineST	    |DO Intel Premium 16c-32g	|154.2 s	|100.0 %
-|BRC01_BaselineST	    |Hetzner AMD 8c-32g	|146.7 s	|100.0 %
-|BRC26_MoreMapSpaceST	|Thinkpad T14s	|35.3 s	|16.1 %
-|BRC26_MoreMapSpaceST	|GCP-C2-4c-32g	|43.4 s	|15.6 %
-|BRC26_MoreMapSpaceST	|GCP-C2D-4c-32g	|34.8 s	|20.2 %
-|BRC26_MoreMapSpaceS	|DO Intel Standard 16c-32g	|39.0 s	|15.8 %
-|BRC26_MoreMapSpaceS	|DO Intel Premium 16c-32g	|31.1 s	|19.8 %
-|BRC26_MoreMapSpaceST	|Hetzner AMD 8c-32g	|33.5 s	|22.8 %
+|`BRC01_BaselineST`	    |Thinkpad T14s |218.8 s |100.0 %
+|`BRC01_BaselineST`	    |GCP-C2-4c-32g	|278.4 s	|100.0 %
+|`BRC01_BaselineST`	    |GCP-C2D-4c-32g	|172.4 s	|100.0 %
+|`BRC01_BaselineST`	    |DO Intel Standard 16c-32g	|247.6 s	|100.0 %
+|`BRC01_BaselineST`	    |DO Intel Premium 16c-32g	|154.2 s	|100.0 %
+|`BRC01_BaselineST`	    |Hetzner AMD 8c-32g	|146.7 s	|100.0 %
+|`BRC26_MoreMapSpaceST`	|Thinkpad T14s	|35.3 s	|16.1 %
+|`BRC26_MoreMapSpaceST`	|GCP-C2-4c-32g	|43.4 s	|15.6 %
+|`BRC26_MoreMapSpaceST`	|GCP-C2D-4c-32g	|34.8 s	|20.2 %
+|`BRC26_MoreMapSpaceST`	|DO Intel Standard 16c-32g	|39.0 s	|15.8 %
+|`BRC26_MoreMapSpaceST`	|DO Intel Premium 16c-32g	|31.1 s	|19.8 %
+|`BRC26_MoreMapSpaceST`	|Hetzner AMD 8c-32g	|33.5 s	|22.8 %
 |===
 
 WARNING: It is highly recommended to benchmark on the hardware you will run your production code on, otherwise all your work is for nothing.
@@ -1298,7 +1294,9 @@ Measurement Runtime: 39,106 ms
 The above listing shows a few runs on DigitalOcean Intel hardware. You can see how the runtimes fluctuate. The tuned version is slightly more stable, which might be partly due to JVM effects like the absence of GC (as we moved to a zero-allocation approach). However, for micro-optimizations, even these small fluctuations can be a significant hurdle.
 
 == Summary
-The One Billion Row Challenge is a fantastic way to explore Java performance. By applying a systematic tuning approach, starting from a clean baseline and incrementally optimizing everything from stream usage to I/O and custom collection implementations, we achieved an 80% reduction in runtime using only standard Java features. While `Unsafe` is not a standard feature in my view, and extreme bit magic is fully legal but makes the code difficult to understand for most people, those techniques fall under: only when truly needed, only by experts, and only with a ton of documentation.
+The One Billion Row Challenge is a fantastic way to explore Java performance. By applying a systematic tuning approach, starting from a clean baseline and incrementally optimizing everything from stream usage to I/O and custom collection implementations, we achieved an 80% reduction in runtime using only standard Java features. 
+
+While `Unsafe` is not a standard feature in my view, and extreme bit magic is fully legal but makes the code difficult to understand for most people, those techniques fall under: only when truly needed, only by experts, and only with a ton of documentation.
 
 These techniques aren't just for coding competitions; they demonstrate how a deeper understanding of the JVM, memory management, and hardware characteristics can lead to big efficiency gains. Don't forget: faster means fewer resources, and that translates directly into lower infrastructure costs.
 
