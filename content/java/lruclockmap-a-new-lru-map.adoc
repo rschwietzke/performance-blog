@@ -1,0 +1,19 @@
+= A better LRU map for better CPU resource efficiency
+René Schwietzke
+:jbake-date: 2025-11-12
+:jbake-last_updated: 2025-11-12
+:jbake-type: post
+:jbake-status: draft
+:jbake-tags: Java, performance, JMH, LRU, HashMap
+:subheadline: Write less, read more.
+:pinned: false
+:showfull: true
+:idprefix: lruclock-map
+
+LinkedHashMaps are the typical goto cache implementations when one is talking about any kind of LRU cache to reduce computations in favour of requiring more memory. But when the cache is large almost all lookups are CPU cache misses and, when updating the LRU state, we read even more data randomly and also have to write for each and every get.
+
+This is not efficient, fast, and might lead to rendering positive cache effects in parts obsolete.
+
+This article shows and alternative LRU map implementation that is as effective as our typical linked map approach and at the same time, greatly reduces random memory read and writes.
+
+== Headline 1
