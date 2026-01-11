@@ -2,7 +2,7 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 
-<script src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>js/highlight.min.js"></script>
+<script src="<#if (content.rootpath)??>${content.rootpath}<#else></#if>js/highlight/highlight.min.js"></script>
 
 <#noparse>
 <script>

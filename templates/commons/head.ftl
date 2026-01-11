@@ -7,15 +7,15 @@
     <meta name="keywords" content="<#list config.site_keywords as k>${k},</#list>">
     <meta name="generator" content="JBake">
 
-    <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/css/fonts.css?${.now?long}" />
+    <link rel="stylesheet" href="/css/bootstrap-icons.css?${.now?long}" />
 
-    <link rel="stylesheet" href="/css/normalize.css" />
+    <link rel="stylesheet" href="/css/normalize.css?${.now?long}" />
 
     <link rel="stylesheet" href="/css/grid.css?${.now?long}" />
     <link rel="stylesheet" href="/css/asciidoc.css?${.now?long}" />
 
-    <link rel="stylesheet" href="/css/highlight-default.min.css">
+    <link rel="stylesheet" href="/js/highlight/styles/default.css?${.now?long}">
 
     <!-- get us the important fonts we use early -->
     <link rel="preload" href="/fonts/bootstrap-icons.woff2" as="font" type="font/woff2" crossorigin>
