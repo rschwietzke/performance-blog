@@ -5,6 +5,12 @@
 :description: Talks and presentations given at conferences or workshops as well as some publications.
 :idprefix: talks-presentations-publications
 
+== Talks 2026
+
+=== Java Meetup Mitteldeutschland
+
+The year started with the talk https://training.xceptance.com/java/402-jmm-parallel-programming-is-hard-JUGMitteldeutschland-2026.html#/[Parallel Programming is Hard] at the Java Meetup Mitteldeutschland, Leipzig, on 23 March 2026.
+
 == Talks 2025
 
 2025 will probably a quieter year for me due to work-related tasks and plans. Stay tuned for more.

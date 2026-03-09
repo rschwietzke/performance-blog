@@ -22,18 +22,18 @@ At the end of 2023, when everyone was busy with the holidays, https://www.morlin
 === The Task
 Imagine a data file with one billion rows, each row containing the name of a weather station aka city and a temperature value. The goal is to calculate the min, mean, and max temperature per weather station as fast as possible.
 
-[source, csv]
+[source]
 ----
 Zagreb;19.7
 Tromsø;-3.9
 Gangtok;-1.7
 Houston;32.4
 Zürich;13.8
-...
 ----
 
 The final output was supposed to look like this. Out of pure laziness, Gunnar went with `TreeMap::toString`. All numbers are properly rounded and formatted to one decimal place.
 
+[source]
 ----
 # This is TreeMap::toString
 # Data shown here is formatted for screen
@@ -86,7 +86,6 @@ TIP: You might not want to brute-force apply the tunings from here to your code.
 
 CAUTION: All runtime numbers have been measured by me on 8-core cloud machines at Hetzner (AMD CPUs) and Digital Ocean (Intel CPUs). This means your mileage might vary, and because machines and setups change, I will likely not be able to reproduce the exact numbers when I would run that today. You always have to measure the entire series to get a good picture of the runtimes.
 
-=== What Code Will Work for You
 When you look at the winning solution, you can see that it uses `Unsafe`, GraalVM native builds, a ton of bit magic, and many other things that you wouldn't use in your everyday code. Impressive and interesting, but with limited practical reuse. GraalVM native images excluded.
 
 If you want to dive into the final solution, try to understand the https://questdb.com/blog/1brc-merykittys-magic-swar/[branch-less parsing] (also known as SWAR - SIMD Within A Register) because it is the key driver for performance compared to other solutions as well as ours today.
@@ -96,7 +95,6 @@ We don't want to be as fast as the winning solution (which is about 9 seconds fo
 
 You can find all the code at https://github.com/rschwietzke/1brc-the-first-80-meters. I will either link to the implementation or just mention the class by name.
 
-=== The Measurement Framework
 Just to detour quickly. The original 1BRC uses single Java files and always runs them several times. To make measurements easier and also allow for better learning in regards to Java JIT compilation, I wrote a https://github.com/rschwietzke/1brc-the-first-80-meters/blob/main/src/main/java/org/rschwietzke/Benchmark.java[small framework] for executing each solution including measurement, warming, and checksumming, not to forget batch execution.
 
 == Step 0: The Baseline
