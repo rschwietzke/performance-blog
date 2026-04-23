@@ -7,6 +7,15 @@
 
 == Talks 2026
 
+=== JCON 2026, Cologne
+
+JCON 2026 welcomed me on 22 April 2026 for my new talk https://training.xceptance.com/java/460-the-first-80p-of-1BRC-parallel-edition.html[#1BRC - The Parallel 80%
+How to Read One Billion Rows - Fast Enough Concurrently]. More than 200 attendees and great feedback. That's all a speaker wants. Thanks to JCON and its fantastic organizers.
+
+=== JavaPro Article
+
+The 1BRC article has been published in JavaPro issue 4/2026 and can be found online as well: https://javapro.io/de/1brc-die-ersten-80-performance/[1BRC – Die ersten 80% Performance]. The magazine article is in English.
+
 === Java Meetup Mitteldeutschland
 
 The year started with the talk https://training.xceptance.com/java/402-jmm-parallel-programming-is-hard-JUGMitteldeutschland-2026.html#/[Parallel Programming is Hard] at the Java Meetup Mitteldeutschland, Leipzig, on 23 March 2026.

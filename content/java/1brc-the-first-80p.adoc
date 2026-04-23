@@ -1,7 +1,7 @@
 = #1BRC - The First 80% of the Way
 René Schwietzke
-:jbake-date: 2026-10-11
-:jbake-last_updated: 2026-10-11
+:jbake-date: 2026-04-23
+:jbake-last_updated: 2026-04-23
 :jbake-type: post
 :jbake-status: published
 :jbake-tags: Java, performance, 1BRC, tuning
@@ -10,17 +10,19 @@ René Schwietzke
 :showfull: false
 :idprefix: 1brc-the-first-80p
 
-The https://www.morling.dev/blog/one-billion-row-challenge/[One Billion Row Challenge (1BRC)] started as a way to kill time during the 2023/2024 holidays, asking a simple question: How fast can Java crunch temperature values from a text file and calculate the min, mean, and max per weather station? The catch is the file has one billion rows, totaling at about 13.8 GB.
+The https://www.morling.dev/blog/one-billion-row-challenge/[One Billion Row Challenge (1BRC)] started as a way to kill time during the 2023/2024 holidays, asking a simple question: How fast can Java crunch temperature values from a text file and calculate the min, mean, and max per weather station? The catch is that the file has one billion rows, totaling at about 13.8 GB.
 
 The top result came from Thomas Wuerthinger, Quan Anh Mai, and Alfonso Peterssen in 1.5 seconds on 8 cores. That was insanely and unexpectedly fast. But when you take a closer look at the code, you will see that it is beyond your daily dose of Java. It is complex, single-use-case oriented, skips safety features, and most of the tunings applied cannot be easily reused. 
 
 This article will show you how to get 80% of the result with simpler and more maintainable code. It will also focus on a single-threaded approach to keep us focused. You can use most of the ideas in your own code easily if you need such tuning. But yes, we will also make decisions that a clean code coach would consider big no-nos.
 
+A version of this presentation can be found at JavaPro and also in the 4/2026 edition.
+
 == The Original Challenge
 At the end of 2023, when everyone was busy with the holidays, https://www.morling.dev/[Gunnar Morling] got bored. So he came up with a fun little project to read one billion rows from a CSV file as fast as possible. Recognizing that performance challenges are best tackled by the community, he turned it into a competition. He wanted to see how fast Java code could become with the help of other Java nerds.footnote:[https://www.morling.dev/blog/one-billion-row-challenge/[The One Billion Row Challenge]]
 
 === The Task
-Imagine a data file with one billion rows, each row containing the name of a weather station aka city and a temperature value. The goal is to calculate the min, mean, and max temperature per weather station as fast as possible.
+Imagine a data file with one billion rows, each row containing the name of a weather station (a.k.a. a city) and a temperature value. The goal is to calculate the min, mean, and max temperature per weather station as fast as possible.
 
 [source]
 ----
@@ -82,9 +84,9 @@ Hetzner AMDfootnote:[Hetzner, Finland, Dedicated Machine, AMD, 8 core, 32 GB, Ja
 
 You can already see where we want to go today: our 80% goal or, rather, our 80% tuning. Certainly, this is not a record-breaking number, but most of the tuning and profiling can be applied to your daily work.
 
-TIP: You might not want to brute-force apply the tunings from here to your code. You have to have a problem first. Just because you can, doesn't mean you should. Clean and maintainable code always comes first.
+TIP: You might not want to brute-force apply the tunings from here to your code. You must have a performance problem first. Just because you can, doesn't mean you should. Clean and maintainable code always comes first.
 
-CAUTION: All runtime numbers have been measured by me on 8-core cloud machines at Hetzner (AMD CPUs) and Digital Ocean (Intel CPUs). This means your mileage might vary, and because machines and setups change, I will likely not be able to reproduce the exact numbers when I would run that today. You always have to measure the entire series to get a good picture of the runtimes.
+CAUTION: All runtime numbers have been measured by me on 8-core cloud machines at Hetzner (AMD CPUs) and Digital Ocean (Intel CPUs). This means your mileage might vary, and because machines and setups change, I will likely not be able to reproduce the exact numbers if I ran them today. You always have to measure the entire series to get a good picture of the runtimes.
 
 When you look at the winning solution, you can see that it uses `Unsafe`, GraalVM native builds, a ton of bit magic, and many other things that you wouldn't use in your everyday code. Impressive and interesting, but with limited practical reuse. GraalVM native images excluded.
 
@@ -501,7 +503,7 @@ while ((line = reader.readLine()) != null)
 
 Wow, that is unexpected. We are slower now. But why? This is not obvious but easily explained. 
 
-When we `get` our data, we need the hashCode first and we retrieve the data from the calculated position. If the data is not there, we return null. For the later `put`, we do the same again. Our lambda expression was able to combine that; hence it was only one method call, and it only needed to calculate the hashCode once and access the backing datastructure once. But we will get there again, promised.
+When we `get` our data, we need the hashCode first and we retrieve the data from the calculated position. If the data is not there, we return null. For the later `put`, we do the same again. Our lambda expression was able to combine that; hence it was only one method call, and it only needed to calculate the hashCode once and access the backing data structure once. But we will get there again, I promise.
 
 == Step 7: The Modern Anti Pattern: Mutability
 Before we try to restore the original speed again, we should look at our code and see if there is something more obvious we can tackle.
@@ -601,7 +603,7 @@ Our current map has a drawback. It needs two slots and it needs a wrapper for th
 .A Simple Open Hashing Set
 image::images/openset.svg[A Sketch of a Open Hashing Set]
 
-We can fit twice as many object references into a CPU cache line (a small, ultra-fast memory area inside the processor). Because we have already our wrapper in our hands, we don't need to look up a second object either, which reduces memory access and speeds things up.
+We can fit twice as many object references into a CPU cache line (a small, ultra-fast memory area inside the processor). Because we already have our wrapper in our hands, we don't need to look up a second object either, which reduces memory access and speeds things up.
 
 As part of this change, we also will remove the need for a separate put method and return to the concept we abandoned when removing the lambda expression. Call the method once and let it decide if this is a new entry or just an update. In addition, we also move the `Temperatures` handling into the `Set` class. Yes, I know: reuse, architecture, clean code, and so on. Sometimes you have to trade a bit of elegance for performance. It is no longer a generic `Set`, but we're giving everything for performance, aren't we?
 
@@ -815,7 +817,7 @@ What a leap! Let's check our profiling data. Because the code is so different no
 Our `readLine` contains a method call to `read` and that is 2.2% of the runtime. The rest is used for our data processing. Yes, it could have been extracted more neatly into its own method. Next time!
 
 == The Unexpected Bonus
-When we run our baseline code with EpsilonGC, we get about 3.2 GB of heap usage for 10 million lines. That sums up to a staggering 320 GB for 1 billion rows. That is memory churn at the end of the day. Request memory, clean it, use it, investigate if still in use, add it to the free list or move the content around when still in use. By the way, we are not really allocating and deallocating against the OS here, because the JVM does its own memory segment management (ask for a chunk of memory from the OS and own that as long as possible),
+When we run our baseline code with EpsilonGC, we get about 3.2 GB of heap usage for 10 million lines. That sums up to a staggering 320 GB for 1 billion rows. That is memory churn at the end of the day. Request memory, clean it, use it, investigate if still in use, add it to the free list or move the content around when still in use. By the way, we are not really allocating and deallocating against the OS here, because the JVM does its own memory segment management (ask for a chunk of memory from the OS and own that as long as possible).
 
 NOTE: EpsilonGC (see https://openjdk.org/jeps/318[JEP 318]) is a GC that does not do any GC at all. It just reserves or assigns memory, but never frees it. Hence, a program might crash after a while if it needs more memory than what the heap can hold. Perfect for tuning and investigations because all background GC processes are offline.
 
@@ -1055,7 +1057,7 @@ this.hashCode = h;
 And we have liftoff! The Intel machine broke the 20% barrier (80% reduction), while the AMD machine is almost there.
 
 == More Smaller Tuning for AMDs
-To get the AMD CPU over the line, we will perform more smaller tuning and fiddle around with ideas. We keep some, but will abandon others. At the end, we will finally see our code runs five times faster, as promised. No usage of `Unsafe`, no bit magic, no GraalVM. To limit the article length, I won't discuss the other changes in detail. 
+To get the AMD CPU over the line, we will perform some minor tunings and fiddle around with ideas. We keep some, but will abandon others. At the end, we will finally see our code runs five times faster, as promised. No usage of `Unsafe`, no bit magic, no GraalVM. To limit the article length, I won't discuss the other changes in detail. 
 
 If you want to see what changed, hop over to the https://github.com/rschwietzke/1brc-the-first-80-meters/tree/main/src/main/java/org/rschwietzke/devoxxpl24[repo] and check it out. It also contains examples of what did not work. You can also see that I discovered a defect when comparing with another dataset: `BRC58_UnnoticedCharSkipping`. We already have a checksum in place; still, some errors only come up when the input looks different—strange, isn't it?
 
