@@ -7,6 +7,20 @@
 
 == Talks 2026
 
+=== JUG Saxony Day 2026
+
+At https://jugsaxony.org/day/[JUG Saxony Day 2026] in Radebeul near Dresden on 25 September 2026, I had the pleasure of presenting two talks:
+
+My first session was https://jugsaxony.org/day/programm/details/298[AI-Generated Unit Tests: Cutting Through the Hype] ("Is it actually helping, or just making us faster at being wrong?"). Based on empirical data across multiple models and codebases, we explored the difference between code coverage and mutation testing (PITest), why AI often freezes incorrect behavior, and where AI assistance truly shines. Check out the https://training.xceptance.com/java/600-unit-testing-with-ai.html#/[slides] here. An interesting takeaway from a quick poll during the talk: when I asked the audience, _"Do you still program by hand?"_, only 3 out of about 50 people raised their hand!
+
+.René Schwietzke presenting at JUG Saxony Day 2026 (© JUG Saxony e. V.)
+[link=https://training.xceptance.com/java/600-unit-testing-with-ai.html#/,target=_blank]
+image::/images/java/jug-saxony-day-2026-reneschwietzke.jpg["René Schwietzke presenting at JUG Saxony Day 2026 - AI-Generated Unit Tests: Cutting Through the Hype (© JUG Saxony e. V.)"]
+
+My second talk was https://jugsaxony.org/day/programm/details/327[Conquering a Billion Rows with Modern Java Concurrency] ("Let's use all the cores we got"). We explored concurrent streams, batching, thread pools, and zero-allocation techniques to get the first 80% of performance out of multicore hardware without resorting to unsafe tricks. You can find the https://training.xceptance.com/java/460-the-first-80p-of-1BRC-parallel-edition.html#/[slides] online.
+
+Many thanks to the entire JUG Saxony team for organizing another wonderful conference, and thank you to all attendees for the great discussions and feedback!
+
 === JCON 2026, Cologne
 
 JCON 2026 welcomed me on 22 April 2026 for my new talk https://training.xceptance.com/java/460-the-first-80p-of-1BRC-parallel-edition.html[#1BRC - The Parallel 80%
