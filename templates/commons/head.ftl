@@ -31,4 +31,10 @@
     <link rel="shortcut icon" href="/img/favicon.png">
 
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+    <link rel="alternate" type="application/rss+xml" title="${config.site_title}" href="${config.site_host}/${config.feed_file!'feed.xml'}">
+
+    <!-- AI / LLM Discovery (llms.txt standard) -->
+    <link rel="describedby" href="${config.site_host}/llms.txt">
+    <link rel="alternate" type="text/markdown" href="${config.site_host}/llms.txt" title="LLM Context Index">
+    <link rel="alternate" type="text/markdown" href="${config.site_host}/llms-full.txt" title="Full Content for LLMs">
 </head>

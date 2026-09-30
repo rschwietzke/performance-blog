@@ -7,6 +7,9 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,QSA,NC,L]
 
+# AI / LLM Discovery (llms.txt standard)
+RewriteRule ^\.well-known/llms\.txt$ /llms.txt [L]
+
 AddCharset UTF-8 .html .css .js .txt
 
 RedirectPermanent /java/java-int-to-string-performance-benchmark.html /java/benchmarking-a-number-journey-int-to-string.html
@@ -44,6 +47,9 @@ RedirectPermanent /java/java-int-to-string-performance-benchmark.html /java/benc
 <IfModule mod_deflate.c>
     <IfModule mod_headers.c>
         Header append Vary User-Agent env=!dont-vary
+        <FilesMatch "\.html$">
+            Header append Link '</llms.txt>; rel="describedby"'
+        </FilesMatch>
     </IfModule>
         AddOutputFilterByType DEFLATE text/css application/x-javascript application/javascript text/javascript text/x-js text/html image/svg+xml text/plain image/x-icon application/json
     <IfModule mod_mime.c>

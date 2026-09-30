@@ -2,3 +2,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.reneschwietzke.de/sitemap.xml
+
+# LLM / AI Discovery (https://llmstxt.org/)
+# Curated roadmap: https://www.reneschwietzke.de/llms.txt
+# Full text archive: https://www.reneschwietzke.de/llms-full.txt

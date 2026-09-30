@@ -1,0 +1,4 @@
+= Performance, Java, Testing, and Things - LLM Discovery
+:jbake-type: llms
+:jbake-status: published
+:jbake-date: 2026-09-30
